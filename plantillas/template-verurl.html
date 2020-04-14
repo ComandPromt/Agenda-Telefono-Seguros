@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		
+		<title>PDF Generator</title>
+		
+		<style type="text/css">
+		
+			*{text-align:center;margin:auto;}
+			
+			.tabla{
+				width:200px;
+			}
+			
+			.head1 {
+				color: #496192;
+				font-size: x-large;
+			}
+			.head2 {
+				color: #496192;
+				font-size: large;
+				text-align:right;
+			}
+			.head3 {
+				color: #000;
+				font-size:medium;
+			}
+			
+			.paragraph {
+				text-align: justify;
+			}
+			
+			.toc { 
+					list-style-type:none;
+			}
+			.toc a::after { content: leader('.') target-counter(attr(href), page); }
+		
+		</style>
+		
+		
+		<bookmarks>
+		
+		<bookmark name="1 Introduction" href="#_introduction">
+			<bookmark name="1.1 Intoduction Sub" href="#_introduction_sub"></bookmark>
+		</bookmark>
+		
+		<bookmark name="2 User" href="#_user"> 
+			<bookmark name="2.1 User Detail" href="#_user_detail"></bookmark>
+			</bookmark>
+			
+		</bookmarks>
+
+	</head>
+
+	<body>
+
+		<div style="text-align:center;padding-bottom:20px;">
+
+			<p class="head1">Listado de contactos</p>
+			
+		</div>
+	
+		<table style="border: 1px solid black;text-align:center;">
+		
+			<thead>
+			
+				<tr style="background-color:#CCC0DA">
+					<th align="center">Nombre</th>
+					<th align="center">Vencimiento</th>
+					<th align="center">Observacion</th>
+				</tr>
+				
+			</thead>
+			
+			<#list 1..users?size as i>
+			
+				<#if i%2==0> 
+				
+					<tr style="background-color:#FABF8F;">
+					
+				<#else>
+				
+					<tr style="background-color:#C4D79B;">
+					
+				</#if>
+				
+					<td class="tabla" align="center">
+					
+					<p align="center">${users[i-1].username}</p></td>
+					
+					<td class="tabla" align="center">
+					
+					<p align="center">${vencimientos[i-1].username}</p></td>
+					
+					<td class="tabla" align="center">
+					
+					<p align="center">${observaciones[i-1].username}</p></td>
+					
+					</tr>
+							
+			</#list>
+			
+		</table>
+ 
+	</body>
+	
+</html>
