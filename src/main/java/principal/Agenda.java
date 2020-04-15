@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -38,7 +39,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
-import javax.swing.JTextPane;
+import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
@@ -62,9 +63,10 @@ public class Agenda extends JFrame {
 	Date fecha;
 	public static JList<String> jList1;
 	static String directorioActual, separador, os;
-	private JTextArea nota;
-	private JTextPane nombre;
-	private RSDateChooser tipo;
+	private static JTextArea nota;
+	private static JTextField nombre;
+	private static JTextField telefonoc;
+	private static RSDateChooser tipo;
 	public static DefaultListModel<String> modelo = new DefaultListModel<>();
 	private static LinkedList<String> notas = new LinkedList<>();
 	String iduser;
@@ -96,7 +98,9 @@ public class Agenda extends JFrame {
 
 	static LinkedList<String> contactos = new <String>LinkedList();
 
-	protected void limpiarContactos() {
+	static LinkedList<String> telefonos = new <String>LinkedList();
+
+	protected static void limpiarContactos() {
 		modelo.removeAllElements();
 
 		jList1.setModel(modelo);
@@ -178,16 +182,13 @@ public class Agenda extends JFrame {
 	}
 
 	public Agenda() throws IOException, SQLException {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Agenda.class.getResource("/imagenes/user.png")));
 
 		os = System.getProperty("os.name");
 
 		separador = Metodos.saberSeparador(os);
 
 		initComponents();
-
-		File carpeta = new File("contactos_exportados");
-
-		carpeta.mkdir();
 
 		directorioActual = new File(".").getCanonicalPath() + separador;
 
@@ -227,44 +228,68 @@ public class Agenda extends JFrame {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
+
 				try {
 
 					int indice = jList1.getSelectedIndex();
 
+					String datoContacto = Metodos.eliminarEspacios(nombre.getText());
+					String datoFecha = Metodos.eliminarEspacios(convertirFecha(tipo.getDatoFecha().toString()));
+					String datoObs = Metodos.eliminarEspacios(nota.getText());
+					String datoTls = Metodos.eliminarEspacios(telefonoc.getText());
+
 					if (indice >= 0) {
 
-						contactos.set(indice, Metodos.eliminarEspacios(nombre.getText()));
-
-						fechas.set(indice, convertirFecha(tipo.getDatoFecha().toString()));
-
-						observaciones.set(indice, Metodos.eliminarEspacios(nota.getText()));
-
-						limpiarContactos();
-
-						for (int i = 0; i < contactos.size(); i++) {
-
-							fecha = new Date(fechas.get(i).toString());
-
-							arrayList1.add(new Objeto(contactos.get(i) + "«" + fecha + "»" + observaciones.get(i)));
+						if (contactos.get(indice).equals(datoContacto) && fechas.get(indice).equals(datoFecha)
+								&& observaciones.get(indice).equals(datoObs) && telefonos.get(indice).equals(datoTls)) {
+							Metodos.mensaje("Debes modificar un dato", 3);
 
 						}
 
-						eliminarContacto();
+						else {
 
-						ObjectOutputStream escribiendoFichero;
+							if (!Metodos.comprobarTelefono(datoTls)) {
+								Metodos.mensaje("Telefono incorrecto", 3);
+							}
 
-						escribiendoFichero = new ObjectOutputStream(new FileOutputStream("contactos.dat"));
-						escribiendoFichero.writeObject(arrayList1);
+							else {
 
-						escribiendoFichero.close();
+								arrayList1.clear();
 
-						verNotas();
+								eliminarContacto();
+
+								contactos.set(indice, datoContacto);
+
+								fechas.set(indice, convertirFecha(tipo.getDatoFecha().toString()));
+
+								observaciones.set(indice, Metodos.eliminarEspacios(nota.getText()));
+
+								telefonos.set(indice, Metodos.eliminarEspacios(telefonoc.getText()));
+
+								for (int i = 0; i < contactos.size(); i++) {
+
+									fecha = new Date(fechas.get(i).toString());
+
+									arrayList1.add(new Objeto(contactos.get(i) + "Â«" + fecha + "Â»"
+											+ observaciones.get(i) + "Â¬" + telefonos.get(i)));
+
+								}
+
+								ObjectOutputStream escribiendoFichero;
+
+								escribiendoFichero = new ObjectOutputStream(new FileOutputStream("contactos.dat"));
+
+								escribiendoFichero.writeObject(arrayList1);
+
+								escribiendoFichero.close();
+							}
+						}
+
 					}
-//
 				}
 
 				catch (Exception e1) {
-					e1.printStackTrace();
+
 				}
 
 			}
@@ -276,7 +301,7 @@ public class Agenda extends JFrame {
 		menuBar.add(mntmNewMenuItem);
 
 		JMenuItem mntmNewMenuItem_5 = new JMenuItem("Eliminar");
-		mntmNewMenuItem_5.setSelectedIcon(new ImageIcon(Agenda.class.getResource("/imagenes/delete_1.png")));
+		mntmNewMenuItem_5.setSelectedIcon(null);
 		mntmNewMenuItem_5.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/delete.png")));
 
 		mntmNewMenuItem_5.addMouseListener(new MouseAdapter() {
@@ -284,56 +309,81 @@ public class Agenda extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent e) {
 
-				int indice = jList1.getSelectedIndex();
+				String contacto = jList1.getSelectedValue();
 
-				if (indice >= 0 && contactos.get(indice).equals(jList1.getSelectedValue())) {
+				if (contacto != null) {
 
-					contactos.remove(indice);
-					observaciones.remove(indice);
-					fechas.remove(indice);
+					if (JOptionPane.showConfirmDialog(null, "Quieres borrar a " + contacto, "Borrar contactos",
+							JOptionPane.YES_NO_OPTION) == 0) {
 
-					nombre.setText("");
+						int indice = jList1.getSelectedIndex();
 
-					nota.setText("");
+						if (indice >= 0 && contactos.get(indice).equals(contacto)) {
 
-					tipo.setDatoFecha(null);
+							contactos.remove(indice);
+							observaciones.remove(indice);
+							fechas.remove(indice);
+							telefonos.remove(indice);
 
-					limpiarContactos();
+							nombre.setText("");
 
-					eliminarContacto();
+							nota.setText("");
 
-					if (contactos.size() > 0) {
+							tipo.setDatoFecha(null);
 
-						for (int i = 0; i < contactos.size(); i++) {
+							telefonoc.setText("");
 
-							fecha = new Date(fechas.get(i).toString());
+							limpiarContactos();
 
-							arrayList1.add(new Objeto(contactos.get(i) + "«" + fecha + "»" + observaciones.get(i)));
+							eliminarContacto();
 
-						}
+							arrayList1.clear();
 
-						ObjectOutputStream escribiendoFichero;
+							if (contactos.size() > 0) {
 
-						try {
+								for (int i = 0; i < contactos.size(); i++) {
 
-							escribiendoFichero = new ObjectOutputStream(new FileOutputStream("contactos.dat"));
-							escribiendoFichero.writeObject(arrayList1);
+									fecha = new Date(fechas.get(i).toString());
 
-							escribiendoFichero.close();
+									arrayList1.add(new Objeto(contactos.get(i) + "Â«" + fecha + "Â»"
+											+ observaciones.get(i) + "Â¬" + telefonos.get(i)));
 
-							verNotas();
+								}
 
-						}
+								ObjectOutputStream escribiendoFichero;
 
-						catch (Exception e1) {
+								try {
+
+									escribiendoFichero = new ObjectOutputStream(new FileOutputStream("contactos.dat"));
+									escribiendoFichero.writeObject(arrayList1);
+
+									escribiendoFichero.close();
+
+									verNotas();
+
+								}
+
+								catch (Exception e1) {
+
+								}
+
+							}
 
 						}
 					}
-
 				}
-
 			}
 
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				mntmNewMenuItem_5.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/delete_1.png")));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				mntmNewMenuItem_5.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/delete.png")));
+
+			}
 		});
 		mntmNewMenuItem_5.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 
@@ -354,15 +404,9 @@ public class Agenda extends JFrame {
 
 			public void mousePressed(MouseEvent e) {
 
-				System.out.println("hola");
-
 				try {
 
-					LinkedList prueba = new LinkedList();
-					prueba.add("aa");
-					System.out.println("hola " + fechas.get(0));
-
-					MetodosPdf.crearPdf(contactos, fechas, observaciones, "template-verurl.html");
+					MetodosPdf.crearPdf(contactos, fechas, observaciones, telefonos, "template-verurl.html");
 
 				} catch (Exception e1) {
 					//
@@ -394,6 +438,13 @@ public class Agenda extends JFrame {
 
 	}
 
+	public static void vaciarCampos() {
+		Agenda.nombre.setText("");
+		Agenda.telefonoc.setText("");
+		Agenda.nota.setText("");
+		Agenda.tipo.setDatoFecha(null);
+	}
+
 	public void vaciarDatos() {
 		nombre.setText("");
 
@@ -421,6 +472,8 @@ public class Agenda extends JFrame {
 
 				nota.setEditable(true);
 
+				telefonoc.setEditable(true);
+
 				try {
 
 					int indice = jList1.getSelectedIndex();
@@ -430,7 +483,7 @@ public class Agenda extends JFrame {
 					Date fecha = new Date();
 
 					nota.setText(observaciones.get(indice));
-
+					telefonoc.setText(telefonos.get(indice));
 					fecha = new Date(fechas.get(indice).toString());
 
 					tipo.setDatoFecha(fecha);
@@ -457,7 +510,7 @@ public class Agenda extends JFrame {
 		JPanel panelCasa;
 		JScrollPane scrollPane;
 		jScrollPane1 = new JScrollPane();
-		jList1.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		jList1.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		jList1.setFixedCellHeight(40);
 
 		jPanel5.setBackground(new java.awt.Color(88, 205, 170));
@@ -498,7 +551,7 @@ public class Agenda extends JFrame {
 		JLabel jLabel6;
 		panelCasa = new JPanel();
 		jLabel5 = new JLabel();
-		jLabel5.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		jLabel5.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		jLabel5.setText("Vencimiento");
 
 		panelCasa.setBackground(new Color(240, 240, 240));
@@ -521,23 +574,30 @@ public class Agenda extends JFrame {
 		nota.setBackground(new Color(255, 255, 255));
 		nota.setEditable(false);
 		nota.setWrapStyleWord(true);
-		nota.setFont(new Font("Monospaced", Font.PLAIN, 20));
+		nota.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		nota.setLineWrap(true);
 		jLabel6 = new JLabel();
 		jLabel6.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/nota.png")));
-		jLabel6.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		jLabel6.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		jLabel6.setText("Obs");
 
 		jLabel3 = new JLabel();
-		jLabel3.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		jLabel3.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		jLabel3.setText("Nombre");
 
 		jLabel3.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/user.png")));
 
-		nombre = new JTextPane();
+		nombre = new JTextField();
+		nombre.setHorizontalAlignment(SwingConstants.CENTER);
 		nombre.setBackground(new Color(255, 255, 255));
 		nombre.setEditable(false);
-		nombre.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		nombre.setFont(new Font("Tahoma", Font.PLAIN, 16));
+
+		telefonoc = new JTextField();
+		telefonoc.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		telefonoc.setHorizontalAlignment(SwingConstants.CENTER);
+		telefonoc.setEditable(false);
+		telefonoc.setColumns(10);
 
 		JButton btnNewButton = new JButton("");
 
@@ -545,13 +605,13 @@ public class Agenda extends JFrame {
 
 			public void actionPerformed(ActionEvent e) {
 
-				if (JOptionPane.showConfirmDialog(null, "¿Quieres borrar todos los contactos?", "Borrar contactos",
+				if (JOptionPane.showConfirmDialog(null, "Quieres borrar todos los contactos?", "Borrar contactos",
 						JOptionPane.YES_NO_OPTION) == 0) {
 
 					limpiarContactos();
 
 					eliminarContacto();
-
+					vaciarCampos();
 				}
 
 			}
@@ -560,47 +620,51 @@ public class Agenda extends JFrame {
 
 		btnNewButton.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/clean.png")));
 
+		JLabel lblNewLabel = new JLabel("Tlf");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblNewLabel.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/telefono.png")));
+
 		GroupLayout panelCasaLayout = new GroupLayout(panelCasa);
 		panelCasaLayout.setHorizontalGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(panelCasaLayout.createSequentialGroup()
+				.addGroup(panelCasaLayout.createSequentialGroup().addContainerGap()
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING).addComponent(jLabel3)
+								.addComponent(jLabel6, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblNewLabel).addComponent(jLabel5)
+								.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE))
+						.addGap(23)
 						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(panelCasaLayout.createSequentialGroup().addContainerGap()
-										.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-												.addComponent(jLabel6, GroupLayout.PREFERRED_SIZE, 101,
-														GroupLayout.PREFERRED_SIZE)
-												.addComponent(jLabel5).addComponent(jLabel3)))
-								.addGroup(panelCasaLayout.createSequentialGroup().addGap(19).addComponent(btnNewButton,
-										GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE)))
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING, false).addComponent(nombre)
-								.addComponent(scrollPane, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 209,
-										Short.MAX_VALUE)
-								.addComponent(tipo, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE))
-						.addContainerGap(31, Short.MAX_VALUE)));
-		panelCasaLayout.setVerticalGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(panelCasaLayout.createSequentialGroup().addContainerGap(11, Short.MAX_VALUE)
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(jLabel3, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 91,
-										GroupLayout.PREFERRED_SIZE)
-								.addGroup(Alignment.TRAILING,
-										panelCasaLayout.createSequentialGroup()
-												.addComponent(nombre, GroupLayout.PREFERRED_SIZE, 42,
-														GroupLayout.PREFERRED_SIZE)
-												.addGap(19)))
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(panelCasaLayout.createSequentialGroup().addGap(26).addComponent(jLabel5))
-								.addGroup(panelCasaLayout.createSequentialGroup().addGap(34).addComponent(tipo,
-										GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)))
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(panelCasaLayout.createSequentialGroup().addGap(71)
-										.addComponent(jLabel6, GroupLayout.PREFERRED_SIZE, 81,
-												GroupLayout.PREFERRED_SIZE)
-										.addGap(18).addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 53,
+								.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING, false)
+										.addComponent(tipo, Alignment.TRAILING, 0, 0, Short.MAX_VALUE)
+										.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
+										.addComponent(nombre, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 209,
 												GroupLayout.PREFERRED_SIZE))
-								.addGroup(panelCasaLayout.createSequentialGroup().addGap(31).addComponent(scrollPane,
-										GroupLayout.PREFERRED_SIZE, 167, GroupLayout.PREFERRED_SIZE)))
-						.addGap(31)));
+								.addComponent(telefonoc, 209, 209, 209))
+						.addContainerGap(279, Short.MAX_VALUE)));
+		panelCasaLayout.setVerticalGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING).addGroup(panelCasaLayout
+				.createSequentialGroup()
+				.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING).addGroup(panelCasaLayout
+						.createSequentialGroup()
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING)
+								.addGroup(panelCasaLayout.createSequentialGroup()
+										.addComponent(nombre, GroupLayout.PREFERRED_SIZE, 42,
+												GroupLayout.PREFERRED_SIZE)
+										.addGap(19))
+								.addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE).addComponent(lblNewLabel)
+								.addComponent(telefonoc, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE))
+						.addGap(18)
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING, false).addGroup(panelCasaLayout
+								.createSequentialGroup().addGap(82)
+								.addComponent(jLabel6, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE))
+								.addGroup(panelCasaLayout.createSequentialGroup()
+										.addComponent(tipo, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
+										.addGap(18).addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 167,
+												GroupLayout.PREFERRED_SIZE))))
+						.addGroup(panelCasaLayout.createSequentialGroup().addGap(167).addComponent(jLabel5)))
+				.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		panelCasa.setLayout(panelCasaLayout);
 
 		GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
@@ -608,29 +672,30 @@ public class Agenda extends JFrame {
 				.addGroup(jPanel3Layout.createSequentialGroup().addGap(18)
 						.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 233, GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(panelCasa, GroupLayout.PREFERRED_SIZE, 446, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(20, Short.MAX_VALUE)));
+						.addComponent(panelCasa, GroupLayout.PREFERRED_SIZE, 424, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(239, Short.MAX_VALUE)));
 		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel3Layout
 				.createSequentialGroup().addGap(28)
-				.addGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING, false)
-						.addComponent(panelCasa, Alignment.LEADING, 0, 0, Short.MAX_VALUE)
-						.addComponent(jScrollPane1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE))
-				.addContainerGap(30, Short.MAX_VALUE)));
+				.addGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(panelCasa, Alignment.LEADING, 0, 0, Short.MAX_VALUE).addComponent(jScrollPane1,
+								Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 416, GroupLayout.PREFERRED_SIZE))
+				.addContainerGap(14, Short.MAX_VALUE)));
 		jPanel3.setLayout(jPanel3Layout);
 
 		GroupLayout layout = new GroupLayout(getContentPane());
 		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap()
 						.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 727, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(292, Short.MAX_VALUE)));
+						.addContainerGap(368, Short.MAX_VALUE)));
 		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap()
 						.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 458, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(216, Short.MAX_VALUE)));
+						.addContainerGap(214, Short.MAX_VALUE)));
 		getContentPane().setLayout(layout);
 
 		if (jList1.getModel().getSize() == 0) {
 			try {
+				Agenda.limpiarContactos();
 				verNotas();
 			} catch (Exception e) {
 //
@@ -648,8 +713,6 @@ public class Agenda extends JFrame {
 
 		String nota;
 
-		modelo.removeAllElements();
-
 		ArrayList<Objeto> arrayList1 = new ArrayList<Objeto>();
 
 		ArrayList<Objeto> arrayList2;
@@ -658,13 +721,15 @@ public class Agenda extends JFrame {
 
 			arrayList2 = leer();
 
-			String cadena, fecha, obs = "";
+			String cadena, fecha, obs, telefono = "";
 
 			contactos.clear();
 
 			observaciones.clear();
 
 			fechas.clear();
+
+			telefonos.clear();
 
 			String cliente;
 
@@ -674,15 +739,19 @@ public class Agenda extends JFrame {
 
 					cadena = arrayList2.get(i).toString();
 
-					fecha = cadena.substring(cadena.indexOf("«") + 1, cadena.indexOf("»"));
+					fecha = cadena.substring(cadena.indexOf("Â«") + 1, cadena.indexOf("Â»"));
 
-					obs = cadena.substring(cadena.indexOf("»") + 1, cadena.length());
+					obs = cadena.substring(cadena.indexOf("Â»") + 1, cadena.indexOf("Â¬"));
 
-					cliente = cadena.substring(0, cadena.indexOf("«"));
+					telefono = cadena.substring(cadena.indexOf("Â¬") + 1, cadena.length());
+
+					cliente = cadena.substring(0, cadena.indexOf("Â«"));
 
 					modelo.addElement(cliente);
 
 					contactos.add(cliente);
+
+					telefonos.add(telefono);
 
 					observaciones.add(obs);
 
@@ -694,7 +763,7 @@ public class Agenda extends JFrame {
 			jList1.setModel(modelo);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			//
 		}
 	}
 

@@ -10,12 +10,23 @@ import java.util.Map;
 
 import pdf.Fecha;
 import pdf.Obs;
+import pdf.Telefono;
 import pdf.Url;
 
 public abstract class MetodosPdf {
 
 	public static void crearPdf(LinkedList<String> usuarios, LinkedList<String> vencimientos,
-			LinkedList<String> observaciones, String plantilla) throws Exception, FileNotFoundException {
+			LinkedList<String> observaciones, LinkedList<String> telefonos, String plantilla)
+			throws Exception, FileNotFoundException {
+
+		for (int i = 0; i < vencimientos.size(); i++) {
+			vencimientos.set(i,
+					vencimientos.get(i).substring(vencimientos.get(i).indexOf("/") + 1,
+							vencimientos.get(i).lastIndexOf("/")) + "/"
+							+ vencimientos.get(i).substring(0, vencimientos.get(i).indexOf("/")) + "/"
+							+ vencimientos.get(i).substring(vencimientos.get(i).lastIndexOf("/") + 1,
+									vencimientos.get(i).length()));
+		}
 
 		String tampleFile = "plantillas/" + plantilla;
 
@@ -27,15 +38,20 @@ public abstract class MetodosPdf {
 
 		List<Obs> obs = createObsList(observaciones);
 
+		List<Telefono> tlf = createTlfList(telefonos);
+
 		variables.put("users", users);
 
 		variables.put("vencimientos", fechas);
 
 		variables.put("observaciones", obs);
 
+		variables.put("telefonos", tlf);
+
 		String htmlStr = HtmlGenerator.generate(tampleFile, variables);
 
 		PdfGenerator.generate(htmlStr, new FileOutputStream(Metodos.extraerNombreArchivo("pdf")));
+
 	}
 
 	private static List<Url> createUserList(LinkedList<String> urls) {
@@ -60,6 +76,17 @@ public abstract class MetodosPdf {
 		return users;
 	}
 
+	private static List<Telefono> createTlfList(LinkedList<String> urls) {
+
+		List<Telefono> users = new ArrayList<Telefono>();
+
+		for (int i = 0; i < urls.size(); i++) {
+			users.add(createTlf(urls.get(i)));
+		}
+
+		return users;
+	}
+
 	private static List<Obs> createObsList(LinkedList<String> urls) {
 
 		List<Obs> users = new ArrayList<Obs>();
@@ -69,6 +96,15 @@ public abstract class MetodosPdf {
 		}
 
 		return users;
+	}
+
+	private static Telefono createTlf(String urli) {
+
+		Telefono url = new Telefono();
+
+		url.setUsername(urli);
+
+		return url;
 	}
 
 	private static Obs createObs(String urli) {
@@ -97,4 +133,5 @@ public abstract class MetodosPdf {
 
 		return url;
 	}
+
 }

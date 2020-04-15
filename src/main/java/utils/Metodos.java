@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -18,6 +20,17 @@ import org.json.JSONObject;
 import principal.Agenda;
 
 public class Metodos {
+
+	public static boolean comprobarTelefono(String dato) {
+
+		String regEx = "^[6789][0-9]{8}";
+
+		Pattern pattern = Pattern.compile(regEx);
+
+		Matcher matcher = pattern.matcher(dato);
+
+		return matcher.matches();
+	}
 
 	private static String readAll(Reader rd) throws IOException {
 

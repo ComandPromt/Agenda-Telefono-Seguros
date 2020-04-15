@@ -1,2 +1,3 @@
 # Agenda-Telefono
-tlf serializable con recordatorio
+
+![Preview](preview.png)
