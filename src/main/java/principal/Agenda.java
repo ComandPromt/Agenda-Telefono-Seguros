@@ -9,19 +9,28 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.Writer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.Timer;
 
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
@@ -48,6 +57,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.github.mangstadt.vinnie.SyntaxStyle;
+import com.github.mangstadt.vinnie.io.VObjectWriter;
+
 import rojeru_san.componentes.RSDateChooser;
 import utils.Metodos;
 import utils.MetodosPdf;
@@ -55,7 +67,9 @@ import utils.MetodosPdf;
 @SuppressWarnings("all")
 
 public class Agenda extends JFrame {
-
+	Timer t = new Timer();
+	public static Llamada mostrarLlamada = new Llamada();;
+	Vencimiento mTask = new Vencimiento();
 	ArrayList<Objeto> arrayList1;
 	private JButton buscar;
 	private static JButton contacto;
@@ -75,6 +89,73 @@ public class Agenda extends JFrame {
 	String cnombre;
 	String ctipo;
 	String cnota;
+
+	protected void guardarContactos() {
+
+		try {
+
+			PrintStream fileOut = new PrintStream("contactos.vcf");
+
+			Writer writer = new OutputStreamWriter(fileOut);
+
+			VObjectWriter vobjectWriter = new VObjectWriter(writer, SyntaxStyle.OLD);
+
+			for (int i = 0; i < contactos.size(); i++) {
+
+				vobjectWriter.writeBeginComponent("VCARD");
+
+				vobjectWriter.writeVersion("2.1");
+
+				vobjectWriter.writeProperty("N", contactos.get(i));
+				vobjectWriter.writeProperty("FN", contactos.get(i));
+
+				vobjectWriter.writeProperty("CELL", telefonos.get(i));
+
+				vobjectWriter.writeEndComponent("VCARD");
+			}
+
+			vobjectWriter.close();
+
+			File archivo = null;
+
+			FileReader fr = null;
+
+			BufferedReader br = null;
+
+			archivo = new File("contactos.vcf");
+
+			fr = new FileReader(archivo);
+
+			br = new BufferedReader(fr);
+
+			String cadena = "", linea = "";
+
+			while ((linea = br.readLine()) != null) {
+
+				cadena += linea + "\n";
+			}
+
+			cadena = cadena.replace("CELL:", "TEL;CELL:");
+
+			String ruta = "contactos.vcf";
+
+			File file = new File(ruta);
+
+			FileWriter fw = new FileWriter(file);
+
+			BufferedWriter bw = new BufferedWriter(fw);
+
+			bw.write(cadena);
+
+			bw.close();
+			fr.close();
+			br.close();
+
+		} catch (Exception e1) {
+			//
+		}
+
+	}
 
 	public static String getDirectorioActual() {
 		return directorioActual;
@@ -106,16 +187,10 @@ public class Agenda extends JFrame {
 		jList1.setModel(modelo);
 	}
 
-	protected void eliminarContacto() {
-		File agenda = new File("contactos.dat");
-
-		agenda.delete();
-	}
-
 	static String convertirFecha(String cadena) {
 
-		String mes = "", fecha = "", dia = "", year = "";
-
+		String mes = "", fecha = "", year = "";
+		int dia;
 		int limiteMes = cadena.indexOf(" ") + 4;
 
 		year = cadena.substring(cadena.lastIndexOf(" ") + 1, cadena.length());
@@ -124,7 +199,7 @@ public class Agenda extends JFrame {
 
 		cadena = cadena.substring(limiteMes + 1, cadena.length());
 
-		dia = cadena.substring(0, cadena.indexOf(" "));
+		dia = Integer.parseInt(cadena.substring(0, cadena.indexOf(" ")));
 
 		int mesFecha = 0;
 
@@ -172,16 +247,23 @@ public class Agenda extends JFrame {
 
 		String mesCorto = "";
 
+		String diaCorto = "";
+
 		if (mesFecha <= 9) {
 			mesCorto = "0";
 		}
 
-		fecha = mesCorto + mesFecha + "/" + dia + "/" + year;
+		if (dia <= 9) {
+			diaCorto = "0";
+		}
+
+		fecha = mesCorto + mesFecha + "/" + diaCorto + dia + "/" + year;
 
 		return fecha;
 	}
 
 	public Agenda() throws IOException, SQLException {
+
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Agenda.class.getResource("/imagenes/user.png")));
 
 		os = System.getProperty("os.name");
@@ -218,7 +300,7 @@ public class Agenda extends JFrame {
 			}
 		});
 
-		mntmNewMenuItem_1.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mntmNewMenuItem_1.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 
 		menuBar.add(mntmNewMenuItem_1);
 
@@ -249,14 +331,14 @@ public class Agenda extends JFrame {
 						else {
 
 							if (!Metodos.comprobarTelefono(datoTls)) {
-								Metodos.mensaje("Telefono incorrecto", 3);
+								Metodos.mensaje("Teléfono incorrecto", 3);
 							}
 
 							else {
 
 								arrayList1.clear();
 
-								eliminarContacto();
+								Metodos.eliminarFichero("contactos.dat");
 
 								contactos.set(indice, datoContacto);
 
@@ -297,7 +379,7 @@ public class Agenda extends JFrame {
 		});
 
 		mntmNewMenuItem.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/actualizar.png")));
-		mntmNewMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mntmNewMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		menuBar.add(mntmNewMenuItem);
 
 		JMenuItem mntmNewMenuItem_5 = new JMenuItem("Eliminar");
@@ -335,7 +417,7 @@ public class Agenda extends JFrame {
 
 							limpiarContactos();
 
-							eliminarContacto();
+							Metodos.eliminarFichero("contactos.dat");
 
 							arrayList1.clear();
 
@@ -385,10 +467,28 @@ public class Agenda extends JFrame {
 
 			}
 		});
-		mntmNewMenuItem_5.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mntmNewMenuItem_5.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 
 		menuBar.add(mntmNewMenuItem_5);
 
+		JMenu mnNewMenu = new JMenu("Importar");
+		mnNewMenu.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		mnNewMenu.setForeground(Color.BLACK);
+		mnNewMenu.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/utilities.png")));
+		menuBar.add(mnNewMenu);
+
+		JMenuItem mntmNewMenuItem_6 = new JMenuItem("Vcard");
+		mntmNewMenuItem_6.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				new ImportarVcard().setVisible(true);
+			}
+
+		});
+
+		mntmNewMenuItem_6.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		mntmNewMenuItem_6.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/vcard.png")));
+		mnNewMenu.add(mntmNewMenuItem_6);
 		JMenu mnNewMenu_1 = new JMenu("Exportar");
 		mnNewMenu_1.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/config.png")));
 		mnNewMenu_1.setForeground(Color.BLACK);
@@ -405,7 +505,7 @@ public class Agenda extends JFrame {
 			public void mousePressed(MouseEvent e) {
 
 				try {
-
+					System.out.println(fechas.get(0));
 					MetodosPdf.crearPdf(contactos, fechas, observaciones, telefonos, "template-verurl.html");
 
 				} catch (Exception e1) {
@@ -416,7 +516,7 @@ public class Agenda extends JFrame {
 
 		});
 
-		mntmNewMenuItem_2.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		mntmNewMenuItem_2.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 
 		mnNewMenu_1.add(mntmNewMenuItem_2);
 
@@ -424,7 +524,7 @@ public class Agenda extends JFrame {
 		mnNewMenu_1.add(separator);
 
 		JMenuItem mntmNewMenuItem_3 = new JMenuItem("Excel");
-		mntmNewMenuItem_3.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		mntmNewMenuItem_3.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		mntmNewMenuItem_3.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/excel.png")));
 		mnNewMenu_1.add(mntmNewMenuItem_3);
 
@@ -432,9 +532,29 @@ public class Agenda extends JFrame {
 		mnNewMenu_1.add(separator_3);
 
 		JMenuItem mntmNewMenuItem_4 = new JMenuItem("Txt");
+
 		mntmNewMenuItem_4.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/txt.png")));
-		mntmNewMenuItem_4.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+
+		mntmNewMenuItem_4.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+
 		mnNewMenu_1.add(mntmNewMenuItem_4);
+
+		JSeparator separator_1 = new JSeparator();
+
+		mnNewMenu_1.add(separator_1);
+
+		JMenuItem mntmNewMenuItem_7 = new JMenuItem("VCard");
+
+		mntmNewMenuItem_7.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				guardarContactos();
+			}
+		});
+		mntmNewMenuItem_7.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		mntmNewMenuItem_7.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/vcard.png")));
+		mntmNewMenuItem_7.setSelectedIcon(null);
+		mnNewMenu_1.add(mntmNewMenuItem_7);
 
 	}
 
@@ -483,7 +603,9 @@ public class Agenda extends JFrame {
 					Date fecha = new Date();
 
 					nota.setText(observaciones.get(indice));
+
 					telefonoc.setText(telefonos.get(indice));
+
 					fecha = new Date(fechas.get(indice).toString());
 
 					tipo.setDatoFecha(fecha);
@@ -567,6 +689,7 @@ public class Agenda extends JFrame {
 		tipo.setFont(new Font("Tahoma", Font.PLAIN, 24));
 
 		scrollPane = new JScrollPane((Component) null);
+
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
 		nota = new JTextArea("", 0, 50);
@@ -610,7 +733,8 @@ public class Agenda extends JFrame {
 
 					limpiarContactos();
 
-					eliminarContacto();
+					Metodos.eliminarFichero("contactos.dat");
+
 					vaciarCampos();
 				}
 
@@ -697,6 +821,10 @@ public class Agenda extends JFrame {
 			try {
 				Agenda.limpiarContactos();
 				verNotas();
+				System.out.println("ejecutar cron");
+
+				t.scheduleAtFixedRate(mTask, 0, 60000);
+
 			} catch (Exception e) {
 //
 			}
@@ -717,9 +845,11 @@ public class Agenda extends JFrame {
 
 		ArrayList<Objeto> arrayList2;
 
+		LinkedList<String> agenda = new <String>LinkedList();
+
 		try {
 
-			arrayList2 = leer();
+			arrayList2 = leer("contactos.dat");
 
 			String cadena, fecha, obs, telefono = "";
 
@@ -736,8 +866,14 @@ public class Agenda extends JFrame {
 			if (arrayList2 != null) {
 
 				for (int i = 0; i < arrayList2.size(); i++) {
+					agenda.add(arrayList2.get(i).toString());
+				}
 
-					cadena = arrayList2.get(i).toString();
+				Collections.sort(agenda);
+
+				for (int i = 0; i < agenda.size(); i++) {
+
+					cadena = agenda.get(i);
 
 					fecha = cadena.substring(cadena.indexOf("«") + 1, cadena.indexOf("»"));
 
@@ -775,15 +911,16 @@ public class Agenda extends JFrame {
 		Agenda.fechas = fechas;
 	}
 
-	protected static ArrayList<Objeto> leer() throws IOException, FileNotFoundException, ClassNotFoundException {
+	protected static ArrayList<Objeto> leer(String file)
+			throws IOException, FileNotFoundException, ClassNotFoundException {
 
 		ArrayList<Objeto> arrayList2 = null;
 
-		File archivo = new File("contactos.dat");
+		File archivo = new File(file);
 
 		if (archivo.exists()) {
 
-			ObjectInputStream leyendoFichero = new ObjectInputStream(new FileInputStream("contactos.dat"));
+			ObjectInputStream leyendoFichero = new ObjectInputStream(new FileInputStream(file));
 
 			arrayList2 = (ArrayList<Objeto>) leyendoFichero.readObject();
 
@@ -792,33 +929,6 @@ public class Agenda extends JFrame {
 		}
 
 		return arrayList2;
-	}
-
-	private void eliminarContactoMouseClicked() throws IOException, ClassNotFoundException {
-
-		if (!controlarSeleccion()) {
-			JLabel mensaje = new JLabel("Seguro que quieres borrar a " + jList1.getSelectedValue().toString() + "?");
-			mensaje.setFont(new Font("Arial", Font.BOLD, 18));
-			int confirmado = JOptionPane.showConfirmDialog(null, mensaje, "WARNING", 0);
-			if (JOptionPane.OK_OPTION == confirmado) {
-
-				try {
-					// Connection conexion = Metodos.conexionBD();
-
-					// s = conexion.createStatement();
-
-					s.executeUpdate("DELETE FROM notas WHERE Nombre='" + jList1.getSelectedValue() + "'");
-					vaciarDatos();
-					// verNotas();
-					s.close();
-				} catch (SQLException e) {
-					//
-				}
-
-			}
-		} else {
-			Metodos.mensaje("Seleccione un registro para borrar", 2);
-		}
 	}
 
 	public boolean controlarSeleccion() {

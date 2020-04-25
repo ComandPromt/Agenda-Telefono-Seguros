@@ -2,17 +2,21 @@ package utils;
 
 import java.awt.Font;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,6 +24,146 @@ import org.json.JSONObject;
 import principal.Agenda;
 
 public class Metodos {
+
+	public static void eliminarFichero(String archivo) {
+
+		File fichero = new File(archivo);
+
+		if (fichero.exists() && !fichero.isDirectory()) {
+			fichero.delete();
+		}
+
+	}
+
+	public static String convertirFecha(String cadena) {
+
+		String fecha = "";
+
+		int mes, dia = 0;
+
+		int year;
+
+		year = Integer.parseInt(cadena.substring(cadena.lastIndexOf("/") + 1, cadena.length()));
+
+		mes = Integer.parseInt(cadena.substring(cadena.indexOf("/") + 1, cadena.lastIndexOf("/")));
+
+		if (mes <= 10) {
+			mes += 2;
+		}
+
+		else {
+
+			if (mes == 11) {
+				mes = 1;
+			}
+
+			else {
+				mes = 2;
+			}
+
+			++year;
+		}
+
+		dia = Integer.parseInt(cadena.substring(0, cadena.indexOf("/")));
+
+		String mesCorto = "", diaCorto = "";
+
+		if (mes < 10) {
+
+			mesCorto = "0";
+		}
+
+		if (dia < 10) {
+
+			diaCorto = "0";
+		}
+
+		fecha = mesCorto + mes + "/" + diaCorto + dia + "/" + year;
+
+		return fecha;
+	}
+
+	public static LinkedList<Integer> buscarVencimientos(LinkedList<String> lista, String busqueda) {
+
+		int indice = -1;
+
+		LinkedList<Integer> repetido = new LinkedList<Integer>();
+
+		indice = lista.indexOf(busqueda);
+		System.out.println(busqueda);
+		while (indice != -1) {
+
+			repetido.add(indice);
+
+			lista.set(indice, null);
+
+			indice = lista.indexOf(busqueda);
+		}
+
+		return repetido;
+	}
+
+	public static String extraerExtension(String nombreArchivo) {
+
+		String extension = "";
+
+		if (nombreArchivo.length() >= 3) {
+
+			extension = nombreArchivo.substring(nombreArchivo.length() - 3, nombreArchivo.length());
+
+			extension = extension.toLowerCase();
+
+			if (extension.equals("peg")) {
+				extension = "jpeg";
+			}
+
+			if (extension.equals("fif")) {
+				extension = "jfif";
+			}
+
+			if (extension.equals("ebp")) {
+				extension = "webp";
+			}
+
+			if (extension.equals("ebm")) {
+				extension = "webm";
+			}
+
+			if (extension.equals("3u8")) {
+				extension = "m3u8";
+			}
+
+			if (extension.equals(".ts")) {
+				extension = "ts";
+			}
+
+		}
+
+		return extension;
+	}
+
+	public static java.io.File[] seleccionar(String rotulo, String mensaje) {
+
+		JFileChooser chooser = new JFileChooser();
+		FileNameExtensionFilter filter = null;
+
+		filter = new FileNameExtensionFilter(rotulo, "vcf");
+		chooser.setFileFilter(filter);
+		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+		if (!chooser.isMultiSelectionEnabled()) {
+			chooser.setMultiSelectionEnabled(true);
+		}
+
+		chooser.showOpenDialog(chooser);
+		File[] files = chooser.getSelectedFiles();
+
+		if (files.length == 0) {
+			mensaje(mensaje, 3);
+		}
+
+		return files;
+	}
 
 	public static boolean comprobarTelefono(String dato) {
 

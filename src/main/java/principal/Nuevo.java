@@ -7,6 +7,8 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -42,7 +44,101 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 	private JTextField telefono;
 
+	protected void guardar() {
+
+		Agenda.jList1.removeAll();
+
+		String nombre = Metodos.eliminarEspacios(nombrec.getText());
+
+		String notap = Metodos.eliminarEspacios(nota.getText());
+
+		String tipop = tipo.getDatoFecha().toString();
+
+		String telefonoc = Metodos.eliminarEspacios(telefono.getText());
+
+		String fecha = "";
+
+		if (!nombre.isEmpty() && !notap.isEmpty() && !tipop.isEmpty() && !telefonoc.isEmpty()) {
+
+			if (Agenda.contactos.size() > 0 && Agenda.contactos.indexOf(nombre) >= 0) {
+				Metodos.mensaje("Nombre de contacto duplicado", 1);
+			}
+
+			else {
+
+				if (Metodos.comprobarTelefono(telefonoc)) {
+
+					try {
+
+						ArrayList<Objeto> arrayList1 = new ArrayList<Objeto>();
+
+						ArrayList<Objeto> arrayList2;
+
+						arrayList2 = Agenda.leer("contactos.dat");
+
+						if (arrayList2 != null) {
+
+							for (int i = 0; i < arrayList2.size(); i++) {
+
+								arrayList1.add(arrayList2.get(i));
+							}
+
+						}
+
+						fecha = Agenda.convertirFecha(tipo.getDatoFecha().toString());
+
+						Agenda.setFechas(fecha);
+
+						arrayList1.add(
+								new Objeto(nombrec.getText() + "«" + new Date(fecha) + "»" + notap + "¬" + telefonoc));
+
+						ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
+								new FileOutputStream("contactos.dat"));
+
+						escribiendoFichero.writeObject(arrayList1);
+
+						escribiendoFichero.close();
+
+						Agenda.limpiarContactos();
+
+						Agenda.vaciarCampos();
+
+						Agenda.verNotas();
+
+					}
+
+					catch (Exception e1) {
+						//
+					}
+				}
+
+				else {
+					Metodos.mensaje("Teléfono incorrecto", 1);
+				}
+			}
+		}
+
+		else {
+			Metodos.mensaje("Por favor, rellena todos los datos", 3);
+		}
+	}
+
 	public Nuevo() {
+
+		getContentPane().addKeyListener(new KeyAdapter() {
+
+			@Override
+
+			public void keyPressed(KeyEvent e) {
+
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+
+					guardar();
+				}
+			}
+
+		});
+
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Nuevo.class.getResource("/imagenes/insert.png")));
 
 		setTitle("Nuevo Contacto");
@@ -65,81 +161,7 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 			public void actionPerformed(ActionEvent e) {
 
-				Agenda.jList1.removeAll();
-
-				ArrayList<Objeto> arrayList1 = new ArrayList<Objeto>();
-
-				String nombre = Metodos.eliminarEspacios(nombrec.getText());
-
-				String notap = Metodos.eliminarEspacios(nota.getText());
-
-				String tipop = tipo.getDatoFecha().toString();
-
-				String telefonoc = Metodos.eliminarEspacios(telefono.getText());
-
-				String fecha = "";
-
-				if (!nombre.isEmpty() && !notap.isEmpty() && !tipop.isEmpty() && !telefonoc.isEmpty()) {
-
-					if (Agenda.contactos.size() > 0 && Agenda.contactos.indexOf(nombre) >= 0) {
-						Metodos.mensaje("Nombre de contacto duplicado", 1);
-					}
-
-					else {
-
-						if (Metodos.comprobarTelefono(telefonoc)) {
-
-							try {
-
-								ArrayList<Objeto> arrayList2;
-
-								arrayList2 = Agenda.leer();
-
-								if (arrayList2 != null) {
-
-									for (int i = 0; i < arrayList2.size(); i++) {
-
-										arrayList1.add(arrayList2.get(i));
-									}
-
-								}
-
-								fecha = Agenda.convertirFecha(tipo.getDatoFecha().toString());
-
-								Agenda.setFechas(fecha);
-
-								arrayList1.add(new Objeto(
-										nombrec.getText() + "«" + new Date(fecha) + "»" + notap + "¬" + telefonoc));
-
-								ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
-										new FileOutputStream("contactos.dat"));
-
-								escribiendoFichero.writeObject(arrayList1);
-
-								escribiendoFichero.close();
-
-								Agenda.limpiarContactos();
-
-								Agenda.vaciarCampos();
-
-								Agenda.verNotas();
-
-							}
-
-							catch (Exception e1) {
-								//
-							}
-						}
-
-						else {
-							Metodos.mensaje("Teléfono incorrecto", 1);
-						}
-					}
-				}
-
-				else {
-					Metodos.mensaje("Por favor, rellena todos los datos", 3);
-				}
+				guardar();
 			}
 
 		});
@@ -148,6 +170,15 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		btnNewButton.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/insert.png")));
 
 		nombrec = new JTextField();
+		nombrec.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+
+					guardar();
+				}
+			}
+		});
 		nombrec.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		nombrec.setHorizontalAlignment(SwingConstants.CENTER);
 		nombrec.setColumns(10);
@@ -165,6 +196,15 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		lblNewLabel.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/name.png")));
 
 		tipo = new RSDateChooser();
+		tipo.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+
+					guardar();
+				}
+			}
+		});
 
 		Date myDate = new Date();
 		tipo.setFormatoFecha("dd/MM/yyyy");
@@ -180,6 +220,15 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		lblNewLabel_1.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/telefono.png")));
 
 		telefono = new JTextField();
+		telefono.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+
+					guardar();
+				}
+			}
+		});
 		telefono.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		telefono.setHorizontalAlignment(SwingConstants.CENTER);
 		telefono.setColumns(10);
@@ -224,13 +273,22 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 						.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(btnNewButton).addGap(23)));
 
 		nota = new JTextArea("", 0, 50);
+		nota.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+
+					guardar();
+				}
+			}
+		});
 		nota.setWrapStyleWord(true);
 		nota.setLineWrap(true);
 		nota.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		nota.setBackground(Color.WHITE);
 		scrollPane.setViewportView(nota);
 		getContentPane().setLayout(layout);
-		setSize(new Dimension(495, 595));
+		setSize(new Dimension(506, 606));
 		setLocationRelativeTo(null);
 	}
 
