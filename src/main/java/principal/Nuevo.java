@@ -40,7 +40,7 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 	JTextArea nota;
 
-	RSDateChooser tipo;
+	RSDateChooser vida;
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_3;
@@ -57,7 +57,7 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 		String notap = Metodos.eliminarEspacios(nota.getText());
 
-		String tipop = tipo.getDatoFecha().toString();
+		String tipop = vida.getDatoFecha().toString();
 
 		String telefonoc = Metodos.eliminarEspacios(telefono.getText());
 
@@ -90,7 +90,7 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 						}
 
-						fecha = Agenda.convertirFecha(tipo.getDatoFecha().toString());
+						fecha = Agenda.convertirFecha(vida.getDatoFecha().toString());
 
 						Agenda.setFechas(fecha);
 
@@ -200,8 +200,8 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblNewLabel.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/name.png")));
 
-		tipo = new RSDateChooser();
-		tipo.addKeyListener(new KeyAdapter() {
+		vida = new RSDateChooser();
+		vida.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -212,8 +212,8 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		});
 
 		Date myDate = new Date();
-		tipo.setFormatoFecha("dd/MM/yyyy");
-		tipo.setDatoFecha(myDate);
+		vida.setFormatoFecha("dd/MM/Y");
+		vida.setDatoFecha(myDate);
 
 		JLabel jLabel5 = new JLabel();
 		jLabel5.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/heart.png")));
@@ -398,7 +398,7 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 										.addGroup(layout.createSequentialGroup()
 												.addComponent(jLabel5, GroupLayout.PREFERRED_SIZE, 125,
 														GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(tipo,
+												.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(vida,
 														GroupLayout.PREFERRED_SIZE, 161, GroupLayout.PREFERRED_SIZE))))
 								.addGap(0))))
 				.addGroup(layout.createSequentialGroup().addGap(356).addComponent(btnNewButton).addContainerGap(656,
@@ -450,7 +450,7 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 								.createSequentialGroup()
 								.addGroup(layout
 										.createParallelGroup(Alignment.LEADING)
-										.addGroup(layout.createSequentialGroup().addGap(23).addComponent(tipo,
+										.addGroup(layout.createSequentialGroup().addGap(23).addComponent(vida,
 												GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 												GroupLayout.PREFERRED_SIZE))
 										.addGroup(layout.createSequentialGroup()
