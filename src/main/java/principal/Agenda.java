@@ -728,8 +728,8 @@ public class Agenda extends JFrame {
 
 			public void actionPerformed(ActionEvent e) {
 
-				if (JOptionPane.showConfirmDialog(null, "Quieres borrar todos los contactos?", "Borrar contactos",
-						JOptionPane.YES_NO_OPTION) == 0) {
+				if (jList1.getModel().getSize() > 0 && JOptionPane.showConfirmDialog(null,
+						"Quieres borrar todos los contactos?", "Borrar contactos", JOptionPane.YES_NO_OPTION) == 0) {
 
 					limpiarContactos();
 
