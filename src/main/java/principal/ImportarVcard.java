@@ -198,6 +198,7 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 
 			dispose();
 		}
+
 	}
 
 	public ImportarVcard() {
@@ -273,7 +274,7 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 						guardarContactos(files[0].getCanonicalPath());
 
 					} catch (IOException e) {
-						e.printStackTrace();
+						//
 					}
 
 				}

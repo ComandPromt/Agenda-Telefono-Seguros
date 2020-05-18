@@ -1,7 +1,6 @@
 package principal;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -37,6 +36,7 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -47,8 +47,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
@@ -60,15 +60,17 @@ import javax.swing.event.ListSelectionListener;
 import com.github.mangstadt.vinnie.SyntaxStyle;
 import com.github.mangstadt.vinnie.io.VObjectWriter;
 
-import rojeru_san.componentes.RSDateChooser;
 import utils.Metodos;
 import utils.MetodosPdf;
 
 @SuppressWarnings("all")
 
 public class Agenda extends JFrame {
+	JButton observacion = new JButton("Observaciones");
+	int indice;
+	JTextPane vtos = new JTextPane();
 	Timer t = new Timer();
-	public static Llamada mostrarLlamada = new Llamada();;
+	public static Llamada mostrarLlamada = new Llamada();
 	Vencimiento mTask = new Vencimiento();
 	ArrayList<Objeto> arrayList1;
 	private JButton buscar;
@@ -77,10 +79,7 @@ public class Agenda extends JFrame {
 	Date fecha;
 	public static JList<String> jList1;
 	static String directorioActual, separador, os;
-	private static JTextArea nota;
 	private static JTextField nombre;
-	private static JTextField telefonoc;
-	private static RSDateChooser tipo;
 	public static DefaultListModel<String> modelo = new DefaultListModel<>();
 	private static LinkedList<String> notas = new LinkedList<>();
 	String iduser;
@@ -89,6 +88,8 @@ public class Agenda extends JFrame {
 	String cnombre;
 	String ctipo;
 	String cnota;
+	JTextPane tlf = new JTextPane();
+	JTextPane direccion = new JTextPane();
 
 	protected void guardarContactos() {
 
@@ -173,7 +174,17 @@ public class Agenda extends JFrame {
 		Agenda.separador = separador;
 	}
 
-	static LinkedList<String> fechas = new <String>LinkedList();
+	static LinkedList<String> vencimientosDecesos = new <String>LinkedList();
+
+	static LinkedList<String> fechaDecesos = new <String>LinkedList();
+
+	static LinkedList<String> emails = new <String>LinkedList();
+
+	static LinkedList<String> fechaVida = new <String>LinkedList();
+
+	static LinkedList<String> fechaHogar = new <String>LinkedList();
+
+	static LinkedList<String> fechaCoche = new <String>LinkedList();
 
 	static LinkedList<String> observaciones = new <String>LinkedList();
 
@@ -181,83 +192,114 @@ public class Agenda extends JFrame {
 
 	static LinkedList<String> telefonos = new <String>LinkedList();
 
+	static LinkedList<String> direcciones = new <String>LinkedList();
+
+	static LinkedList<String> vencimientos = new <String>LinkedList();
+
+	private JTextField email;
+
 	protected static void limpiarContactos() {
 		modelo.removeAllElements();
 
 		jList1.setModel(modelo);
 	}
 
-	static String convertirFecha(String cadena) {
+	static String convertirFecha(String cadena, boolean tipo) {
 
-		String mes = "", fecha = "", year = "";
-		int dia;
-		int limiteMes = cadena.indexOf(" ") + 4;
+		String fecha = "";
 
-		year = cadena.substring(cadena.lastIndexOf(" ") + 1, cadena.length());
+		if (!cadena.equals("null")) {
 
-		mes = cadena.substring(cadena.indexOf(" ") + 1, limiteMes);
+			String mes = "", year = "";
 
-		cadena = cadena.substring(limiteMes + 1, cadena.length());
+			int dia;
 
-		dia = Integer.parseInt(cadena.substring(0, cadena.indexOf(" ")));
+			int limiteMes = cadena.indexOf(" ") + 4;
 
-		int mesFecha = 0;
+			year = cadena.substring(cadena.lastIndexOf(" ") + 1, cadena.length());
 
-		switch (mes) {
+			mes = cadena.substring(cadena.indexOf(" ") + 1, limiteMes);
 
-		case "Jan":
-			mesFecha = 1;
-			break;
-		case "Feb":
-			mesFecha = 2;
-			break;
-		case "Mar":
-			mesFecha = 3;
-			break;
-		case "Apr":
-			mesFecha = 4;
-			break;
-		case "May":
-			mesFecha = 5;
-			break;
-		case "Jun":
-			mesFecha = 6;
-			break;
-		case "Jul":
-			mesFecha = 7;
-			break;
-		case "Aug":
-			mesFecha = 7;
-			break;
-		case "Sep":
-			mesFecha = 9;
-			break;
-		case "Oct":
-			mesFecha = 10;
-			break;
-		case "Nov":
-			mesFecha = 11;
-			break;
-		case "Dec":
-			mesFecha = 12;
-			break;
-		default:
-			break;
+			cadena = cadena.substring(limiteMes + 1, cadena.length());
+
+			dia = Integer.parseInt(cadena.substring(0, cadena.indexOf(" ")));
+
+			int mesFecha = 0;
+
+			switch (mes) {
+
+			case "Jan":
+				mesFecha = 1;
+				break;
+
+			case "Feb":
+				mesFecha = 2;
+				break;
+
+			case "Mar":
+				mesFecha = 3;
+				break;
+
+			case "Apr":
+				mesFecha = 4;
+				break;
+
+			case "May":
+				mesFecha = 5;
+				break;
+
+			case "Jun":
+				mesFecha = 6;
+				break;
+
+			case "Jul":
+				mesFecha = 7;
+				break;
+
+			case "Aug":
+				mesFecha = 8;
+				break;
+
+			case "Sep":
+				mesFecha = 9;
+				break;
+
+			case "Oct":
+				mesFecha = 10;
+				break;
+
+			case "Nov":
+				mesFecha = 11;
+				break;
+
+			case "Dec":
+				mesFecha = 12;
+				break;
+
+			default:
+				break;
+
+			}
+
+			String mesCorto = "";
+
+			String diaCorto = "";
+
+			if (mesFecha <= 9) {
+				mesCorto = "0";
+			}
+
+			if (dia <= 9) {
+				diaCorto = "0";
+			}
+
+			if (tipo) {
+				fecha = mesCorto + mesFecha + "/" + diaCorto + dia + "/" + year;
+			} else {
+				fecha = diaCorto + dia + "/" + mesCorto + mesFecha + "/" + year;
+			}
+
 		}
-
-		String mesCorto = "";
-
-		String diaCorto = "";
-
-		if (mesFecha <= 9) {
-			mesCorto = "0";
-		}
-
-		if (dia <= 9) {
-			diaCorto = "0";
-		}
-
-		fecha = mesCorto + mesFecha + "/" + diaCorto + dia + "/" + year;
 
 		return fecha;
 	}
@@ -278,7 +320,7 @@ public class Agenda extends JFrame {
 
 		setAutoRequestFocus(false);
 
-		this.setSize(new Dimension(760, 590));
+		this.setSize(new Dimension(760, 600));
 
 		buscar.setToolTipText("Buscar");
 
@@ -316,21 +358,17 @@ public class Agenda extends JFrame {
 					int indice = jList1.getSelectedIndex();
 
 					String datoContacto = Metodos.eliminarEspacios(nombre.getText());
-					String datoFecha = Metodos.eliminarEspacios(convertirFecha(tipo.getDatoFecha().toString()));
-					String datoObs = Metodos.eliminarEspacios(nota.getText());
-					String datoTls = Metodos.eliminarEspacios(telefonoc.getText());
 
 					if (indice >= 0) {
 
-						if (contactos.get(indice).equals(datoContacto) && fechas.get(indice).equals(datoFecha)
-								&& observaciones.get(indice).equals(datoObs) && telefonos.get(indice).equals(datoTls)) {
+						if (contactos.get(indice).equals(datoContacto)) {
 							Metodos.mensaje("Debes modificar un dato", 3);
 
 						}
 
 						else {
 
-							if (!Metodos.comprobarTelefono(datoTls)) {
+							if (true) {
 								Metodos.mensaje("Teléfono incorrecto", 3);
 							}
 
@@ -342,18 +380,14 @@ public class Agenda extends JFrame {
 
 								contactos.set(indice, datoContacto);
 
-								fechas.set(indice, convertirFecha(tipo.getDatoFecha().toString()));
-
-								observaciones.set(indice, Metodos.eliminarEspacios(nota.getText()));
-
-								telefonos.set(indice, Metodos.eliminarEspacios(telefonoc.getText()));
-
 								for (int i = 0; i < contactos.size(); i++) {
 
-									fecha = new Date(fechas.get(i).toString());
+									// actualizao campos
 
-									arrayList1.add(new Objeto(contactos.get(i) + "«" + fecha + "»"
-											+ observaciones.get(i) + "¬" + telefonos.get(i)));
+//									fecha = new Date(fechaDecesos.get(i).toString());
+//
+//									arrayList1.add(new Objeto(contactos.get(i) + "«" + fecha + "»"
+//											+ observaciones.get(i) + "¬" + telefonos.get(i)));
 
 								}
 
@@ -403,17 +437,18 @@ public class Agenda extends JFrame {
 						if (indice >= 0 && contactos.get(indice).equals(contacto)) {
 
 							contactos.remove(indice);
+
 							observaciones.remove(indice);
-							fechas.remove(indice);
+
+							fechaDecesos.remove(indice);
+							emails.remove(indice);
+							fechaVida.remove(indice);
+							fechaHogar.remove(indice);
+							fechaCoche.remove(indice);
+							direcciones.remove(indice);
 							telefonos.remove(indice);
-
+							vencimientos.remove(indice);
 							nombre.setText("");
-
-							nota.setText("");
-
-							tipo.setDatoFecha(null);
-
-							telefonoc.setText("");
 
 							limpiarContactos();
 
@@ -425,10 +460,10 @@ public class Agenda extends JFrame {
 
 								for (int i = 0; i < contactos.size(); i++) {
 
-									fecha = new Date(fechas.get(i).toString());
-
-									arrayList1.add(new Objeto(contactos.get(i) + "«" + fecha + "»"
-											+ observaciones.get(i) + "¬" + telefonos.get(i)));
+//									fecha = new Date(fechaDecesos.get(i).toString());
+//
+//									arrayList1.add(new Objeto(contactos.get(i) + "«" + fecha + "»"
+//											+ observaciones.get(i) + "¬" + telefonos.get(i)));
 
 								}
 
@@ -466,7 +501,9 @@ public class Agenda extends JFrame {
 				mntmNewMenuItem_5.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/delete.png")));
 
 			}
+
 		});
+
 		mntmNewMenuItem_5.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 
 		menuBar.add(mntmNewMenuItem_5);
@@ -478,7 +515,9 @@ public class Agenda extends JFrame {
 		menuBar.add(mnNewMenu);
 
 		JMenuItem mntmNewMenuItem_6 = new JMenuItem("Vcard");
+
 		mntmNewMenuItem_6.addMouseListener(new MouseAdapter() {
+
 			@Override
 			public void mousePressed(MouseEvent e) {
 				new ImportarVcard().setVisible(true);
@@ -505,11 +544,11 @@ public class Agenda extends JFrame {
 			public void mousePressed(MouseEvent e) {
 
 				try {
-					System.out.println(fechas.get(0));
-					MetodosPdf.crearPdf(contactos, fechas, observaciones, telefonos, "template-verurl.html");
+
+					MetodosPdf.crearPdf(contactos, fechaDecesos, observaciones, telefonos, "template-verurl.html");
 
 				} catch (Exception e1) {
-					//
+					e1.printStackTrace();
 				}
 
 			}
@@ -560,15 +599,12 @@ public class Agenda extends JFrame {
 
 	public static void vaciarCampos() {
 		Agenda.nombre.setText("");
-		Agenda.telefonoc.setText("");
-		Agenda.nota.setText("");
-		Agenda.tipo.setDatoFecha(null);
+
 	}
 
 	public void vaciarDatos() {
 		nombre.setText("");
 
-		nota.setText("");
 	}
 
 	public Agenda(String msg) {
@@ -576,7 +612,9 @@ public class Agenda extends JFrame {
 	}
 
 	private void initComponents() throws SQLException, IOException {
+
 		arrayList1 = new ArrayList<Objeto>();
+
 		JLabel jLabel1;
 		JPanel jPanel3;
 		JPanel jPanel4;
@@ -590,25 +628,27 @@ public class Agenda extends JFrame {
 
 				nombre.setEditable(true);
 
-				nota.setEditable(true);
-
-				telefonoc.setEditable(true);
-
 				try {
 
 					int indice = jList1.getSelectedIndex();
 
 					nombre.setText(jList1.getSelectedValue());
 
-					Date fecha = new Date();
+					tlf.setText(telefonos.get(indice));
 
-					nota.setText(observaciones.get(indice));
+					email.setText(emails.get(indice));
 
-					telefonoc.setText(telefonos.get(indice));
+					vtos.setText(vencimientos.get(indice));
 
-					fecha = new Date(fechas.get(indice).toString());
+					direccion.setText(direcciones.get(indice));
 
-					tipo.setDatoFecha(fecha);
+					if (observaciones.get(indice).isEmpty()) {
+						observacion.setEnabled(false);
+					}
+
+					else {
+						observacion.setEnabled(true);
+					}
 
 				} catch (Exception e1) {
 
@@ -630,7 +670,6 @@ public class Agenda extends JFrame {
 		jPanel3 = new JPanel();
 		JScrollPane jScrollPane1;
 		JPanel panelCasa;
-		JScrollPane scrollPane;
 		jScrollPane1 = new JScrollPane();
 		jList1.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		jList1.setFixedCellHeight(40);
@@ -670,39 +709,14 @@ public class Agenda extends JFrame {
 		jScrollPane1.setViewportView(jList1);
 		JLabel jLabel3;
 		JLabel jLabel5;
-		JLabel jLabel6;
 		panelCasa = new JPanel();
 		jLabel5 = new JLabel();
 		jLabel5.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		jLabel5.setText("Vencimiento");
+		jLabel5.setText("Vtos");
 
 		panelCasa.setBackground(new Color(240, 240, 240));
 
 		jLabel5.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/tiempo.png")));
-
-		tipo = new RSDateChooser();
-
-		tipo.setFormatoFecha("dd/MM/yyyy");
-
-		tipo.setBackground(new Color(255, 255, 255));
-
-		tipo.setFont(new Font("Tahoma", Font.PLAIN, 24));
-
-		scrollPane = new JScrollPane((Component) null);
-
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-
-		nota = new JTextArea("", 0, 50);
-		scrollPane.setViewportView(nota);
-		nota.setBackground(new Color(255, 255, 255));
-		nota.setEditable(false);
-		nota.setWrapStyleWord(true);
-		nota.setFont(new Font("Monospaced", Font.PLAIN, 16));
-		nota.setLineWrap(true);
-		jLabel6 = new JLabel();
-		jLabel6.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/nota.png")));
-		jLabel6.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		jLabel6.setText("Obs");
 
 		jLabel3 = new JLabel();
 		jLabel3.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -711,99 +725,218 @@ public class Agenda extends JFrame {
 		jLabel3.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/user.png")));
 
 		nombre = new JTextField();
-		nombre.setHorizontalAlignment(SwingConstants.CENTER);
+		nombre.setHorizontalAlignment(SwingConstants.LEFT);
 		nombre.setBackground(new Color(255, 255, 255));
 		nombre.setEditable(false);
 		nombre.setFont(new Font("Tahoma", Font.PLAIN, 16));
 
-		telefonoc = new JTextField();
-		telefonoc.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		telefonoc.setHorizontalAlignment(SwingConstants.CENTER);
-		telefonoc.setEditable(false);
-		telefonoc.setColumns(10);
-
-		JButton btnNewButton = new JButton("");
-
-		btnNewButton.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				if (jList1.getModel().getSize() > 0 && JOptionPane.showConfirmDialog(null,
-						"Quieres borrar todos los contactos?", "Borrar contactos", JOptionPane.YES_NO_OPTION) == 0) {
-
-					limpiarContactos();
-
-					Metodos.eliminarFichero("contactos.dat");
-
-					vaciarCampos();
-				}
-
-			}
-
-		});
-
-		btnNewButton.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/clean.png")));
-
-		JLabel lblNewLabel = new JLabel("Tlf");
+		JLabel lblNewLabel = new JLabel("Tlfs");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblNewLabel.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/telefono.png")));
+
+		vtos.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
+		tlf.setFont(new Font("Tahoma", Font.PLAIN, 16));
+
+		direccion.setFont(new Font("Tahoma", Font.PLAIN, 16));
+
+		email = new JTextField();
+		email.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		email.setColumns(10);
+
+		JLabel lblNewLabel_1 = new JLabel("Email");
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblNewLabel_1.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/email.png")));
+
+		JLabel lblNewLabel_1_1 = new JLabel("Dirección");
+		lblNewLabel_1_1.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/city.png")));
+		lblNewLabel_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
+		JCheckBox chckbxNewCheckBox = new JCheckBox("Lo he llamado");
+		chckbxNewCheckBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
 		GroupLayout panelCasaLayout = new GroupLayout(panelCasa);
 		panelCasaLayout.setHorizontalGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(panelCasaLayout.createSequentialGroup().addContainerGap()
 						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING).addComponent(jLabel3)
-								.addComponent(jLabel6, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
 								.addComponent(lblNewLabel).addComponent(jLabel5)
-								.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE))
-						.addGap(23)
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING, false)
-										.addComponent(tipo, Alignment.TRAILING, 0, 0, Short.MAX_VALUE)
-										.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
-										.addComponent(nombre, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 209,
-												GroupLayout.PREFERRED_SIZE))
-								.addComponent(telefonoc, 209, 209, 209))
-						.addContainerGap(279, Short.MAX_VALUE)));
-		panelCasaLayout.setVerticalGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING).addGroup(panelCasaLayout
-				.createSequentialGroup()
-				.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING).addGroup(panelCasaLayout
-						.createSequentialGroup()
+								.addComponent(lblNewLabel_1_1, GroupLayout.PREFERRED_SIZE, 114,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblNewLabel_1))
 						.addGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING)
+								.addGroup(panelCasaLayout.createSequentialGroup().addGap(44)
+										.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
+												.addComponent(direccion, GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+												.addComponent(tlf, GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+												.addComponent(nombre, GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+												.addComponent(vtos, GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+												.addComponent(email, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 246,
+														Short.MAX_VALUE)))
 								.addGroup(panelCasaLayout.createSequentialGroup()
-										.addComponent(nombre, GroupLayout.PREFERRED_SIZE, 42,
-												GroupLayout.PREFERRED_SIZE)
-										.addGap(19))
-								.addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE))
+										.addPreferredGap(ComponentPlacement.RELATED).addComponent(chckbxNewCheckBox)))
+						.addContainerGap()));
+		panelCasaLayout.setVerticalGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(panelCasaLayout.createSequentialGroup().addContainerGap(23, Short.MAX_VALUE)
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 59, GroupLayout.PREFERRED_SIZE)
+								.addComponent(nombre, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE).addComponent(lblNewLabel)
-								.addComponent(telefonoc, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE))
-						.addGap(18)
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING, false).addGroup(panelCasaLayout
-								.createSequentialGroup().addGap(82)
-								.addComponent(jLabel6, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE))
-								.addGroup(panelCasaLayout.createSequentialGroup()
-										.addComponent(tipo, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
-										.addGap(18).addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 167,
-												GroupLayout.PREFERRED_SIZE))))
-						.addGroup(panelCasaLayout.createSequentialGroup().addGap(167).addComponent(jLabel5)))
-				.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(panelCasaLayout.createSequentialGroup().addGap(7).addComponent(tlf,
+										GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
+								.addComponent(lblNewLabel))
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(panelCasaLayout.createSequentialGroup().addGap(32).addComponent(jLabel5))
+								.addGroup(panelCasaLayout.createSequentialGroup().addGap(7).addComponent(vtos,
+										GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING, false)
+								.addGroup(panelCasaLayout.createSequentialGroup().addGap(6)
+										.addComponent(direccion, GroupLayout.PREFERRED_SIZE, 108,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(email, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE))
+								.addGroup(panelCasaLayout.createSequentialGroup().addGap(22)
+										.addComponent(lblNewLabel_1_1, GroupLayout.PREFERRED_SIZE, 48,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
+												Short.MAX_VALUE)
+										.addComponent(lblNewLabel_1)))
+						.addContainerGap())
+				.addGroup(Alignment.LEADING, panelCasaLayout.createSequentialGroup().addContainerGap()
+						.addComponent(chckbxNewCheckBox).addContainerGap(399, Short.MAX_VALUE)));
 		panelCasa.setLayout(panelCasaLayout);
 
+		observacion.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+
+				indice = jList1.getSelectedIndex();
+
+				Metodos.mensaje(observaciones.get(indice), 2);
+			}
+
+		});
+
+		observacion.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
+		JButton btnNewButton = new JButton("Vtos Decesos");
+
+		btnNewButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+
+				LinkedList<String> contactoTelefono = new LinkedList();
+
+				DefaultListModel model = new DefaultListModel();
+
+				model.clear();
+
+				jList1.setModel(model);
+
+				System.out.println("Veo la agenda");
+
+				for (int i = 0; i < vencimientosDecesos.size(); i++) {
+					System.out.println(vencimientosDecesos.get(i));
+				}
+
+				System.out.println("--------------------------");
+
+				int indiceVencimiento = -1;
+
+				for (int i = 0; i < Vencimiento.getIndiceDeceso().size(); i++) {
+
+					indiceVencimiento = Vencimiento.getIndiceDeceso().get(i);
+
+					contactoTelefono.add(telefonos.get(indiceVencimiento));
+
+					model.addElement(contactos.get(indiceVencimiento));
+
+				}
+
+				telefonos.clear();
+
+				telefonos = contactoTelefono;
+//				observaciones.add(obs);
+//
+//				fechaDecesos.add(convertirFecha(fechaDeceso, false));
+//
+//				emails.add(correo);
+//
+//				fechaVida.add(convertirFecha(datoVida, false));
+//
+//				fechaHogar.add(convertirFecha(datoHogar, false));
+//
+//				fechaCoche.add(convertirFecha(datoCoche, false));
+
+				jList1.setModel(model);
+
+			}
+
+		});
+
+		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
+		JButton btnNewButton_1 = new JButton("Vtos Vida");
+
+		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
+		JButton btnNewButton_2 = new JButton("Vtos Hogar");
+
+		btnNewButton_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
+		JButton btnNewButton_3 = new JButton("Vtos Coche");
+
+		btnNewButton_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
+		JButton btnNewButton_4 = new JButton("Todos");
+
+		btnNewButton_4.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+
+//				DefaultListModel model = new DefaultListModel();
+//
+//				model.clear();
+//
+//				jList1.setModel(model);
+				limpiarContactos();
+				verNotas();
+
+			}
+		});
+		btnNewButton_4.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
 		GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
-		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel3Layout.createSequentialGroup().addGap(18)
-						.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 233, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(panelCasa, GroupLayout.PREFERRED_SIZE, 424, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(239, Short.MAX_VALUE)));
-		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel3Layout
-				.createSequentialGroup().addGap(28)
-				.addGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(panelCasa, Alignment.LEADING, 0, 0, Short.MAX_VALUE).addComponent(jScrollPane1,
-								Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 416, GroupLayout.PREFERRED_SIZE))
-				.addContainerGap(14, Short.MAX_VALUE)));
+		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel3Layout
+				.createSequentialGroup().addGap(18)
+				.addGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING, false)
+						.addGroup(jPanel3Layout.createSequentialGroup().addComponent(btnNewButton)
+								.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(btnNewButton_1)
+								.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnNewButton_2)
+								.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnNewButton_3)
+								.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(btnNewButton_4).addPreferredGap(ComponentPlacement.UNRELATED)
+								.addComponent(observacion))
+						.addGroup(jPanel3Layout.createSequentialGroup()
+								.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 233, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addComponent(panelCasa, GroupLayout.PREFERRED_SIZE, 424, GroupLayout.PREFERRED_SIZE)))
+				.addContainerGap(42, Short.MAX_VALUE)));
+		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(jPanel3Layout.createSequentialGroup()
+						.addGroup(jPanel3Layout.createParallelGroup(Alignment.BASELINE).addComponent(observacion)
+								.addComponent(btnNewButton).addComponent(btnNewButton_1).addComponent(btnNewButton_2)
+								.addComponent(btnNewButton_3).addComponent(btnNewButton_4))
+						.addGap(3)
+						.addGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING)
+								.addComponent(jScrollPane1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 429,
+										Short.MAX_VALUE)
+								.addComponent(panelCasa, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 429,
+										Short.MAX_VALUE))
+						.addContainerGap()));
 		jPanel3.setLayout(jPanel3Layout);
 
 		GroupLayout layout = new GroupLayout(getContentPane());
@@ -813,28 +946,30 @@ public class Agenda extends JFrame {
 						.addContainerGap(368, Short.MAX_VALUE)));
 		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 458, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(214, Short.MAX_VALUE)));
+						.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 468, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(204, Short.MAX_VALUE)));
 		getContentPane().setLayout(layout);
 
 		if (jList1.getModel().getSize() == 0) {
+
 			try {
+
 				Agenda.limpiarContactos();
+
 				verNotas();
-				System.out.println("ejecutar cron");
 
 				t.scheduleAtFixedRate(mTask, 0, 60000);
 
 			} catch (Exception e) {
-//
+				//
 			}
 		}
 
 		pack();
 	}
 
-	public static void setFechas(String fecha) {
-		Agenda.fechas.add(fecha);
+	public static void setfechaDecesos(String fecha) {
+		Agenda.fechaDecesos.add(fecha);
 	}
 
 	public static void verNotas() {
@@ -849,23 +984,36 @@ public class Agenda extends JFrame {
 
 		try {
 
-			arrayList2 = leer("contactos.dat");
-
-			String cadena, fecha, obs, telefono = "";
-
 			contactos.clear();
 
 			observaciones.clear();
 
-			fechas.clear();
+			fechaDecesos.clear();
+
+			emails.clear();
+
+			fechaVida.clear();
+
+			fechaHogar.clear();
+
+			fechaCoche.clear();
 
 			telefonos.clear();
 
-			String cliente;
+			direcciones.clear();
+
+			vencimientos.clear();
+
+			arrayList2 = leer("contactos.dat");
+
+			String correo, cadena, fechaDeceso, datoVida, datoHogar, datoCoche, obs, telefono;
+
+			String cliente, direccion, localidad, codPostal, provincia;
 
 			if (arrayList2 != null) {
 
 				for (int i = 0; i < arrayList2.size(); i++) {
+
 					agenda.add(arrayList2.get(i).toString());
 				}
 
@@ -875,13 +1023,29 @@ public class Agenda extends JFrame {
 
 					cadena = agenda.get(i);
 
-					fecha = cadena.substring(cadena.indexOf("«") + 1, cadena.indexOf("»"));
+					fechaDeceso = cadena.substring(cadena.indexOf("▒") + 1, cadena.indexOf("╣"));
+
+					datoVida = cadena.substring(cadena.indexOf("╣") + 1, cadena.indexOf("║"));
+
+					datoHogar = cadena.substring(cadena.indexOf("║") + 1, cadena.indexOf("╝"));
+
+					datoCoche = cadena.substring(cadena.indexOf("╝") + 1, cadena.length());
 
 					obs = cadena.substring(cadena.indexOf("»") + 1, cadena.indexOf("¬"));
 
-					telefono = cadena.substring(cadena.indexOf("¬") + 1, cadena.length());
+					telefono = cadena.substring(cadena.indexOf("¬") + 1, cadena.indexOf("═"));
 
 					cliente = cadena.substring(0, cadena.indexOf("«"));
+
+					correo = cadena.substring(cadena.indexOf("«") + 1, cadena.indexOf("»"));
+
+					direccion = cadena.substring(cadena.indexOf("═") + 1, cadena.indexOf("▓"));
+
+					provincia = cadena.substring(cadena.indexOf("┤") + 1, cadena.indexOf("▒"));
+
+					localidad = cadena.substring(cadena.indexOf("▓") + 1, cadena.indexOf("░"));
+
+					codPostal = cadena.substring(cadena.indexOf("░") + 1, cadena.indexOf("┤"));
 
 					modelo.addElement(cliente);
 
@@ -891,7 +1055,21 @@ public class Agenda extends JFrame {
 
 					observaciones.add(obs);
 
-					fechas.add(convertirFecha(fecha));
+					fechaDecesos.add(convertirFecha(fechaDeceso, false));
+
+					emails.add(correo);
+
+					fechaVida.add(convertirFecha(datoVida, false));
+
+					fechaHogar.add(convertirFecha(datoHogar, false));
+
+					fechaCoche.add(convertirFecha(datoCoche, false));
+
+					vencimientos.add("Deceso --> " + fechaDecesos.getLast() + "\n\n" + "Vida --> " + fechaVida.getLast()
+							+ "\n\n" + "Hogar --> " + fechaHogar.getLast() + "\n\n" + "Coche --> "
+							+ fechaCoche.getLast());
+
+					direcciones.add(direccion + "\n\n" + localidad + " (" + codPostal + ")" + "\n\n" + provincia);
 
 				}
 			}
@@ -899,16 +1077,12 @@ public class Agenda extends JFrame {
 			jList1.setModel(modelo);
 
 		} catch (Exception e) {
-			//
+			e.printStackTrace();
 		}
 	}
 
-	public static LinkedList<String> getFechas() {
-		return fechas;
-	}
-
-	public static void setFechas(LinkedList<String> fechas) {
-		Agenda.fechas = fechas;
+	public static LinkedList<String> getfechaDecesos() {
+		return fechaDecesos;
 	}
 
 	protected static ArrayList<Objeto> leer(String file)
@@ -969,6 +1143,108 @@ public class Agenda extends JFrame {
 
 			}
 		});
+
+	}
+
+	public JTextPane getTlf() {
+		return tlf;
+	}
+
+	public void setTlf(JTextPane tlf) {
+		this.tlf = tlf;
+	}
+
+	public static LinkedList<String> getFechaDecesos() {
+		return fechaDecesos;
+	}
+
+	public static void setFechaDecesos(LinkedList<String> fechaDecesos) {
+		Agenda.fechaDecesos = fechaDecesos;
+	}
+
+	public static LinkedList<String> getEmails() {
+		return emails;
+	}
+
+	public static void setEmails(LinkedList<String> emails) {
+		Agenda.emails = emails;
+	}
+
+	public static LinkedList<String> getFechaVida() {
+		return fechaVida;
+	}
+
+	public static void setFechaVida(String fecha) {
+		Agenda.fechaVida.add(fecha);
+	}
+
+	public static LinkedList<String> getFechaHogar() {
+		return fechaHogar;
+	}
+
+	public static void setFechaHogar(String fecha) {
+		Agenda.fechaHogar.add(fecha);
+	}
+
+	public static LinkedList<String> getFechaCoche() {
+		return fechaCoche;
+	}
+
+	public static void setFechaCoche(String fecha) {
+		Agenda.fechaCoche.add(fecha);
+
+	}
+
+	public static LinkedList<String> getTelefonos() {
+		return telefonos;
+	}
+
+	public static void setTelefonos(LinkedList<String> telefonos) {
+		Agenda.telefonos = telefonos;
+	}
+
+	public static void ponerFechasDeceso() {
+
+		String nota;
+
+		ArrayList<Objeto> arrayList1 = new ArrayList<Objeto>();
+
+		ArrayList<Objeto> arrayList2;
+
+		LinkedList<String> agenda = new <String>LinkedList();
+
+		try {
+
+			arrayList2 = leer("contactos.dat");
+
+			String cadena, fechaDeceso, datoVida, datoHogar, datoCoche, obs, telefono;
+
+			fechaDecesos = new LinkedList<String>();
+
+			fechaDecesos.clear();
+
+			if (arrayList2 != null) {
+
+				for (int i = 0; i < arrayList2.size(); i++) {
+
+					agenda.add(arrayList2.get(i).toString());
+				}
+
+				Collections.sort(agenda);
+
+				for (int i = 0; i < agenda.size(); i++) {
+
+					cadena = agenda.get(i);
+
+					fechaDeceso = cadena.substring(cadena.indexOf("▒") + 1, cadena.indexOf("╣"));
+					fechaDecesos.add(convertirFecha(fechaDeceso, false));
+
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 }

@@ -18,6 +18,7 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -38,16 +39,30 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 	private JTextField nombrec;
 
+	private JCheckBox checkHogar = new JCheckBox("");
+
+	private JCheckBox checkCoche = new JCheckBox("");
+
+	private JCheckBox checkVida = new JCheckBox("");
+
+	private JCheckBox checkDeceso = new JCheckBox("");
+
+	RSDateChooser deceso = new RSDateChooser();
+
 	JTextArea nota;
 
+	RSDateChooser coche = new RSDateChooser();
+
 	RSDateChooser vida;
-	private JTextField textField;
-	private JTextField textField_1;
+
+	RSDateChooser hogar = new RSDateChooser();
+	private JTextField direccion;
+	private JTextField localidad;
 	private JTextField textField_3;
-	private JTextField textField_2;
-	private JTextField textField_5;
+	private JTextField provincia;
+	private JTextField email;
 	private JTextField telefono;
-	private JTextField textField_4;
+	private JTextField codpostal;
 
 	protected void guardar() {
 
@@ -61,9 +76,25 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 		String telefonoc = Metodos.eliminarEspacios(telefono.getText());
 
-		String fecha = "";
+		String fechaDecesos, fechaVida, fechaCoche, fechaHogar = "";
 
-		if (!nombre.isEmpty() && !notap.isEmpty() && !tipop.isEmpty() && !telefonoc.isEmpty()) {
+		String datoLocalidad = Metodos.eliminarEspacios(localidad.getText());
+
+		String datoProvincia = Metodos.eliminarEspacios(provincia.getText());
+
+		String datoCodPostal = Metodos.eliminarEspacios(codpostal.getText());
+
+		String datoEmail = Metodos.eliminarEspacios(email.getText());
+
+		String datoDireccion = Metodos.eliminarEspacios(direccion.getText());
+
+		boolean comprobarTelefono = Metodos.comprobarPatron(telefonoc, "^[6789][0-9]{8}");
+
+		boolean comprobarEmail = Metodos.comprobarPatron(datoEmail, "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}");
+
+		boolean comprobarCodPostal = Metodos.comprobarPatron(datoCodPostal, "^[0-9]{5}");
+
+		if (!nombre.isEmpty() && !tipop.isEmpty() && !telefonoc.isEmpty()) {
 
 			if (Agenda.contactos.size() > 0 && Agenda.contactos.indexOf(nombre) >= 0) {
 				Metodos.mensaje("Nombre de contacto duplicado", 1);
@@ -71,59 +102,108 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 			else {
 
-				if (Metodos.comprobarTelefono(telefonoc)) {
+				if (!comprobarTelefono) {
+					Metodos.mensaje("Teléfono incorrecto", 1);
+				}
 
-					try {
+				if (!comprobarCodPostal) {
+					Metodos.mensaje("Código postal incorrecto", 1);
+				}
 
-						ArrayList<Objeto> arrayList1 = new ArrayList<Objeto>();
+				if (!comprobarEmail) {
+					Metodos.mensaje("Email incorrecto", 1);
+				}
 
-						ArrayList<Objeto> arrayList2;
-
-						arrayList2 = Agenda.leer("contactos.dat");
-
-						if (arrayList2 != null) {
-
-							for (int i = 0; i < arrayList2.size(); i++) {
-
-								arrayList1.add(arrayList2.get(i));
-							}
-
-						}
-
-						fecha = Agenda.convertirFecha(vida.getDatoFecha().toString());
-
-						Agenda.setFechas(fecha);
-
-						arrayList1.add(
-								new Objeto(nombrec.getText() + "«" + new Date(fecha) + "»" + notap + "¬" + telefonoc));
-
-						ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
-								new FileOutputStream("contactos.dat"));
-
-						escribiendoFichero.writeObject(arrayList1);
-
-						escribiendoFichero.close();
-
-						Agenda.limpiarContactos();
-
-						Agenda.vaciarCampos();
-
-						Agenda.verNotas();
-
-					}
-
-					catch (Exception e1) {
-						//
-					}
+				if (!checkDeceso.isSelected() && !checkCoche.isSelected() && !checkVida.isSelected()
+						&& !checkHogar.isSelected()) {
+					Metodos.mensaje("Por favor, selecciona un seguro como mínimo", 1);
 				}
 
 				else {
-					Metodos.mensaje("Teléfono incorrecto", 1);
+
+					if (comprobarTelefono && comprobarEmail && comprobarCodPostal) {
+
+						try {
+
+							ArrayList<Objeto> arrayList1 = new ArrayList<Objeto>();
+
+							ArrayList<Objeto> arrayList2;
+
+							arrayList2 = Agenda.leer("contactos.dat");
+
+							if (arrayList2 != null) {
+
+								for (int i = 0; i < arrayList2.size(); i++) {
+
+									arrayList1.add(arrayList2.get(i));
+								}
+
+							}
+
+							fechaDecesos = Agenda.convertirFecha(deceso.getDatoFecha().toString(), true);
+							fechaHogar = Agenda.convertirFecha(hogar.getDatoFecha().toString(), true);
+							fechaVida = Agenda.convertirFecha(vida.getDatoFecha().toString(), true);
+							fechaCoche = Agenda.convertirFecha(coche.getDatoFecha().toString(), true);
+
+							Agenda.setfechaDecesos(fechaDecesos);
+
+							Agenda.setFechaCoche(fechaCoche);
+
+							Agenda.setFechaVida(fechaCoche);
+
+							Agenda.setFechaHogar(fechaCoche);
+
+							Object datoFechaDeceso = null;
+							Object datoFechaCoche = null;
+							Object datoFechaVida = null;
+							Object datoFechaHogar = null;
+
+							if (checkDeceso.isSelected()) {
+								datoFechaDeceso = new Date(fechaDecesos);
+							}
+
+							if (checkCoche.isSelected()) {
+								datoFechaCoche = new Date(fechaCoche);
+							}
+
+							if (checkVida.isSelected()) {
+								datoFechaVida = new Date(fechaVida);
+							}
+
+							if (checkHogar.isSelected()) {
+								datoFechaHogar = new Date(fechaHogar);
+							}
+
+							arrayList1.add(new Objeto(nombre + "«" + datoEmail + "»" + notap + "¬" + telefonoc + "═"
+									+ datoDireccion + "▓" + datoLocalidad + "░" + datoCodPostal + "┤" + datoProvincia
+									+ "▒" + datoFechaDeceso + "╣" + datoFechaVida + "║" + datoFechaHogar + "╝"
+									+ datoFechaCoche));
+
+							ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
+									new FileOutputStream("contactos.dat"));
+
+							escribiendoFichero.writeObject(arrayList1);
+
+							escribiendoFichero.close();
+
+							Agenda.limpiarContactos();
+
+							Agenda.vaciarCampos();
+
+							Agenda.verNotas();
+
+						}
+
+						catch (Exception e1) {
+							//
+						}
+					}
 				}
 			}
-		}
 
-		else {
+		} else
+
+		{
 			Metodos.mensaje("Por favor, rellena todos los datos", 3);
 		}
 	}
@@ -151,7 +231,6 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		initComponents();
 
 		this.setVisible(true);
-
 	}
 
 	private void initComponents() {
@@ -201,20 +280,16 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		lblNewLabel.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/name.png")));
 
 		vida = new RSDateChooser();
-		vida.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-
-					guardar();
-				}
-			}
-		});
 
 		Date myDate = new Date();
 		vida.setFormatoFecha("dd/MM/Y");
 		vida.setDatoFecha(myDate);
-
+		coche.setFormatoFecha("dd/MM/Y");
+		coche.setDatoFecha(myDate);
+		deceso.setFormatoFecha("dd/MM/Y");
+		deceso.setDatoFecha(myDate);
+		hogar.setFormatoFecha("dd/MM/Y");
+		hogar.setDatoFecha(myDate);
 		JLabel jLabel5 = new JLabel();
 		jLabel5.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/heart.png")));
 		jLabel5.setText("Vida");
@@ -224,8 +299,6 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblNewLabel_1.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/telefono.png")));
 
-		RSDateChooser tipo_1 = new RSDateChooser();
-
 		JLabel lblNewLabel_2 = new JLabel("Vencimientos");
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 20));
 
@@ -234,14 +307,10 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		jLabel5_2.setText("Decesos");
 		jLabel5_2.setFont(new Font("Tahoma", Font.PLAIN, 16));
 
-		RSDateChooser tipo_2 = new RSDateChooser();
-
 		JLabel jLabel5_2_1 = new JLabel();
 		jLabel5_2_1.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/car.png")));
 		jLabel5_2_1.setText("Coche");
 		jLabel5_2_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
-
-		RSDateChooser tipo_1_1 = new RSDateChooser();
 
 		JLabel lblHogar = new JLabel();
 		lblHogar.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/home.png")));
@@ -252,19 +321,19 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblNewLabel_3.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/geo.png")));
 
-		textField = new JTextField();
-		textField.setHorizontalAlignment(SwingConstants.CENTER);
-		textField.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		textField.setColumns(10);
+		direccion = new JTextField();
+		direccion.setHorizontalAlignment(SwingConstants.CENTER);
+		direccion.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		direccion.setColumns(10);
 
 		JLabel lblNewLabel_3_1 = new JLabel("Localidad");
 		lblNewLabel_3_1.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/city.png")));
 		lblNewLabel_3_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
 
-		textField_1 = new JTextField();
-		textField_1.setHorizontalAlignment(SwingConstants.CENTER);
-		textField_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		textField_1.setColumns(10);
+		localidad = new JTextField();
+		localidad.setHorizontalAlignment(SwingConstants.CENTER);
+		localidad.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		localidad.setColumns(10);
 
 		JLabel lblNewLabel_3_2 = new JLabel("Provincia");
 		lblNewLabel_3_2.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/city.png")));
@@ -279,10 +348,10 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		textField_3.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textField_3.setColumns(10);
 
-		textField_2 = new JTextField();
-		textField_2.setHorizontalAlignment(SwingConstants.CENTER);
-		textField_2.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		textField_2.setColumns(10);
+		provincia = new JTextField();
+		provincia.setHorizontalAlignment(SwingConstants.CENTER);
+		provincia.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		provincia.setColumns(10);
 
 		JLabel lblNewLabel_3_1_2 = new JLabel("Cod Postal");
 		lblNewLabel_3_1_2.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/tag.png")));
@@ -292,117 +361,121 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		lblNewLabel_4.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblNewLabel_4.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/email.png")));
 
-		textField_5 = new JTextField();
-		textField_5.setHorizontalAlignment(SwingConstants.CENTER);
-		textField_5.setColumns(10);
+		email = new JTextField();
+		email.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		email.setHorizontalAlignment(SwingConstants.CENTER);
+		email.setColumns(10);
 
 		telefono = new JTextField();
 		telefono.setHorizontalAlignment(SwingConstants.CENTER);
 		telefono.setColumns(10);
 
-		textField_4 = new JTextField();
-		textField_4.setHorizontalAlignment(SwingConstants.CENTER);
-		textField_4.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		textField_4.setColumns(10);
+		codpostal = new JTextField();
+		codpostal.setHorizontalAlignment(SwingConstants.CENTER);
+		codpostal.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		codpostal.setColumns(10);
+
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
 				.addGap(21)
 				.addGroup(layout.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								layout.createSequentialGroup().addComponent(lblNewLabel).addGap(114)
-										.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 341,
-												GroupLayout.PREFERRED_SIZE)
-										.addContainerGap(46, Short.MAX_VALUE))
-						.addGroup(layout.createSequentialGroup().addGroup(layout.createParallelGroup(Alignment.LEADING)
-								.addGroup(layout.createSequentialGroup().addPreferredGap(ComponentPlacement.RELATED)
-										.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout
-												.createSequentialGroup().addGroup(layout
-														.createParallelGroup(Alignment.LEADING).addGroup(layout
+						.addGroup(layout.createSequentialGroup().addPreferredGap(ComponentPlacement.RELATED)
+								.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout
+										.createSequentialGroup().addGroup(layout.createParallelGroup(Alignment.LEADING)
+												.addGroup(layout.createSequentialGroup().addGroup(layout
+														.createParallelGroup(Alignment.TRAILING).addGroup(layout
 																.createSequentialGroup().addComponent(lblNewLabel_3_2,
 																		GroupLayout.PREFERRED_SIZE, 133,
 																		GroupLayout.PREFERRED_SIZE)
-																.addPreferredGap(
-																		ComponentPlacement.RELATED,
+																.addPreferredGap(ComponentPlacement.RELATED,
 																		GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 																.addGroup(layout.createParallelGroup(Alignment.LEADING)
 																		.addGroup(layout.createSequentialGroup()
-																				.addComponent(textField_5,
+																				.addComponent(email,
 																						GroupLayout.DEFAULT_SIZE, 173,
 																						Short.MAX_VALUE)
 																				.addPreferredGap(
 																						ComponentPlacement.RELATED))
-																		.addComponent(textField_2, Alignment.TRAILING,
+																		.addComponent(provincia, Alignment.TRAILING,
 																				GroupLayout.PREFERRED_SIZE, 173,
 																				GroupLayout.PREFERRED_SIZE)))
-														.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
-																.addGroup(layout.createParallelGroup(Alignment.LEADING)
-																		.addComponent(lblNewLabel_3).addComponent(
-																				jLabel3, GroupLayout.PREFERRED_SIZE,
-																				125, GroupLayout.PREFERRED_SIZE))
-																.addPreferredGap(
-																		ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-																.addGroup(
-																		layout.createParallelGroup(Alignment.LEADING,
-																				false).addComponent(
-																						nombrec)
-																				.addComponent(textField, 173, 173,
-																						Short.MAX_VALUE))))
-												.addGap(18)
-												.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout
-														.createParallelGroup(Alignment.TRAILING)
-														.addGroup(layout.createSequentialGroup()
-																.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE,
-																		85, Short.MAX_VALUE)
-																.addGap(215))
 														.addGroup(layout.createSequentialGroup().addGroup(layout
-																.createParallelGroup(Alignment.LEADING)
-																.addGroup(layout.createSequentialGroup()
-																		.addGroup(layout
-																				.createParallelGroup(Alignment.LEADING)
-																				.addComponent(lblNewLabel_3_1_2,
-																						GroupLayout.DEFAULT_SIZE,
-																						GroupLayout.DEFAULT_SIZE,
-																						Short.MAX_VALUE)
-																				.addComponent(jLabel5_2))
-																		.addGap(18))
-																.addGroup(layout.createSequentialGroup()
-																		.addComponent(lblHogar,
-																				GroupLayout.PREFERRED_SIZE, 125,
-																				GroupLayout.PREFERRED_SIZE)
-																		.addGap(13)))
+																.createParallelGroup(Alignment.LEADING).addComponent(
+																		lblNewLabel_3)
+																.addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 125,
+																		GroupLayout.PREFERRED_SIZE))
+																.addPreferredGap(ComponentPlacement.RELATED, 12,
+																		Short.MAX_VALUE)
 																.addGroup(layout
 																		.createParallelGroup(Alignment.LEADING, false)
-																		.addComponent(tipo_2, 0, 0, Short.MAX_VALUE)
-																		.addComponent(tipo_1, 0, 0, Short.MAX_VALUE)
-																		.addComponent(textField_4,
-																				GroupLayout.DEFAULT_SIZE, 146,
-																				Short.MAX_VALUE)
-																		.addComponent(textField_1).addComponent(
-																				telefono, GroupLayout.DEFAULT_SIZE, 146,
-																				Short.MAX_VALUE))
-																.addGap(16)))
-														.addComponent(lblNewLabel_3_1)))
-												.addComponent(lblNewLabel_4))
-										.addGap(256)
-										.addComponent(lblNewLabel_3_1_1, GroupLayout.PREFERRED_SIZE, 133,
-												GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(ComponentPlacement.UNRELATED)
-										.addGroup(layout.createParallelGroup(Alignment.LEADING)
-												.addComponent(lblNewLabel_2).addComponent(textField_3, 119, 119, 119)))
+																		.addComponent(nombrec).addComponent(direccion,
+																				173, 173, Short.MAX_VALUE))))
+														.addGap(18))
+												.addGroup(layout.createSequentialGroup().addGap(48).addComponent(
+														btnNewButton).addPreferredGap(ComponentPlacement.RELATED)))
+										.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout
+												.createParallelGroup(Alignment.TRAILING).addGroup(layout
+														.createSequentialGroup()
+														.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 71,
+																Short.MAX_VALUE)
+														.addGap(215))
+												.addGroup(layout.createSequentialGroup().addGroup(layout
+														.createParallelGroup(Alignment.LEADING)
+														.addComponent(
+																lblNewLabel_3_1_2, GroupLayout.DEFAULT_SIZE, 136,
+																Short.MAX_VALUE)
+														.addGroup(layout.createSequentialGroup().addGroup(layout
+																.createParallelGroup(Alignment.TRAILING, false)
+																.addComponent(lblHogar, Alignment.LEADING,
+																		GroupLayout.DEFAULT_SIZE,
+																		GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+																.addComponent(jLabel5_2, Alignment.LEADING,
+																		GroupLayout.DEFAULT_SIZE,
+																		GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+																.addPreferredGap(ComponentPlacement.UNRELATED)
+																.addGroup(layout.createParallelGroup(Alignment.LEADING)
+																		.addComponent(checkHogar,
+																				GroupLayout.PREFERRED_SIZE, 21,
+																				GroupLayout.PREFERRED_SIZE)
+																		.addComponent(checkDeceso,
+																				GroupLayout.PREFERRED_SIZE, 21,
+																				GroupLayout.PREFERRED_SIZE))))
+														.addPreferredGap(ComponentPlacement.RELATED)
+														.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+																.addComponent(hogar, 0, 0, Short.MAX_VALUE)
+																.addComponent(deceso, 0, 0, Short.MAX_VALUE)
+																.addComponent(codpostal, GroupLayout.DEFAULT_SIZE, 146,
+																		Short.MAX_VALUE)
+																.addComponent(localidad).addComponent(telefono,
+																		GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE))
+														.addPreferredGap(ComponentPlacement.RELATED))
+												.addComponent(scrollPane, Alignment.LEADING, GroupLayout.DEFAULT_SIZE,
+														286, Short.MAX_VALUE))
+												.addComponent(lblNewLabel_3_1)))
+										.addComponent(lblNewLabel_4))
+								.addGap(256)
+								.addComponent(
+										lblNewLabel_3_1_1, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(lblNewLabel_2)
+										.addComponent(textField_3, 119, 119, 119)))
+						.addGroup(layout.createSequentialGroup()
 								.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
 										.addGroup(layout.createSequentialGroup()
-												.addComponent(jLabel5_2_1, GroupLayout.PREFERRED_SIZE, 125,
+												.addComponent(jLabel5, GroupLayout.PREFERRED_SIZE, 109,
 														GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(ComponentPlacement.UNRELATED)
-												.addComponent(tipo_1_1, 0, 0, Short.MAX_VALUE))
-										.addGroup(layout.createSequentialGroup()
-												.addComponent(jLabel5, GroupLayout.PREFERRED_SIZE, 125,
-														GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(vida,
-														GroupLayout.PREFERRED_SIZE, 161, GroupLayout.PREFERRED_SIZE))))
-								.addGap(0))))
-				.addGroup(layout.createSequentialGroup().addGap(356).addComponent(btnNewButton).addContainerGap(656,
-						Short.MAX_VALUE)));
+												.addPreferredGap(ComponentPlacement.RELATED).addComponent(checkVida,
+														GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))
+										.addGroup(layout.createSequentialGroup().addComponent(jLabel5_2_1)
+												.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
+														Short.MAX_VALUE)
+												.addComponent(checkCoche)))
+								.addGap(10)
+								.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+										.addComponent(coche, 0, 0, Short.MAX_VALUE)
+										.addComponent(vida, GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE))
+								.addGap(88).addComponent(lblNewLabel)))
+				.addGap(0)));
 		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap()
 						.addGroup(layout.createParallelGroup(Alignment.BASELINE)
@@ -412,10 +485,10 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 								.addComponent(nombrec, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(layout.createParallelGroup(Alignment.BASELINE).addComponent(lblNewLabel_3)
-								.addComponent(textField, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+								.addComponent(direccion, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
 								.addComponent(lblNewLabel_3_1, GroupLayout.PREFERRED_SIZE, 63,
 										GroupLayout.PREFERRED_SIZE)
-								.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE))
+								.addComponent(localidad, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE))
 						.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
 								.addGroup(layout.createParallelGroup(Alignment.LEADING)
 										.addGroup(layout.createSequentialGroup().addGap(18)
@@ -430,7 +503,7 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 												.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 														.addComponent(lblNewLabel_3_1_2, GroupLayout.PREFERRED_SIZE, 63,
 																GroupLayout.PREFERRED_SIZE)
-														.addComponent(textField_4, GroupLayout.PREFERRED_SIZE, 33,
+														.addComponent(codpostal, GroupLayout.PREFERRED_SIZE, 33,
 																GroupLayout.PREFERRED_SIZE))))
 								.addGroup(layout.createParallelGroup(Alignment.LEADING)
 										.addGroup(layout.createSequentialGroup().addGap(18).addComponent(lblNewLabel_2))
@@ -438,41 +511,67 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 												.addPreferredGap(ComponentPlacement.UNRELATED)
 												.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 														.addComponent(lblNewLabel_4)
-														.addComponent(textField_5, GroupLayout.PREFERRED_SIZE, 36,
+														.addComponent(email, GroupLayout.PREFERRED_SIZE, 36,
 																GroupLayout.PREFERRED_SIZE)
 														.addComponent(jLabel5_2, GroupLayout.PREFERRED_SIZE, 54,
 																GroupLayout.PREFERRED_SIZE)
-														.addComponent(tipo_1, GroupLayout.PREFERRED_SIZE, 41,
-																GroupLayout.PREFERRED_SIZE)))))
-								.addGroup(layout.createSequentialGroup().addGap(18).addComponent(textField_2,
-										GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)))
-						.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout
-								.createSequentialGroup()
-								.addGroup(layout
-										.createParallelGroup(Alignment.LEADING)
-										.addGroup(layout.createSequentialGroup().addGap(23).addComponent(vida,
+														.addComponent(deceso, GroupLayout.PREFERRED_SIZE, 41,
+																GroupLayout.PREFERRED_SIZE)))
+										.addGroup(layout.createSequentialGroup().addGap(26).addComponent(checkDeceso,
+												GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))))
+								.addGroup(
+										layout.createSequentialGroup().addGap(18).addComponent(provincia,
+												GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)))
+						.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
+								.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout
+										.createSequentialGroup()
+										.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout
+												.createParallelGroup(Alignment.LEADING)
+												.addGroup(layout.createSequentialGroup()
+														.addPreferredGap(ComponentPlacement.UNRELATED)
+														.addGroup(layout.createParallelGroup(Alignment.LEADING)
+																.addGroup(layout.createSequentialGroup()
+																		.addComponent(lblHogar)
+																		.addPreferredGap(ComponentPlacement.RELATED))
+																.addComponent(jLabel5, GroupLayout.DEFAULT_SIZE, 58,
+																		Short.MAX_VALUE)))
+												.addGroup(layout.createSequentialGroup().addGap(23)
+														.addComponent(vida, GroupLayout.PREFERRED_SIZE,
+																GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+														.addPreferredGap(ComponentPlacement.RELATED)))
+												.addGroup(
+														Alignment.TRAILING,
+														layout.createSequentialGroup()
+																.addPreferredGap(ComponentPlacement.RELATED)
+																.addComponent(
+																		checkVida, GroupLayout.PREFERRED_SIZE, 21,
+																		GroupLayout.PREFERRED_SIZE)
+																.addGap(15)))
+										.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+												.addGroup(layout.createSequentialGroup().addGap(18)
+														.addGroup(layout.createParallelGroup(Alignment.LEADING)
+																.addComponent(coche, GroupLayout.PREFERRED_SIZE, 41,
+																		GroupLayout.PREFERRED_SIZE)
+																.addComponent(jLabel5_2_1).addComponent(lblNewLabel)))
+												.addGroup(Alignment.TRAILING,
+														layout.createSequentialGroup()
+																.addPreferredGap(ComponentPlacement.RELATED,
+																		GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+																.addComponent(checkCoche).addGap(16))))
+										.addGroup(layout.createSequentialGroup().addGap(18).addComponent(hogar,
 												GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE))
-										.addGroup(layout.createSequentialGroup()
-												.addPreferredGap(ComponentPlacement.UNRELATED)
-												.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
-														.addComponent(lblHogar, GroupLayout.DEFAULT_SIZE,
-																GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-														.addComponent(jLabel5, GroupLayout.DEFAULT_SIZE, 58,
-																Short.MAX_VALUE))))
-								.addGap(18)
-								.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(jLabel5_2_1)
-										.addComponent(tipo_1_1, GroupLayout.PREFERRED_SIZE, 41,
 												GroupLayout.PREFERRED_SIZE)))
-								.addGroup(layout.createSequentialGroup().addGap(18).addComponent(
-										tipo_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)))
+								.addPreferredGap(ComponentPlacement.RELATED))
+								.addGroup(layout.createSequentialGroup().addGap(28)
+										.addComponent(checkHogar, GroupLayout.PREFERRED_SIZE, 21,
+												GroupLayout.PREFERRED_SIZE)
+										.addGap(92)))
 						.addGroup(layout.createParallelGroup(Alignment.LEADING)
-								.addGroup(layout.createSequentialGroup().addPreferredGap(ComponentPlacement.UNRELATED)
+								.addGroup(layout.createSequentialGroup().addPreferredGap(ComponentPlacement.RELATED)
 										.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 106,
 												GroupLayout.PREFERRED_SIZE))
-								.addGroup(layout.createSequentialGroup().addGap(36).addComponent(lblNewLabel)))
-						.addGap(18).addComponent(btnNewButton).addGap(123)));
+								.addGroup(layout.createSequentialGroup().addGap(20).addComponent(btnNewButton)))
+						.addGap(134)));
 
 		nota = new JTextArea("", 0, 50);
 
@@ -482,7 +581,7 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		nota.setBackground(Color.WHITE);
 		scrollPane.setViewportView(nota);
 		getContentPane().setLayout(layout);
-		setSize(new Dimension(682, 703));
+		setSize(new Dimension(697, 603));
 		setLocationRelativeTo(null);
 	}
 

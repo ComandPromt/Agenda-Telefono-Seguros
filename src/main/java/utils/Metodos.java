@@ -25,6 +25,25 @@ import principal.Agenda;
 
 public class Metodos {
 
+	public static boolean esBisiesto(int year) {
+
+		if (year >= 3344) {
+			return true;
+		}
+
+		else {
+
+			if ((year % 4 == 0) && ((year % 100 != 0) || (year % 400 == 0))) {
+				return true;
+			}
+
+			else {
+				return false;
+			}
+		}
+
+	}
+
 	public static void eliminarFichero(String archivo) {
 
 		File fichero = new File(archivo);
@@ -35,19 +54,30 @@ public class Metodos {
 
 	}
 
-	public static String convertirFecha(String cadena) {
+	public static LinkedList<Integer> buscarVencimientos(LinkedList<String> lista, String busqueda) {
 
-		String fecha = "";
+		LinkedList<Integer> repetido = new LinkedList<Integer>();
 
-		int mes, dia = 0;
+		int dia, mes, year;
 
-		int year;
+		dia = Integer.parseInt(busqueda.substring(0, busqueda.indexOf("/")));
 
-		year = Integer.parseInt(cadena.substring(cadena.lastIndexOf("/") + 1, cadena.length()));
+		mes = Integer.parseInt(busqueda.substring(busqueda.indexOf("/") + 1, busqueda.lastIndexOf("/")));
 
-		mes = Integer.parseInt(cadena.substring(cadena.indexOf("/") + 1, cadena.lastIndexOf("/")));
+		year = Integer.parseInt(busqueda.substring(busqueda.lastIndexOf("/") + 1, busqueda.length()));
 
-		if (mes <= 10) {
+		boolean mesEspecial = false;
+
+		int vueltasComprobacion = 1;
+
+		boolean cambioFebrero = false;
+
+		if (dia != 29 && dia != 30 && dia != 31 && mes != 11 && mes != 12) {
+
+			if (mes == 2 && dia == 28) {
+				vueltasComprobacion = 3;
+			}
+
 			mes += 2;
 		}
 
@@ -55,42 +85,86 @@ public class Metodos {
 
 			if (mes == 11) {
 				mes = 1;
+				++year;
+				mesEspecial = true;
 			}
 
-			else {
+			if (mes == 12) {
+
 				mes = 2;
+
+				cambioFebrero = true;
+
+				++year;
+
+				if (dia == 29 || dia == 30 || dia == 31) {
+
+					if ((dia == 31 || dia == 30) && year >= 3344) {
+						dia = 30;
+					}
+
+					else {
+
+						dia = 28;
+
+						if (esBisiesto(year)) {
+
+							dia = 29;
+
+						}
+
+					}
+				}
+
+				mesEspecial = true;
 			}
 
-			++year;
+			if (!cambioFebrero && mes == 2 && dia == 29) {
+				vueltasComprobacion = 2;
+			}
+
+			if (dia == 30 && mes == 6) {
+				vueltasComprobacion = 2;
+			}
+
+			if (!mesEspecial) {
+				mes += 2;
+			}
+
 		}
 
-		dia = Integer.parseInt(cadena.substring(0, cadena.indexOf("/")));
+		String ceromes = "";
 
-		String mesCorto = "", diaCorto = "";
+		for (int i = 0; i < vueltasComprobacion; i++) {
 
-		if (mes < 10) {
+			if (i > 0) {
+				++dia;
+			}
 
-			mesCorto = "0";
+			if (mes <= 9) {
+				ceromes = "0";
+			}
+
+			busqueda = dia + "/" + ceromes + mes + "/" + year;
+
+			System.out.println("busco el dia: " + busqueda + " con " + vueltasComprobacion + " vuelta/s");
+
+			repetido = buscarFechasVencimientos(lista, busqueda);
+
 		}
 
-		if (dia < 10) {
+		return repetido;
 
-			diaCorto = "0";
-		}
-
-		fecha = mesCorto + mes + "/" + diaCorto + dia + "/" + year;
-
-		return fecha;
 	}
 
-	public static LinkedList<Integer> buscarVencimientos(LinkedList<String> lista, String busqueda) {
-
-		int indice = -1;
+	public static LinkedList<Integer> buscarFechasVencimientos(LinkedList<String> lista, String busqueda) {
 
 		LinkedList<Integer> repetido = new LinkedList<Integer>();
 
+		int indice = -1;
+
 		indice = lista.indexOf(busqueda);
-		System.out.println(busqueda);
+
 		while (indice != -1) {
 
 			repetido.add(indice);
@@ -98,9 +172,11 @@ public class Metodos {
 			lista.set(indice, null);
 
 			indice = lista.indexOf(busqueda);
+
 		}
 
 		return repetido;
+
 	}
 
 	public static String extraerExtension(String nombreArchivo) {
@@ -165,9 +241,9 @@ public class Metodos {
 		return files;
 	}
 
-	public static boolean comprobarTelefono(String dato) {
+	public static boolean comprobarPatron(String dato, String patron) {
 
-		String regEx = "^[6789][0-9]{8}";
+		String regEx = patron;
 
 		Pattern pattern = Pattern.compile(regEx);
 

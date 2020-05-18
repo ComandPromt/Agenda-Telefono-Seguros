@@ -3,9 +3,13 @@ package principal;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -14,8 +18,11 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.RowFilter;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 public class Llamada extends javax.swing.JFrame {
@@ -23,20 +30,11 @@ public class Llamada extends javax.swing.JFrame {
 	private static final long serialVersionUID = 1L;
 	BufferedReader br;
 	BufferedWriter bw;
-	DefaultTableModel model;
+	static DefaultTableModel model;
 	DefaultTableModel model2;
 	String[][] dataStok;
 	String path;
 	File file;
-	static String finalSentencia = "";
-
-	public String getFinalSentencia() {
-		return finalSentencia;
-	}
-
-	public static void setFinalSentencia(String finalSentencia) {
-		// Llamada.finalSentencia = finalSentencia;
-	}
 
 	public Llamada() {
 		setType(Type.POPUP);
@@ -51,25 +49,33 @@ public class Llamada extends javax.swing.JFrame {
 
 	}
 
-	public void loadData() {
+	public static void loadData() {
+
+		Agenda.ponerFechasDeceso();
 
 		model.getDataVector().removeAllElements();
 
 		try {
-			model.addRow(new Object[] { "aaaaaaaaa", "aaaaaaaaaaa", "aaaaaaaaaaa", "aaaaa" });
-			model.addRow(new Object[] { "ee", "ee", "ee", "ee" });
-//			Connection conexion = Metodos.conexionBD();
-//
-//			Statement s = conexion.createStatement();
-//
-//			ResultSet rs = s.executeQuery(
-//					"SELECT C.Dni, CONCAT(C.Nombre,\" \",C.Apellidos) AS nombre ,U.Pedido,U.Fechapedido,U.Fecharecogida FROM CLIENTES C JOIN USU_Llamada U ON C.Id=U.Cliente WHERE U.Fechapedido=U.Fecharecogida"
-//							+ finalSentencia);
-//
-//			while (rs.next()) {
-//
-//				//
-//			}
+
+			for (int i = 0; i < Agenda.vencimientosDecesos.size(); i++) {
+
+				model.addRow(new Object[] { Agenda.contactos.get(Vencimiento.getIndiceDeceso().get(i)),
+						Agenda.telefonos.get(Vencimiento.getIndiceDeceso().get(i)), "ee",
+						Agenda.fechaDecesos.get(Integer.parseInt(Agenda.vencimientosDecesos.get(i))) });
+			}
+
+			TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(jTable1.getModel());
+
+			jTable1.setRowSorter(sorter);
+
+			List<RowSorter.SortKey> sortKeys = new ArrayList<>(25);
+
+			sortKeys.add(new RowSorter.SortKey(0, SortOrder.DESCENDING));
+			sortKeys.add(new RowSorter.SortKey(1, SortOrder.DESCENDING));
+			sortKeys.add(new RowSorter.SortKey(2, SortOrder.DESCENDING));
+			sortKeys.add(new RowSorter.SortKey(3, SortOrder.DESCENDING));
+
+			sorter.setSortKeys(sortKeys);
 
 		}
 
@@ -96,7 +102,7 @@ public class Llamada extends javax.swing.JFrame {
 		jTable1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		jTable1.setModel(new javax.swing.table.DefaultTableModel(new Object[][] {
 
-		}, new String[] { "Nombre y apellidos ", "Telefono", "Domicilio", "Observaciones" }) {
+		}, new String[] { "Nombre y apellidos ", "Telefono", "Seguro", "Vencimiento" }) {
 			/**
 			 * 
 			 */
@@ -118,7 +124,9 @@ public class Llamada extends javax.swing.JFrame {
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
 				return canEdit[columnIndex];
 			}
+
 		});
+
 		jScrollPane1.setViewportView(jTable1);
 
 		jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -127,18 +135,34 @@ public class Llamada extends javax.swing.JFrame {
 			}
 		});
 
-		jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+		jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18));
+
 		jLabel2.setForeground(new java.awt.Color(255, 255, 255));
 
 		JLabel lblNewLabel = new JLabel("Ordenar por");
+
 		lblNewLabel.setForeground(Color.WHITE);
+
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
 
 		JComboBox comboBox = new JComboBox();
 
-		comboBox.addItem("DNI Cliente");
+		comboBox.addItemListener(new ItemListener() {
 
-		comboBox.addItem("Fecha");
+			public void itemStateChanged(ItemEvent e) {
+				System.out.println("entro a ordenar la tabla");
+
+			}
+
+		});
+
+		comboBox.addItem("Vencimientos Decesos");
+
+		comboBox.addItem("Vencimientos Vida");
+
+		comboBox.addItem("Vencimientos Hogar");
+
+		comboBox.addItem("Vencimientos Coche");
 
 		comboBox.addItem("Caducidad (primero los que se vayan a cumplir)");
 
@@ -198,34 +222,50 @@ public class Llamada extends javax.swing.JFrame {
 	public static void main(String args[]) {
 
 		try {
+
 			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+
 				if ("Nimbus".equals(info.getName())) {
 					javax.swing.UIManager.setLookAndFeel(info.getClassName());
 					break;
 				}
+
 			}
-		} catch (ClassNotFoundException ex) {
+
+		}
+
+		catch (ClassNotFoundException ex) {
 			java.util.logging.Logger.getLogger(Llamada.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		} catch (InstantiationException ex) {
+		}
+
+		catch (InstantiationException ex) {
 			java.util.logging.Logger.getLogger(Llamada.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		} catch (IllegalAccessException ex) {
+		}
+
+		catch (IllegalAccessException ex) {
 			java.util.logging.Logger.getLogger(Llamada.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
+		}
+
+		catch (javax.swing.UnsupportedLookAndFeelException ex) {
 			java.util.logging.Logger.getLogger(Llamada.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 		}
 		// </editor-fold>
 
 		/* Create and display the form */
 		java.awt.EventQueue.invokeLater(new Runnable() {
+
 			public void run() {
 				new Llamada().setVisible(true);
 			}
+
 		});
+
 	}
 
 	private javax.swing.JLabel jLabel2;
 	private javax.swing.JPanel jPanel1;
 	private javax.swing.JScrollPane jScrollPane1;
-	private javax.swing.JTable jTable1;
+	static javax.swing.JTable jTable1;
 	private javax.swing.JTextField jTextField1;
+
 }

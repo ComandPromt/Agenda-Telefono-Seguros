@@ -19,15 +19,6 @@ public abstract class MetodosPdf {
 			LinkedList<String> observaciones, LinkedList<String> telefonos, String plantilla)
 			throws Exception, FileNotFoundException {
 
-		for (int i = 0; i < vencimientos.size(); i++) {
-			vencimientos.set(i,
-					vencimientos.get(i).substring(vencimientos.get(i).indexOf("/") + 1,
-							vencimientos.get(i).lastIndexOf("/")) + "/"
-							+ vencimientos.get(i).substring(0, vencimientos.get(i).indexOf("/")) + "/"
-							+ vencimientos.get(i).substring(vencimientos.get(i).lastIndexOf("/") + 1,
-									vencimientos.get(i).length()));
-		}
-
 		String tampleFile = "plantillas/" + plantilla;
 
 		Map<String, Object> variables = new HashMap<String, Object>();
