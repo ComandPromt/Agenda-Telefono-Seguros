@@ -17,13 +17,11 @@ import java.util.Date;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
@@ -37,7 +35,7 @@ import utils.Metodos;
 
 public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeListener {
 
-	private JTextField nombrec;
+	private MaterialTextField nombrec;
 
 	private JCheckBox checkHogar = new JCheckBox("");
 
@@ -56,13 +54,13 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 	RSDateChooser vida;
 
 	RSDateChooser hogar = new RSDateChooser();
-	private JTextField direccion;
-	private JTextField localidad;
-	private JTextField textField_3;
-	private JTextField provincia;
-	private JTextField email;
-	private JTextField telefono;
-	private JTextField codpostal;
+
+	private MaterialTextField direccion;
+	private MaterialTextField localidad;
+	private MaterialTextField provincia;
+	private MaterialTextField email;
+	private MaterialTextField telefono;
+	private MaterialTextField codpostal;
 
 	protected void guardar() {
 
@@ -88,8 +86,6 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 		String datoDireccion = Metodos.eliminarEspacios(direccion.getText());
 
-		boolean comprobarTelefono = Metodos.comprobarPatron(telefonoc, "^[6789][0-9]{8}");
-
 		boolean comprobarEmail = Metodos.comprobarPatron(datoEmail, "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}");
 
 		boolean comprobarCodPostal = Metodos.comprobarPatron(datoCodPostal, "^[0-9]{5}");
@@ -97,31 +93,27 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		if (!nombre.isEmpty() && !tipop.isEmpty() && !telefonoc.isEmpty()) {
 
 			if (Agenda.contactos.size() > 0 && Agenda.contactos.indexOf(nombre) >= 0) {
-				Metodos.mensaje("Nombre de contacto duplicado", 1);
+				Metodos.mensaje("Nombre de contacto duplicado", 1, true);
 			}
 
 			else {
 
-				if (!comprobarTelefono) {
-					Metodos.mensaje("Teléfono incorrecto", 1);
-				}
-
 				if (!comprobarCodPostal) {
-					Metodos.mensaje("Código postal incorrecto", 1);
+					Metodos.mensaje("Código postal incorrecto", 1, false);
 				}
 
 				if (!comprobarEmail) {
-					Metodos.mensaje("Email incorrecto", 1);
+					Metodos.mensaje("Email incorrecto", 1, false);
 				}
 
 				if (!checkDeceso.isSelected() && !checkCoche.isSelected() && !checkVida.isSelected()
 						&& !checkHogar.isSelected()) {
-					Metodos.mensaje("Por favor, selecciona un seguro como mínimo", 1);
+					Metodos.mensaje("Por favor, selecciona un seguro como mínimo", 1, false);
 				}
 
 				else {
 
-					if (comprobarTelefono && comprobarEmail && comprobarCodPostal) {
+					if (comprobarEmail && comprobarCodPostal) {
 
 						try {
 
@@ -204,7 +196,9 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		} else
 
 		{
-			Metodos.mensaje("Por favor, rellena todos los datos", 3);
+
+			Metodos.mensaje("Por favor, rellena todos los datos", 3, true);
+
 		}
 	}
 
@@ -239,7 +233,16 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 		setResizable(false);
 
-		JButton btnNewButton = new JButton("Insertar");
+		MaterialButtomRectangle btnNewButton = new MaterialButtomRectangle();
+
+		btnNewButton.setText("Insertar");
+
+		btnNewButton.setBackground(new java.awt.Color(0, 102, 0));
+		btnNewButton.setForeground(new java.awt.Color(255, 255, 255));
+
+		btnNewButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
+		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 18));
 
 		btnNewButton.addActionListener(new ActionListener() {
 
@@ -250,10 +253,11 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 		});
 
-		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		btnNewButton.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/insert.png")));
+		nombrec = new MaterialTextField();
 
-		nombrec = new JTextField();
+		nombrec.setHorizontalAlignment(SwingConstants.CENTER);
+		nombrec.setBackground(Color.ORANGE);
+
 		nombrec.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -299,9 +303,6 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblNewLabel_1.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/telefono.png")));
 
-		JLabel lblNewLabel_2 = new JLabel("Vencimientos");
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 20));
-
 		JLabel jLabel5_2 = new JLabel();
 		jLabel5_2.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/deceso.png")));
 		jLabel5_2.setText("Decesos");
@@ -321,19 +322,17 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblNewLabel_3.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/geo.png")));
 
-		direccion = new JTextField();
+		direccion = new MaterialTextField();
 		direccion.setHorizontalAlignment(SwingConstants.CENTER);
-		direccion.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		direccion.setColumns(10);
+		direccion.setBackground(Color.ORANGE);
 
 		JLabel lblNewLabel_3_1 = new JLabel("Localidad");
 		lblNewLabel_3_1.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/city.png")));
 		lblNewLabel_3_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
 
-		localidad = new JTextField();
+		localidad = new MaterialTextField();
 		localidad.setHorizontalAlignment(SwingConstants.CENTER);
-		localidad.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		localidad.setColumns(10);
+		localidad.setBackground(Color.ORANGE);
 
 		JLabel lblNewLabel_3_2 = new JLabel("Provincia");
 		lblNewLabel_3_2.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/city.png")));
@@ -343,15 +342,9 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		lblNewLabel_3_1_1.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/tag.png")));
 		lblNewLabel_3_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
-		textField_3 = new JTextField();
-		textField_3.setHorizontalAlignment(SwingConstants.CENTER);
-		textField_3.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		textField_3.setColumns(10);
-
-		provincia = new JTextField();
+		provincia = new MaterialTextField();
 		provincia.setHorizontalAlignment(SwingConstants.CENTER);
-		provincia.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		provincia.setColumns(10);
+		provincia.setBackground(Color.ORANGE);
 
 		JLabel lblNewLabel_3_1_2 = new JLabel("Cod Postal");
 		lblNewLabel_3_1_2.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/tag.png")));
@@ -361,19 +354,17 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		lblNewLabel_4.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblNewLabel_4.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/email.png")));
 
-		email = new JTextField();
-		email.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		email = new MaterialTextField();
 		email.setHorizontalAlignment(SwingConstants.CENTER);
-		email.setColumns(10);
+		email.setBackground(Color.ORANGE);
 
-		telefono = new JTextField();
+		telefono = new MaterialTextField();
 		telefono.setHorizontalAlignment(SwingConstants.CENTER);
-		telefono.setColumns(10);
+		telefono.setBackground(Color.ORANGE);
 
-		codpostal = new JTextField();
+		codpostal = new MaterialTextField();
 		codpostal.setHorizontalAlignment(SwingConstants.CENTER);
-		codpostal.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		codpostal.setColumns(10);
+		codpostal.setBackground(Color.ORANGE);
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
@@ -412,7 +403,9 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 																				173, 173, Short.MAX_VALUE))))
 														.addGap(18))
 												.addGroup(layout.createSequentialGroup().addGap(48).addComponent(
-														btnNewButton).addPreferredGap(ComponentPlacement.RELATED)))
+														btnNewButton, GroupLayout.PREFERRED_SIZE, 118,
+														GroupLayout.PREFERRED_SIZE)
+														.addPreferredGap(ComponentPlacement.RELATED)))
 										.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout
 												.createParallelGroup(Alignment.TRAILING).addGroup(layout
 														.createSequentialGroup()
@@ -454,11 +447,9 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 												.addComponent(lblNewLabel_3_1)))
 										.addComponent(lblNewLabel_4))
 								.addGap(256)
-								.addComponent(
-										lblNewLabel_3_1_1, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(lblNewLabel_2)
-										.addComponent(textField_3, 119, 119, 119)))
+								.addComponent(lblNewLabel_3_1_1, GroupLayout.PREFERRED_SIZE, 133,
+										GroupLayout.PREFERRED_SIZE)
+								.addGap(129))
 						.addGroup(layout.createSequentialGroup()
 								.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
 										.addGroup(layout.createSequentialGroup()
@@ -491,22 +482,19 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 								.addComponent(localidad, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE))
 						.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
 								.addGroup(layout.createParallelGroup(Alignment.LEADING)
-										.addGroup(layout.createSequentialGroup().addGap(18)
-												.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-														.addComponent(lblNewLabel_3_1_1, GroupLayout.PREFERRED_SIZE, 63,
-																GroupLayout.PREFERRED_SIZE)
-														.addComponent(textField_3, GroupLayout.PREFERRED_SIZE, 33,
-																GroupLayout.PREFERRED_SIZE)))
+										.addGroup(layout.createSequentialGroup().addGap(18).addComponent(
+												lblNewLabel_3_1_1, GroupLayout.PREFERRED_SIZE, 63,
+												GroupLayout.PREFERRED_SIZE))
 										.addGroup(layout.createSequentialGroup().addGap(8).addComponent(lblNewLabel_3_2,
 												GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE))
 										.addGroup(layout.createSequentialGroup().addGap(6)
 												.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 														.addComponent(lblNewLabel_3_1_2, GroupLayout.PREFERRED_SIZE, 63,
 																GroupLayout.PREFERRED_SIZE)
-														.addComponent(codpostal, GroupLayout.PREFERRED_SIZE, 33,
+														.addComponent(
+																codpostal, GroupLayout.PREFERRED_SIZE, 33,
 																GroupLayout.PREFERRED_SIZE))))
 								.addGroup(layout.createParallelGroup(Alignment.LEADING)
-										.addGroup(layout.createSequentialGroup().addGap(18).addComponent(lblNewLabel_2))
 										.addGroup(layout.createSequentialGroup()
 												.addPreferredGap(ComponentPlacement.UNRELATED)
 												.addGroup(layout.createParallelGroup(Alignment.BASELINE)
@@ -523,55 +511,43 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 										layout.createSequentialGroup().addGap(18).addComponent(provincia,
 												GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)))
 						.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
-								.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout
-										.createSequentialGroup()
+								.addGroup(layout.createParallelGroup(Alignment.TRAILING)
 										.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout
-												.createParallelGroup(Alignment.LEADING)
-												.addGroup(layout.createSequentialGroup()
-														.addPreferredGap(ComponentPlacement.UNRELATED)
-														.addGroup(layout.createParallelGroup(Alignment.LEADING)
-																.addGroup(layout.createSequentialGroup()
-																		.addComponent(lblHogar)
-																		.addPreferredGap(ComponentPlacement.RELATED))
-																.addComponent(jLabel5, GroupLayout.DEFAULT_SIZE, 58,
-																		Short.MAX_VALUE)))
+												.createSequentialGroup().addPreferredGap(ComponentPlacement.UNRELATED)
+												.addGroup(layout.createParallelGroup(Alignment.LEADING)
+														.addGroup(layout.createSequentialGroup().addComponent(lblHogar)
+																.addPreferredGap(ComponentPlacement.RELATED))
+														.addComponent(jLabel5, GroupLayout.DEFAULT_SIZE, 58,
+																Short.MAX_VALUE)))
 												.addGroup(layout.createSequentialGroup().addGap(23)
 														.addComponent(vida, GroupLayout.PREFERRED_SIZE,
 																GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 														.addPreferredGap(ComponentPlacement.RELATED)))
-												.addGroup(
-														Alignment.TRAILING,
-														layout.createSequentialGroup()
-																.addPreferredGap(ComponentPlacement.RELATED)
-																.addComponent(
-																		checkVida, GroupLayout.PREFERRED_SIZE, 21,
-																		GroupLayout.PREFERRED_SIZE)
-																.addGap(15)))
-										.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
-												.addGroup(layout.createSequentialGroup().addGap(18)
-														.addGroup(layout.createParallelGroup(Alignment.LEADING)
-																.addComponent(coche, GroupLayout.PREFERRED_SIZE, 41,
-																		GroupLayout.PREFERRED_SIZE)
-																.addComponent(jLabel5_2_1).addComponent(lblNewLabel)))
-												.addGroup(Alignment.TRAILING,
-														layout.createSequentialGroup()
-																.addPreferredGap(ComponentPlacement.RELATED,
-																		GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-																.addComponent(checkCoche).addGap(16))))
-										.addGroup(layout.createSequentialGroup().addGap(18).addComponent(hogar,
-												GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE)))
-								.addPreferredGap(ComponentPlacement.RELATED))
+										.addGroup(layout.createSequentialGroup()
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(checkVida, GroupLayout.PREFERRED_SIZE, 21,
+														GroupLayout.PREFERRED_SIZE)
+												.addGap(15)))
+								.addPreferredGap(ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+								.addGroup(layout.createParallelGroup(Alignment.TRAILING, false)
+										.addGroup(layout.createParallelGroup(Alignment.LEADING)
+												.addComponent(coche, GroupLayout.PREFERRED_SIZE, 41,
+														GroupLayout.PREFERRED_SIZE)
+												.addComponent(jLabel5_2_1).addComponent(lblNewLabel))
+										.addGroup(layout.createSequentialGroup().addComponent(checkCoche).addGap(16))))
+								.addGroup(layout.createSequentialGroup().addGap(18).addComponent(hogar,
+										GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
 								.addGroup(layout.createSequentialGroup().addGap(28)
 										.addComponent(checkHogar, GroupLayout.PREFERRED_SIZE, 21,
 												GroupLayout.PREFERRED_SIZE)
 										.addGap(92)))
+						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(layout.createParallelGroup(Alignment.LEADING)
-								.addGroup(layout.createSequentialGroup().addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 106,
-												GroupLayout.PREFERRED_SIZE))
-								.addGroup(layout.createSequentialGroup().addGap(20).addComponent(btnNewButton)))
-						.addGap(134)));
+								.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
+								.addGroup(layout.createSequentialGroup().addGap(20).addComponent(btnNewButton,
+										GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE)))
+						.addGap(34)));
 
 		nota = new JTextArea("", 0, 50);
 

@@ -21,6 +21,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import alertas.AlertError;
+import alertas.AlertInformation;
+import alertas.AlertSuccess;
+import alertas.AlertWarningSalir;
 import principal.Agenda;
 
 public class Metodos {
@@ -235,7 +239,7 @@ public class Metodos {
 		File[] files = chooser.getSelectedFiles();
 
 		if (files.length == 0) {
-			mensaje(mensaje, 3);
+			mensaje(mensaje, 3, true);
 		}
 
 		return files;
@@ -311,7 +315,7 @@ public class Metodos {
 		return cadena;
 	}
 
-	public static void mensaje(String mensaje, int titulo) {
+	public static void mensaje(String mensaje, int titulo, boolean filtro) {
 
 		String tituloSuperior = "", sonido = "";
 
@@ -320,19 +324,69 @@ public class Metodos {
 		switch (titulo) {
 
 		case 1:
-			tipo = JOptionPane.ERROR_MESSAGE;
-			tituloSuperior = "Error";
+			if (filtro) {
+				AlertError error;
+
+				error = new AlertError(null, false);
+
+				error.setTitulo(mensaje);
+
+				error.setVisible(true);
+			}
+
+			else {
+				tipo = JOptionPane.ERROR_MESSAGE;
+				tituloSuperior = "Error";
+			}
+
 			break;
 
 		case 2:
-			tipo = JOptionPane.INFORMATION_MESSAGE;
-			tituloSuperior = "Informacion";
 
+			if (filtro) {
+				AlertInformation informacion;
+
+				informacion = new AlertInformation(null, false);
+
+				informacion.setTitulo(mensaje);
+
+				informacion.setVisible(true);
+			} else {
+				tipo = JOptionPane.INFORMATION_MESSAGE;
+				tituloSuperior = "Informacion";
+			}
 			break;
 
 		case 3:
-			tipo = JOptionPane.WARNING_MESSAGE;
-			tituloSuperior = "Advertencia";
+
+			if (filtro) {
+				AlertWarningSalir salir;
+
+				salir = new AlertWarningSalir(null, false);
+
+				salir.setTitulo(mensaje);
+
+				salir.setVisible(true);
+			} else {
+				tipo = JOptionPane.WARNING_MESSAGE;
+				tituloSuperior = "Advertencia";
+			}
+			break;
+
+		case 4:
+
+			if (filtro) {
+				AlertSuccess exito;
+
+				exito = new AlertSuccess(null, false);
+
+				exito.setTitulo(mensaje);
+
+				exito.setVisible(true);
+			} else {
+				tipo = JOptionPane.INFORMATION_MESSAGE;
+				tituloSuperior = "Informacion";
+			}
 			break;
 
 		default:
@@ -340,11 +394,13 @@ public class Metodos {
 
 		}
 
-		JLabel alerta = new JLabel(mensaje);
+		if (!filtro) {
+			JLabel alerta = new JLabel(mensaje);
 
-		alerta.setFont(new Font("Arial", Font.BOLD, 18));
+			alerta.setFont(new Font("Arial", Font.BOLD, 18));
 
-		JOptionPane.showMessageDialog(null, alerta, tituloSuperior, tipo);
+			JOptionPane.showMessageDialog(null, alerta, tituloSuperior, tipo);
+		}
 
 	}
 

@@ -66,7 +66,7 @@ import utils.MetodosPdf;
 @SuppressWarnings("all")
 
 public class Agenda extends JFrame {
-	JButton observacion = new JButton("Observaciones");
+	JButton observacion = new JButton("Ver Observacion");
 	int indice;
 	JTextPane vtos = new JTextPane();
 	Timer t = new Timer();
@@ -306,7 +306,7 @@ public class Agenda extends JFrame {
 
 	public Agenda() throws IOException, SQLException {
 
-		setIconImage(Toolkit.getDefaultToolkit().getImage(Agenda.class.getResource("/imagenes/user.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Agenda.class.getResource("/imagenes/agenda.png")));
 
 		os = System.getProperty("os.name");
 
@@ -362,14 +362,14 @@ public class Agenda extends JFrame {
 					if (indice >= 0) {
 
 						if (contactos.get(indice).equals(datoContacto)) {
-							Metodos.mensaje("Debes modificar un dato", 3);
+							Metodos.mensaje("Debes modificar un dato", 3, true);
 
 						}
 
 						else {
 
 							if (true) {
-								Metodos.mensaje("Teléfono incorrecto", 3);
+								Metodos.mensaje("Teléfono incorrecto", 3, true);
 							}
 
 							else {
@@ -755,72 +755,88 @@ public class Agenda extends JFrame {
 		JCheckBox chckbxNewCheckBox = new JCheckBox("Lo he llamado");
 		chckbxNewCheckBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
-		GroupLayout panelCasaLayout = new GroupLayout(panelCasa);
-		panelCasaLayout.setHorizontalGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(panelCasaLayout.createSequentialGroup().addContainerGap()
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING).addComponent(jLabel3)
-								.addComponent(lblNewLabel).addComponent(jLabel5)
-								.addComponent(lblNewLabel_1_1, GroupLayout.PREFERRED_SIZE, 114,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblNewLabel_1))
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING)
-								.addGroup(panelCasaLayout.createSequentialGroup().addGap(44)
-										.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-												.addComponent(direccion, GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
-												.addComponent(tlf, GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
-												.addComponent(nombre, GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
-												.addComponent(vtos, GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
-												.addComponent(email, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 246,
-														Short.MAX_VALUE)))
-								.addGroup(panelCasaLayout.createSequentialGroup()
-										.addPreferredGap(ComponentPlacement.RELATED).addComponent(chckbxNewCheckBox)))
-						.addContainerGap()));
-		panelCasaLayout.setVerticalGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(panelCasaLayout.createSequentialGroup().addContainerGap(23, Short.MAX_VALUE)
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 59, GroupLayout.PREFERRED_SIZE)
-								.addComponent(nombre, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(panelCasaLayout.createSequentialGroup().addGap(7).addComponent(tlf,
-										GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
-								.addComponent(lblNewLabel))
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(panelCasaLayout.createSequentialGroup().addGap(32).addComponent(jLabel5))
-								.addGroup(panelCasaLayout.createSequentialGroup().addGap(7).addComponent(vtos,
-										GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING, false)
-								.addGroup(panelCasaLayout.createSequentialGroup().addGap(6)
-										.addComponent(direccion, GroupLayout.PREFERRED_SIZE, 108,
-												GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(email, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE))
-								.addGroup(panelCasaLayout.createSequentialGroup().addGap(22)
-										.addComponent(lblNewLabel_1_1, GroupLayout.PREFERRED_SIZE, 48,
-												GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addComponent(lblNewLabel_1)))
-						.addContainerGap())
-				.addGroup(Alignment.LEADING, panelCasaLayout.createSequentialGroup().addContainerGap()
-						.addComponent(chckbxNewCheckBox).addContainerGap(399, Short.MAX_VALUE)));
-		panelCasa.setLayout(panelCasaLayout);
-
 		observacion.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
 
 				indice = jList1.getSelectedIndex();
 
-				Metodos.mensaje(observaciones.get(indice), 2);
+				Metodos.mensaje(observaciones.get(indice), 2, true);
 			}
 
 		});
 
 		observacion.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
+		JButton btnAadirObservacion = new JButton("+ Observacion");
+
+		btnAadirObservacion.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+
+			}
+
+		});
+
+		btnAadirObservacion.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
+		GroupLayout panelCasaLayout = new GroupLayout(panelCasa);
+		panelCasaLayout.setHorizontalGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(panelCasaLayout.createSequentialGroup().addContainerGap().addGroup(panelCasaLayout
+						.createParallelGroup(Alignment.LEADING).addComponent(jLabel5)
+						.addComponent(lblNewLabel_1_1, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnAadirObservacion, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
+						.addComponent(jLabel3).addComponent(lblNewLabel).addComponent(lblNewLabel_1)).addGap(13)
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(panelCasaLayout.createSequentialGroup().addGroup(panelCasaLayout
+										.createParallelGroup(Alignment.TRAILING)
+										.addGroup(panelCasaLayout.createSequentialGroup().addComponent(observacion)
+												.addGap(18).addComponent(chckbxNewCheckBox)
+												.addPreferredGap(ComponentPlacement.RELATED))
+										.addComponent(vtos, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 260,
+												Short.MAX_VALUE)
+										.addComponent(email, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+										.addGroup(panelCasaLayout.createSequentialGroup()
+												.addComponent(nombre, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+												.addPreferredGap(ComponentPlacement.RELATED))
+										.addComponent(direccion, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 260,
+												Short.MAX_VALUE))
+										.addGap(10))
+								.addGroup(panelCasaLayout.createSequentialGroup()
+										.addComponent(tlf, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+										.addContainerGap()))));
+		panelCasaLayout.setVerticalGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING).addGroup(panelCasaLayout
+				.createSequentialGroup()
+				.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnAadirObservacion, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+						.addComponent(observacion).addComponent(chckbxNewCheckBox))
+				.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(panelCasaLayout.createSequentialGroup().addGap(18).addComponent(nombre,
+								GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGroup(panelCasaLayout.createSequentialGroup().addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 59, GroupLayout.PREFERRED_SIZE)))
+				.addPreferredGap(ComponentPlacement.RELATED)
+				.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING).addComponent(lblNewLabel)
+						.addGroup(panelCasaLayout.createSequentialGroup().addGap(7)
+								.addComponent(tlf, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)))
+				.addGap(12)
+				.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(panelCasaLayout.createSequentialGroup().addGap(32).addComponent(jLabel5))
+						.addGroup(panelCasaLayout.createSequentialGroup().addGap(7).addComponent(vtos,
+								GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)))
+				.addPreferredGap(ComponentPlacement.RELATED)
+				.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(panelCasaLayout.createSequentialGroup().addGap(6)
+								.addComponent(direccion, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE)
+										.addComponent(email, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE)
+										.addComponent(lblNewLabel_1)))
+						.addGroup(panelCasaLayout.createSequentialGroup().addGap(22).addComponent(lblNewLabel_1_1,
+								GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)))
+				.addContainerGap()));
+		panelCasa.setLayout(panelCasaLayout);
 
 		JButton btnNewButton = new JButton("Vtos Decesos");
 
@@ -877,19 +893,19 @@ public class Agenda extends JFrame {
 
 		});
 
-		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 14));
 
 		JButton btnNewButton_1 = new JButton("Vtos Vida");
 
-		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 14));
 
 		JButton btnNewButton_2 = new JButton("Vtos Hogar");
 
-		btnNewButton_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 14));
 
 		JButton btnNewButton_3 = new JButton("Vtos Coche");
 
-		btnNewButton_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnNewButton_3.setFont(new Font("Tahoma", Font.BOLD, 14));
 
 		JButton btnNewButton_4 = new JButton("Todos");
 
@@ -907,7 +923,7 @@ public class Agenda extends JFrame {
 
 			}
 		});
-		btnNewButton_4.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnNewButton_4.setFont(new Font("Tahoma", Font.BOLD, 14));
 
 		GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
 		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel3Layout
@@ -918,25 +934,23 @@ public class Agenda extends JFrame {
 								.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnNewButton_2)
 								.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnNewButton_3)
 								.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(btnNewButton_4).addPreferredGap(ComponentPlacement.UNRELATED)
-								.addComponent(observacion))
+								.addComponent(btnNewButton_4).addGap(143))
 						.addGroup(jPanel3Layout.createSequentialGroup()
 								.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 233, GroupLayout.PREFERRED_SIZE)
 								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addComponent(panelCasa, GroupLayout.PREFERRED_SIZE, 424, GroupLayout.PREFERRED_SIZE)))
+								.addComponent(panelCasa, GroupLayout.PREFERRED_SIZE, 424, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)))
 				.addContainerGap(42, Short.MAX_VALUE)));
-		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(jPanel3Layout.createSequentialGroup()
-						.addGroup(jPanel3Layout.createParallelGroup(Alignment.BASELINE).addComponent(observacion)
-								.addComponent(btnNewButton).addComponent(btnNewButton_1).addComponent(btnNewButton_2)
-								.addComponent(btnNewButton_3).addComponent(btnNewButton_4))
-						.addGap(3)
-						.addGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING)
-								.addComponent(jScrollPane1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 429,
-										Short.MAX_VALUE)
-								.addComponent(panelCasa, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 429,
-										Short.MAX_VALUE))
-						.addContainerGap()));
+		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING).addGroup(jPanel3Layout
+				.createSequentialGroup()
+				.addGroup(jPanel3Layout
+						.createParallelGroup(Alignment.BASELINE).addComponent(btnNewButton).addComponent(btnNewButton_1)
+						.addComponent(btnNewButton_2).addComponent(btnNewButton_3).addComponent(btnNewButton_4))
+				.addGap(3)
+				.addGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(panelCasa, 0, 0, Short.MAX_VALUE)
+						.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE))
+				.addContainerGap(43, Short.MAX_VALUE)));
 		jPanel3.setLayout(jPanel3Layout);
 
 		GroupLayout layout = new GroupLayout(getContentPane());
@@ -946,8 +960,8 @@ public class Agenda extends JFrame {
 						.addContainerGap(368, Short.MAX_VALUE)));
 		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 468, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(204, Short.MAX_VALUE)));
+						.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 531, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(141, Short.MAX_VALUE)));
 		getContentPane().setLayout(layout);
 
 		if (jList1.getModel().getSize() == 0) {

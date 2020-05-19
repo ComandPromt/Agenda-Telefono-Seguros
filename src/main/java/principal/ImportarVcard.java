@@ -50,7 +50,7 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 	private void guardarContactos(String file) {
 
 		if (!Metodos.extraerExtension(file).equals("vcf")) {
-			Metodos.mensaje("Por favor, selecciona un archivo vcf", 3);
+			Metodos.mensaje("Por favor, selecciona un archivo vcf", 3, true);
 		} else {
 			try {
 
@@ -189,7 +189,7 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 
 			catch (IOException e) {
 
-				Metodos.mensaje("Error al mover los archivos", 1);
+				Metodos.mensaje("Error al mover los archivos", 1, true);
 			}
 
 			catch (Exception e) {
@@ -284,7 +284,7 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 		}
 
 		catch (TooManyListenersException e1) {
-			Metodos.mensaje("Error al mover los archivos", 1);
+			Metodos.mensaje("Error al mover los archivos", 1, true);
 		}
 
 	}
