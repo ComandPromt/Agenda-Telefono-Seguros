@@ -91,6 +91,16 @@ public class Agenda extends JFrame {
 	JTextPane tlf = new JTextPane();
 	JTextPane direccion = new JTextPane();
 
+	public static void vaciarCampos() {
+		Agenda.nombre.setText("");
+
+	}
+
+	public void vaciarDatos() {
+		nombre.setText("");
+
+	}
+
 	protected void guardarContactos() {
 
 		try {
@@ -595,20 +605,6 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_7.setSelectedIcon(null);
 		mnNewMenu_1.add(mntmNewMenuItem_7);
 
-	}
-
-	public static void vaciarCampos() {
-		Agenda.nombre.setText("");
-
-	}
-
-	public void vaciarDatos() {
-		nombre.setText("");
-
-	}
-
-	public Agenda(String msg) {
-		super(msg);
 	}
 
 	private void initComponents() throws SQLException, IOException {
