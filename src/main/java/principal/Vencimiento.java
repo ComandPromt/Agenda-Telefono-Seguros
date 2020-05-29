@@ -5,13 +5,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.TimerTask;
-
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
 
 import utils.Metodos;
 
@@ -19,9 +13,12 @@ public class Vencimiento extends TimerTask {
 
 	static ArrayList<String> arrayList1 = new ArrayList();
 
-	static ArrayList<Objeto> arrayList2 = new ArrayList();
+	static LinkedList<String> arrayList2 = new LinkedList();
 
 	static LinkedList<Integer> indiceDeceso = new <Integer>LinkedList();
+	public static LinkedList<String> colores = new LinkedList();
+	public static LinkedList<String> contactosVerdes = new LinkedList();
+	int contador = 0;
 
 	public static LinkedList<Integer> getIndiceDeceso() {
 		return indiceDeceso;
@@ -31,13 +28,16 @@ public class Vencimiento extends TimerTask {
 		this.indiceDeceso = indiceDeceso;
 	}
 
-	int vueltas = 0;
-
 	@Override
+
 	public void run() {
 
 		try {
 
+			colores.add("R");
+			colores.add("V");
+			contactosVerdes.add("ghhjhg");
+			contactosVerdes.add("ttt");
 			Agenda.ponerFechasDeceso();
 
 			java.util.Date fecha = new Date();
@@ -45,16 +45,21 @@ public class Vencimiento extends TimerTask {
 			indiceDeceso = Metodos.buscarVencimientos(Agenda.fechaDecesos,
 					Agenda.convertirFecha(fecha.toString(), false));
 
+			Agenda.vencimientosDecesos.clear();
+
+			System.out.println("Vtos decesos: " + indiceDeceso.size());
+
 			if (indiceDeceso.size() > 0) {
 
 				arrayList1.clear();
 
-				for (int i = 0; i < indiceDeceso.size(); i++) {
+				arrayList2 = Metodos.leer("fechas.dat");
 
-					if (indiceDeceso.get(i).toString() != null) {
-						arrayList1.add(indiceDeceso.get(i).toString());
+				Agenda.vencimientosDecesos.clear();
 
-					}
+				if (Agenda.vencimientos.size() > 0) {
+
+					ponerVencimientos();
 
 				}
 
@@ -64,46 +69,80 @@ public class Vencimiento extends TimerTask {
 
 				escribiendoFichero.close();
 
-				arrayList2 = Agenda.leer("fechas.dat");
+			}
 
-				Agenda.vencimientosDecesos.clear();
+			Agenda.mostrarLlamada = new Llamada();
 
-				for (int i = 0; i < arrayList2.size(); i++) {
-					Agenda.vencimientosDecesos.add("" + arrayList2.get(i));
+			if (Agenda.contador == 0) {
+
+				Agenda.setVto(Agenda.getVto() + Agenda.vencimientosDecesos.size());
+
+				if (Agenda.vencimientosDecesos.size() > 0) {
+
+					Agenda.mostrarLlamada.setVisible(true);
 
 				}
 
 			}
 
-			Agenda.mostrarLlamada.dispose();
+			else {
 
-			Agenda.mostrarLlamada = new Llamada();
+				// Si hay vencimientos de algun seguro aparece
+				// en el boton
 
-			if (Agenda.vencimientosDecesos.size() > 0) {
+				Agenda.setVto("Vtos: " + Agenda.vencimientosDecesos.size());
 
-				Agenda.mostrarLlamada.setVisible(true);
-
-				TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(Llamada.jTable1.getModel());
-
-				Llamada.jTable1.setRowSorter(sorter);
-
-				List<RowSorter.SortKey> sortKeys = new ArrayList<>(25);
-
-				sortKeys.add(new RowSorter.SortKey(0, SortOrder.DESCENDING));
-				sortKeys.add(new RowSorter.SortKey(1, SortOrder.DESCENDING));
-				sortKeys.add(new RowSorter.SortKey(2, SortOrder.DESCENDING));
-				sortKeys.add(new RowSorter.SortKey(3, SortOrder.DESCENDING));
-
-				sorter.setSortKeys(sortKeys);
 			}
 
-			vueltas++;
+			Agenda.contador += 1;
+
 		}
 
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 
+	}
+
+	private void ponerVencimientos() {
+		String indicevtoDeceso;
+		String fechaVtoDeceso;
+
+		int indice1 = 0;
+
+		int indice2 = 0;
+
+		for (int i = 0; i < indiceDeceso.size(); i++) {
+
+			if (indiceDeceso.get(i).toString() != null) {
+
+				arrayList1.add(indiceDeceso.get(i).toString());
+
+				if (indiceDeceso.get(i) < Agenda.vencimientos.size()) {
+
+					indicevtoDeceso = Agenda.vencimientos.get(indiceDeceso.get(i));
+
+					indice1 = indicevtoDeceso.indexOf("> ");
+
+					indice2 = indicevtoDeceso.indexOf("V");
+
+					if (indice1 > -1 && indice2 > -1) {
+
+						indice1 += 2;
+
+						fechaVtoDeceso = indicevtoDeceso.substring(indice1, indice2);
+
+						fechaVtoDeceso = fechaVtoDeceso.trim();
+
+						Agenda.vencimientosDecesos.add(fechaVtoDeceso);
+
+					}
+
+				}
+
+			}
+
+		}
 	}
 
 }

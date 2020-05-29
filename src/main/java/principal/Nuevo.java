@@ -55,12 +55,15 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 	RSDateChooser hogar = new RSDateChooser();
 
+	RSDateChooser comunidad = new RSDateChooser();
 	private MaterialTextField direccion;
 	private MaterialTextField localidad;
 	private MaterialTextField provincia;
 	private MaterialTextField email;
 	private MaterialTextField telefono;
 	private MaterialTextField codpostal;
+
+	RSDateChooser comercio = new RSDateChooser();
 
 	protected void guardar() {
 
@@ -98,11 +101,11 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 			else {
 
-				if (!comprobarCodPostal) {
+				if (!datoCodPostal.isEmpty() && !comprobarCodPostal) {
 					Metodos.mensaje("Código postal incorrecto", 1, false);
 				}
 
-				if (!comprobarEmail) {
+				if (!datoEmail.isEmpty() && !comprobarEmail) {
 					Metodos.mensaje("Email incorrecto", 1, false);
 				}
 
@@ -113,7 +116,7 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 				else {
 
-					if (comprobarEmail && comprobarCodPostal) {
+					if (datoEmail.isEmpty() || datoCodPostal.isEmpty() || (comprobarEmail && comprobarCodPostal)) {
 
 						try {
 
@@ -294,6 +297,13 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		deceso.setDatoFecha(myDate);
 		hogar.setFormatoFecha("dd/MM/Y");
 		hogar.setDatoFecha(myDate);
+
+		comercio.setFormatoFecha("dd/MM/Y");
+		comercio.setDatoFecha(myDate);
+
+		comunidad.setFormatoFecha("dd/MM/Y");
+		comunidad.setDatoFecha(myDate);
+
 		JLabel jLabel5 = new JLabel();
 		jLabel5.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/heart.png")));
 		jLabel5.setText("Vida");
@@ -366,125 +376,188 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		codpostal.setHorizontalAlignment(SwingConstants.CENTER);
 		codpostal.setBackground(Color.ORANGE);
 
+		JLabel lblNewLabel_2 = new JLabel("*");
+		lblNewLabel_2.setForeground(Color.BLUE);
+		lblNewLabel_2.setFont(new Font("Arial", Font.PLAIN, 20));
+
+		JLabel lblNewLabel_2_1 = new JLabel("*");
+		lblNewLabel_2_1.setForeground(Color.BLUE);
+		lblNewLabel_2_1.setFont(new Font("Arial", Font.PLAIN, 20));
+
+		JLabel jLabel5_2_1_1 = new JLabel();
+		jLabel5_2_1_1.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/shop.png")));
+		jLabel5_2_1_1.setText("Comercio");
+		jLabel5_2_1_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
+
+		JCheckBox checkCoche_1 = new JCheckBox("");
+
+		JLabel jLabel5_2_1_1_1 = new JLabel();
+		jLabel5_2_1_1_1.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/comunidad.png")));
+		jLabel5_2_1_1_1.setText("Comunidad");
+		jLabel5_2_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
+
+		JCheckBox checkCoche_1_1 = new JCheckBox("");
+
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
+		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.TRAILING).addGroup(layout.createSequentialGroup()
 				.addGap(21)
-				.addGroup(layout.createParallelGroup(Alignment.LEADING)
-						.addGroup(layout.createSequentialGroup().addPreferredGap(ComponentPlacement.RELATED)
-								.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout
-										.createSequentialGroup().addGroup(layout.createParallelGroup(Alignment.LEADING)
-												.addGroup(layout.createSequentialGroup().addGroup(layout
-														.createParallelGroup(Alignment.TRAILING).addGroup(layout
-																.createSequentialGroup().addComponent(lblNewLabel_3_2,
-																		GroupLayout.PREFERRED_SIZE, 133,
-																		GroupLayout.PREFERRED_SIZE)
-																.addPreferredGap(ComponentPlacement.RELATED,
-																		GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-																.addGroup(layout.createParallelGroup(Alignment.LEADING)
-																		.addGroup(layout.createSequentialGroup()
-																				.addComponent(email,
-																						GroupLayout.DEFAULT_SIZE, 173,
-																						Short.MAX_VALUE)
-																				.addPreferredGap(
-																						ComponentPlacement.RELATED))
-																		.addComponent(provincia, Alignment.TRAILING,
-																				GroupLayout.PREFERRED_SIZE, 173,
-																				GroupLayout.PREFERRED_SIZE)))
-														.addGroup(layout.createSequentialGroup().addGroup(layout
-																.createParallelGroup(Alignment.LEADING).addComponent(
-																		lblNewLabel_3)
-																.addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 125,
-																		GroupLayout.PREFERRED_SIZE))
-																.addPreferredGap(ComponentPlacement.RELATED, 12,
-																		Short.MAX_VALUE)
-																.addGroup(layout
-																		.createParallelGroup(Alignment.LEADING, false)
-																		.addComponent(nombrec).addComponent(direccion,
-																				173, 173, Short.MAX_VALUE))))
-														.addGap(18))
-												.addGroup(layout.createSequentialGroup().addGap(48).addComponent(
-														btnNewButton, GroupLayout.PREFERRED_SIZE, 118,
+				.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
+						.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
+								.addGroup(layout.createParallelGroup(Alignment.TRAILING)
+										.addGroup(layout.createSequentialGroup()
+												.addComponent(lblNewLabel_3_2, GroupLayout.PREFERRED_SIZE, 133,
 														GroupLayout.PREFERRED_SIZE)
-														.addPreferredGap(ComponentPlacement.RELATED)))
-										.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout
-												.createParallelGroup(Alignment.TRAILING).addGroup(layout
-														.createSequentialGroup()
-														.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 71,
-																Short.MAX_VALUE)
-														.addGap(215))
-												.addGroup(layout.createSequentialGroup().addGroup(layout
-														.createParallelGroup(Alignment.LEADING)
-														.addComponent(
-																lblNewLabel_3_1_2, GroupLayout.DEFAULT_SIZE, 136,
-																Short.MAX_VALUE)
-														.addGroup(layout.createSequentialGroup().addGroup(layout
-																.createParallelGroup(Alignment.TRAILING, false)
-																.addComponent(lblHogar, Alignment.LEADING,
-																		GroupLayout.DEFAULT_SIZE,
-																		GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-																.addComponent(jLabel5_2, Alignment.LEADING,
-																		GroupLayout.DEFAULT_SIZE,
-																		GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-																.addPreferredGap(ComponentPlacement.UNRELATED)
-																.addGroup(layout.createParallelGroup(Alignment.LEADING)
-																		.addComponent(checkHogar,
-																				GroupLayout.PREFERRED_SIZE, 21,
-																				GroupLayout.PREFERRED_SIZE)
-																		.addComponent(checkDeceso,
-																				GroupLayout.PREFERRED_SIZE, 21,
-																				GroupLayout.PREFERRED_SIZE))))
-														.addPreferredGap(ComponentPlacement.RELATED)
+												.addPreferredGap(ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+												.addGroup(layout.createParallelGroup(Alignment.TRAILING)
+														.addComponent(provincia, GroupLayout.PREFERRED_SIZE, 173,
+																GroupLayout.PREFERRED_SIZE)
+														.addGroup(layout.createSequentialGroup()
+																.addComponent(email, GroupLayout.DEFAULT_SIZE, 177,
+																		Short.MAX_VALUE)
+																.addPreferredGap(ComponentPlacement.RELATED))))
+										.addGroup(layout.createSequentialGroup()
+												.addGroup(layout.createParallelGroup(Alignment.TRAILING)
+														.addComponent(lblNewLabel_3, Alignment.LEADING).addComponent(
+																jLabel3, Alignment.LEADING, GroupLayout.PREFERRED_SIZE,
+																125, GroupLayout.PREFERRED_SIZE))
+												.addPreferredGap(ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+												.addComponent(lblNewLabel_2).addPreferredGap(ComponentPlacement.RELATED)
+												.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+														.addComponent(nombrec)
+														.addComponent(direccion, 173, 173, Short.MAX_VALUE))))
+								.addGap(18))
+								.addGroup(layout.createSequentialGroup().addGroup(layout
+										.createParallelGroup(Alignment.TRAILING)
+										.addGroup(layout.createSequentialGroup()
+												.addGroup(layout.createParallelGroup(Alignment.LEADING)
+														.addComponent(jLabel5, GroupLayout.PREFERRED_SIZE, 109,
+																GroupLayout.PREFERRED_SIZE)
+														.addComponent(jLabel5_2_1))
+												.addPreferredGap(ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+												.addGroup(layout.createParallelGroup(Alignment.LEADING)
+														.addComponent(checkVida, GroupLayout.PREFERRED_SIZE, 21,
+																GroupLayout.PREFERRED_SIZE)
+														.addComponent(checkCoche))
+												.addGap(4))
+										.addGroup(layout.createSequentialGroup().addComponent(jLabel5_2_1_1)
+												.addPreferredGap(ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+												.addComponent(checkCoche_1, GroupLayout.PREFERRED_SIZE, 21,
+														GroupLayout.PREFERRED_SIZE)
+												.addGap(2))
+										.addGroup(
+												layout.createSequentialGroup().addComponent(jLabel5_2_1_1_1).addGap(14)
+														.addComponent(checkCoche_1_1, GroupLayout.PREFERRED_SIZE, 21,
+																GroupLayout.PREFERRED_SIZE)
+														.addGap(2)))
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addGroup(layout.createParallelGroup(Alignment.LEADING)
+												.addComponent(comercio, GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+												.addComponent(coche, 0, 0, Short.MAX_VALUE)
+												.addComponent(comunidad, GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+												.addComponent(vida, GroupLayout.PREFERRED_SIZE, 162,
+														GroupLayout.PREFERRED_SIZE))
+										.addPreferredGap(ComponentPlacement.RELATED)))
+						.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(lblNewLabel_3_1)
+								.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+										.addGroup(layout.createParallelGroup(Alignment.TRAILING).addGroup(layout
+												.createSequentialGroup().addGroup(layout
+														.createParallelGroup(Alignment.LEADING).addGroup(layout
+																.createSequentialGroup().addGroup(layout
+																		.createParallelGroup(Alignment.LEADING)
+																		.addGroup(layout.createSequentialGroup()
+																				.addComponent(lblNewLabel_1,
+																						GroupLayout.DEFAULT_SIZE, 87,
+																						Short.MAX_VALUE)
+																				.addGap(49)
+																				.addComponent(lblNewLabel_2_1,
+																						GroupLayout.PREFERRED_SIZE, 8,
+																						GroupLayout.PREFERRED_SIZE))
+																		.addComponent(
+																				lblNewLabel_3_1_2,
+																				GroupLayout.DEFAULT_SIZE, 144,
+																				Short.MAX_VALUE)
+																		.addGroup(layout.createSequentialGroup()
+																				.addGroup(layout.createParallelGroup(
+																						Alignment.TRAILING, false)
+																						.addComponent(lblHogar,
+																								Alignment.LEADING,
+																								GroupLayout.DEFAULT_SIZE,
+																								GroupLayout.DEFAULT_SIZE,
+																								Short.MAX_VALUE)
+																						.addComponent(
+																								jLabel5_2,
+																								Alignment.LEADING,
+																								GroupLayout.DEFAULT_SIZE,
+																								GroupLayout.DEFAULT_SIZE,
+																								Short.MAX_VALUE))
+																				.addPreferredGap(
+																						ComponentPlacement.UNRELATED)
+																				.addGroup(layout
+																						.createParallelGroup(
+																								Alignment.LEADING)
+																						.addComponent(checkHogar,
+																								GroupLayout.PREFERRED_SIZE,
+																								21,
+																								GroupLayout.PREFERRED_SIZE)
+																						.addComponent(checkDeceso,
+																								GroupLayout.PREFERRED_SIZE,
+																								21,
+																								GroupLayout.PREFERRED_SIZE))))
+																.addPreferredGap(ComponentPlacement.RELATED))
+														.addGroup(layout.createSequentialGroup()
+																.addComponent(lblNewLabel).addGap(2)))
+												.addGroup(layout.createParallelGroup(Alignment.TRAILING)
+														.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 118,
+																GroupLayout.PREFERRED_SIZE)
 														.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
 																.addComponent(hogar, 0, 0, Short.MAX_VALUE)
 																.addComponent(deceso, 0, 0, Short.MAX_VALUE)
 																.addComponent(codpostal, GroupLayout.DEFAULT_SIZE, 146,
 																		Short.MAX_VALUE)
 																.addComponent(localidad).addComponent(telefono,
-																		GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE))
-														.addPreferredGap(ComponentPlacement.RELATED))
-												.addComponent(scrollPane, Alignment.LEADING, GroupLayout.DEFAULT_SIZE,
-														286, Short.MAX_VALUE))
-												.addComponent(lblNewLabel_3_1)))
-										.addComponent(lblNewLabel_4))
-								.addGap(256)
-								.addComponent(lblNewLabel_3_1_1, GroupLayout.PREFERRED_SIZE, 133,
-										GroupLayout.PREFERRED_SIZE)
-								.addGap(129))
-						.addGroup(layout.createSequentialGroup()
-								.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
-										.addGroup(layout.createSequentialGroup()
-												.addComponent(jLabel5, GroupLayout.PREFERRED_SIZE, 109,
-														GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(ComponentPlacement.RELATED).addComponent(checkVida,
-														GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))
-										.addGroup(layout.createSequentialGroup().addComponent(jLabel5_2_1)
-												.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
-														Short.MAX_VALUE)
-												.addComponent(checkCoche)))
-								.addGap(10)
-								.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
-										.addComponent(coche, 0, 0, Short.MAX_VALUE)
-										.addComponent(vida, GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE))
-								.addGap(88).addComponent(lblNewLabel)))
-				.addGap(0)));
+																		GroupLayout.DEFAULT_SIZE, 146,
+																		Short.MAX_VALUE))))
+												.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 302,
+														Short.MAX_VALUE))
+										.addGap(124))))
+						.addComponent(lblNewLabel_4))
+				.addGap(256)
+				.addComponent(lblNewLabel_3_1_1, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
+				.addGap(129)));
 		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblNewLabel_1)
-								.addComponent(telefono, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
-								.addComponent(nombrec, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(layout.createParallelGroup(Alignment.BASELINE).addComponent(lblNewLabel_3)
-								.addComponent(direccion, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblNewLabel_3_1, GroupLayout.PREFERRED_SIZE, 63,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(localidad, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE))
+				.addGroup(layout.createSequentialGroup()
+						.addGroup(layout
+								.createParallelGroup(
+										Alignment.LEADING)
+								.addGroup(
+										layout.createSequentialGroup().addContainerGap()
+												.addGroup(
+														layout.createParallelGroup(Alignment.BASELINE)
+																.addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 67,
+																		GroupLayout.PREFERRED_SIZE)
+																.addComponent(lblNewLabel_1)
+																.addComponent(telefono, GroupLayout.PREFERRED_SIZE, 29,
+																		GroupLayout.PREFERRED_SIZE)
+																.addComponent(nombrec, GroupLayout.PREFERRED_SIZE, 33,
+																		GroupLayout.PREFERRED_SIZE)
+																.addComponent(lblNewLabel_2))
+												.addPreferredGap(ComponentPlacement.RELATED).addGroup(layout
+														.createParallelGroup(Alignment.BASELINE).addComponent(
+																lblNewLabel_3)
+														.addComponent(direccion, GroupLayout.PREFERRED_SIZE, 33,
+																GroupLayout.PREFERRED_SIZE)
+														.addComponent(lblNewLabel_3_1, GroupLayout.PREFERRED_SIZE, 63,
+																GroupLayout.PREFERRED_SIZE)
+														.addComponent(localidad, GroupLayout.PREFERRED_SIZE, 33,
+																GroupLayout.PREFERRED_SIZE)))
+								.addGroup(
+										layout.createSequentialGroup().addGap(31).addComponent(
+												lblNewLabel_2_1, GroupLayout.PREFERRED_SIZE, 24,
+												GroupLayout.PREFERRED_SIZE)))
 						.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
-								.addGroup(layout.createParallelGroup(Alignment.LEADING)
-										.addGroup(layout.createSequentialGroup().addGap(18).addComponent(
-												lblNewLabel_3_1_1, GroupLayout.PREFERRED_SIZE, 63,
-												GroupLayout.PREFERRED_SIZE))
+								.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout
+										.createSequentialGroup().addGap(18).addComponent(lblNewLabel_3_1_1,
+												GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE))
 										.addGroup(layout.createSequentialGroup().addGap(8).addComponent(lblNewLabel_3_2,
 												GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE))
 										.addGroup(layout.createSequentialGroup().addGap(6)
@@ -511,57 +584,87 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 										layout.createSequentialGroup().addGap(18).addComponent(provincia,
 												GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)))
 						.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
-								.addGroup(layout.createParallelGroup(Alignment.TRAILING)
-										.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout
-												.createSequentialGroup().addPreferredGap(ComponentPlacement.UNRELATED)
+								.addGroup(layout.createParallelGroup(Alignment.LEADING)
+										.addGroup(layout.createSequentialGroup().addGap(18).addComponent(jLabel5)
+												.addPreferredGap(ComponentPlacement.UNRELATED)
+												.addComponent(jLabel5_2_1))
+										.addGroup(layout.createSequentialGroup().addGroup(layout
+												.createParallelGroup(Alignment.LEADING)
+												.addGroup(layout.createSequentialGroup().addGap(32)
+														.addComponent(checkVida, GroupLayout.PREFERRED_SIZE, 21,
+																GroupLayout.PREFERRED_SIZE))
+												.addGroup(layout.createSequentialGroup().addGap(23).addComponent(vida,
+														GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+														GroupLayout.PREFERRED_SIZE)))
+												.addGap(21)
 												.addGroup(layout.createParallelGroup(Alignment.LEADING)
-														.addGroup(layout.createSequentialGroup().addComponent(lblHogar)
-																.addPreferredGap(ComponentPlacement.RELATED))
-														.addComponent(jLabel5, GroupLayout.DEFAULT_SIZE, 58,
-																Short.MAX_VALUE)))
-												.addGroup(layout.createSequentialGroup().addGap(23)
-														.addComponent(vida, GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-														.addPreferredGap(ComponentPlacement.RELATED)))
+														.addComponent(checkCoche)
+														.addComponent(coche, GroupLayout.PREFERRED_SIZE, 41,
+																GroupLayout.PREFERRED_SIZE))))
+								.addGroup(layout.createParallelGroup(Alignment.LEADING)
+										.addGroup(layout.createSequentialGroup().addGap(18).addComponent(comercio,
+												GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
+										.addGroup(layout.createSequentialGroup().addGap(26).addComponent(checkCoche_1,
+												GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))
+										.addGroup(layout.createSequentialGroup()
+												.addPreferredGap(ComponentPlacement.UNRELATED)
+												.addComponent(jLabel5_2_1_1, GroupLayout.PREFERRED_SIZE, 60,
+														GroupLayout.PREFERRED_SIZE)))
+								.addGap(14)
+								.addGroup(layout.createParallelGroup(Alignment.LEADING)
 										.addGroup(layout.createSequentialGroup()
 												.addPreferredGap(ComponentPlacement.RELATED)
-												.addComponent(checkVida, GroupLayout.PREFERRED_SIZE, 21,
-														GroupLayout.PREFERRED_SIZE)
-												.addGap(15)))
-								.addPreferredGap(ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-								.addGroup(layout.createParallelGroup(Alignment.TRAILING, false)
-										.addGroup(layout.createParallelGroup(Alignment.LEADING)
-												.addComponent(coche, GroupLayout.PREFERRED_SIZE, 41,
-														GroupLayout.PREFERRED_SIZE)
-												.addComponent(jLabel5_2_1).addComponent(lblNewLabel))
-										.addGroup(layout.createSequentialGroup().addComponent(checkCoche).addGap(16))))
-								.addGroup(layout.createSequentialGroup().addGap(18).addComponent(hogar,
-										GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE))
-								.addGroup(layout.createSequentialGroup().addGap(28)
-										.addComponent(checkHogar, GroupLayout.PREFERRED_SIZE, 21,
-												GroupLayout.PREFERRED_SIZE)
-										.addGap(92)))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(layout.createParallelGroup(Alignment.LEADING)
-								.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
-								.addGroup(layout.createSequentialGroup().addGap(20).addComponent(btnNewButton,
-										GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE)))
-						.addGap(34)));
+												.addComponent(jLabel5_2_1_1_1, GroupLayout.PREFERRED_SIZE, 48,
+														GroupLayout.PREFERRED_SIZE))
+										.addGroup(layout.createSequentialGroup()
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addGroup(layout.createParallelGroup(Alignment.LEADING)
+														.addComponent(checkCoche_1_1, GroupLayout.PREFERRED_SIZE, 21,
+																GroupLayout.PREFERRED_SIZE)
+														.addComponent(
+																comunidad, GroupLayout.PREFERRED_SIZE, 41,
+																GroupLayout.PREFERRED_SIZE)))))
+								.addGroup(layout.createSequentialGroup().addGroup(layout
+										.createParallelGroup(Alignment.LEADING)
+										.addGroup(layout.createSequentialGroup()
+												.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(lblHogar))
+										.addGroup(layout.createSequentialGroup().addGap(28).addComponent(checkHogar,
+												GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))
+										.addGroup(layout.createSequentialGroup().addGap(18)
+												.addComponent(hogar, GroupLayout.PREFERRED_SIZE,
+														GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.UNRELATED)
+												.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 53,
+														GroupLayout.PREFERRED_SIZE))
+										.addGroup(layout.createSequentialGroup().addGap(76).addComponent(lblNewLabel,
+												GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)))
+										.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(scrollPane,
+												GroupLayout.PREFERRED_SIZE, 117, GroupLayout.PREFERRED_SIZE)
+										.addGap(25)))
+						.addGap(46)));
 
 		nota = new JTextArea("", 0, 50);
 
 		nota.setWrapStyleWord(true);
+
 		nota.setLineWrap(true);
+
 		nota.setFont(new Font("Monospaced", Font.PLAIN, 16));
+
 		nota.setBackground(Color.WHITE);
+
 		scrollPane.setViewportView(nota);
+
 		getContentPane().setLayout(layout);
-		setSize(new Dimension(697, 603));
+
+		setSize(new Dimension(697, 600));
+
 		setLocationRelativeTo(null);
+
 	}
 
 	@Override
+
 	public void stateChanged(ChangeEvent e) {
 		// TODO Auto-generated method stub
 
@@ -572,4 +675,5 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		// TODO Auto-generated method stub
 
 	}
+
 }

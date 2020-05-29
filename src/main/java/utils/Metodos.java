@@ -3,9 +3,12 @@ package utils;
 import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -28,6 +31,26 @@ import alertas.AlertWarningSalir;
 import principal.Agenda;
 
 public class Metodos {
+
+	public static LinkedList<String> leer(String file)
+			throws IOException, FileNotFoundException, ClassNotFoundException {
+
+		LinkedList<String> arrayList2 = new LinkedList<String>();
+
+		File archivo = new File(file);
+
+		if (archivo.exists()) {
+
+			ObjectInputStream leyendoFichero = new ObjectInputStream(new FileInputStream(file));
+
+			arrayList2.add(leyendoFichero.readObject().toString());
+
+			leyendoFichero.close();
+
+		}
+
+		return arrayList2;
+	}
 
 	public static boolean esBisiesto(int year) {
 
@@ -149,11 +172,13 @@ public class Metodos {
 				ceromes = "0";
 			}
 
+//			busqueda = dia + "/" + ceromes + mes + "/" + year;
+//
+//			repetido = buscarFechasVencimientos(lista, busqueda,1);
+
 			busqueda = dia + "/" + ceromes + mes + "/" + year;
 
-			System.out.println("busco el dia: " + busqueda + " con " + vueltasComprobacion + " vuelta/s");
-
-			repetido = buscarFechasVencimientos(lista, busqueda);
+			repetido = buscarFechasVencimientos(lista, busqueda, 1);
 
 		}
 
@@ -161,7 +186,7 @@ public class Metodos {
 
 	}
 
-	public static LinkedList<Integer> buscarFechasVencimientos(LinkedList<String> lista, String busqueda) {
+	public static LinkedList<Integer> buscarFechasVencimientos(LinkedList<String> lista, String busqueda, int color) {
 
 		LinkedList<Integer> repetido = new LinkedList<Integer>();
 
@@ -172,6 +197,25 @@ public class Metodos {
 		while (indice != -1) {
 
 			repetido.add(indice);
+
+			switch (color) {
+
+			case 1:
+				break;
+
+			case 2:
+				break;
+
+			case 3:
+				break;
+
+			case 4:
+				break;
+
+			default:
+				break;
+
+			}
 
 			lista.set(indice, null);
 
