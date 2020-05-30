@@ -228,7 +228,11 @@ public class Agenda extends JFrame {
 
 	static LinkedList<String> observaciones = new <String>LinkedList();
 
-	static LinkedList<String> contactos = new <String>LinkedList();
+	public static LinkedList<String> contactos = new <String>LinkedList();
+
+	public LinkedList<String> getContactos() {
+		return contactos;
+	}
 
 	static LinkedList<String> telefonos = new <String>LinkedList();
 
@@ -885,16 +889,14 @@ public class Agenda extends JFrame {
 
 				jList1.setModel(model);
 
-				System.out.println("--------------------------");
-
 				int indiceVencimiento = -1;
-				System.out.println(Vencimiento.getIndiceDeceso().size());
+
 				for (int i = 0; i < Vencimiento.getIndiceDeceso().size(); i++) {
 
 					indiceVencimiento = Vencimiento.getIndiceDeceso().get(i);
 
 					contactoTelefono.add(telefonos.get(indiceVencimiento));
-					System.out.println("Deceso --> " + vencimientosDecesos.get(i));
+
 					fechasDecesos.add("Deceso --> " + vencimientosDecesos.get(i));
 
 					model.addElement(contactos.get(indiceVencimiento));
@@ -944,7 +946,9 @@ public class Agenda extends JFrame {
 //				model.clear();
 //
 //				jList1.setModel(model);
+
 				limpiarContactos();
+
 				verNotas();
 
 			}
@@ -1120,7 +1124,9 @@ public class Agenda extends JFrame {
 
 					observaciones.add(obs);
 
-					fechaDecesos.add(convertirFecha(fechaDeceso, false));
+					if (fechaDeceso != null && !fechaDeceso.isEmpty()) {
+						fechaDecesos.add(convertirFecha(fechaDeceso, false));
+					}
 
 					emails.add(correo);
 
@@ -1144,6 +1150,7 @@ public class Agenda extends JFrame {
 					}
 
 				}
+
 			}
 
 			jList1.setModel(modelo);
@@ -1289,6 +1296,7 @@ public class Agenda extends JFrame {
 					cadena = agenda.get(i);
 
 					fechaDeceso = cadena.substring(cadena.indexOf("▒") + 1, cadena.indexOf("╣"));
+
 					fechaDecesos.add(convertirFecha(fechaDeceso, false));
 
 				}

@@ -14,18 +14,18 @@ public class Vencimiento extends TimerTask {
 	static ArrayList<String> arrayList1 = new ArrayList();
 
 	static LinkedList<String> arrayList2 = new LinkedList();
+	static LinkedList<String> contactosVencimientos = new LinkedList();
 
 	static LinkedList<Integer> indiceDeceso = new <Integer>LinkedList();
+
+	static LinkedList<Integer> vencimientos = new <Integer>LinkedList();
+
 	public static LinkedList<String> colores = new LinkedList();
-	public static LinkedList<String> contactosVerdes = new LinkedList();
+
 	int contador = 0;
 
 	public static LinkedList<Integer> getIndiceDeceso() {
 		return indiceDeceso;
-	}
-
-	public void setIndiceDeceso(LinkedList<Integer> indiceDeceso) {
-		this.indiceDeceso = indiceDeceso;
 	}
 
 	@Override
@@ -34,28 +34,35 @@ public class Vencimiento extends TimerTask {
 
 		try {
 
-			colores.add("R");
-			colores.add("V");
-			contactosVerdes.add("ghhjhg");
-			contactosVerdes.add("ttt");
+			indiceDeceso.clear();
+
 			Agenda.ponerFechasDeceso();
 
 			java.util.Date fecha = new Date();
 
-			indiceDeceso = Metodos.buscarVencimientos(Agenda.fechaDecesos,
+			// ordeno array fechas
+
+			vencimientos = Metodos.buscarVencimientosRojos(Agenda.fechaDecesos,
 					Agenda.convertirFecha(fecha.toString(), false));
 
-			Agenda.vencimientosDecesos.clear();
+			for (int i = 0; i < vencimientos.size(); i++) {
+				indiceDeceso.add(vencimientos.get(i));
+			}
 
-			System.out.println("Vtos decesos: " + indiceDeceso.size());
+			vencimientos = Metodos.buscarVencimientosVerdes(Agenda.fechaDecesos,
+					Agenda.convertirFecha(fecha.toString(), false));
+
+			for (int i = 0; i < vencimientos.size(); i++) {
+				indiceDeceso.add(vencimientos.get(i));
+			}
+
+			Agenda.vencimientosDecesos.clear();
 
 			if (indiceDeceso.size() > 0) {
 
 				arrayList1.clear();
 
 				arrayList2 = Metodos.leer("fechas.dat");
-
-				Agenda.vencimientosDecesos.clear();
 
 				if (Agenda.vencimientos.size() > 0) {
 
@@ -105,7 +112,9 @@ public class Vencimiento extends TimerTask {
 	}
 
 	private void ponerVencimientos() {
+
 		String indicevtoDeceso;
+
 		String fechaVtoDeceso;
 
 		int indice1 = 0;

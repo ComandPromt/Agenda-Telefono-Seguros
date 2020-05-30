@@ -29,8 +29,55 @@ import alertas.AlertInformation;
 import alertas.AlertSuccess;
 import alertas.AlertWarningSalir;
 import principal.Agenda;
+import principal.Vencimiento;
 
 public class Metodos {
+
+	public static boolean ultimoDiaMes(int dia, int mes, int year) {
+
+		boolean resultado = false;
+
+		if (dia == 30) {
+
+			switch (mes) {
+
+			case 4:
+			case 6:
+			case 9:
+			case 11:
+				resultado = true;
+				break;
+
+			}
+
+		}
+
+		if (dia == 31) {
+
+			switch (mes) {
+
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 8:
+			case 10:
+			case 12:
+				resultado = true;
+				break;
+
+			}
+
+		}
+
+		if (year < 3344 && (mes == 2 && (dia == 29 && esBisiesto(year)) || (dia == 28 && !esBisiesto(year)
+
+		))) {
+			resultado = true;
+		}
+
+		return resultado;
+	}
 
 	public static LinkedList<String> leer(String file)
 			throws IOException, FileNotFoundException, ClassNotFoundException {
@@ -81,7 +128,89 @@ public class Metodos {
 
 	}
 
-	public static LinkedList<Integer> buscarVencimientos(LinkedList<String> lista, String busqueda) {
+	public static LinkedList<Integer> buscarVencimientosRojos(LinkedList<String> lista, String busqueda) {
+
+		LinkedList<Integer> repetido = new LinkedList<Integer>();
+
+		LinkedList<Integer> resultado = new LinkedList<Integer>();
+
+		int dia, mes, year;
+
+		dia = Integer.parseInt(busqueda.substring(0, busqueda.indexOf("/")));
+
+		mes = Integer.parseInt(busqueda.substring(busqueda.indexOf("/") + 1, busqueda.lastIndexOf("/")));
+
+		year = Integer.parseInt(busqueda.substring(busqueda.lastIndexOf("/") + 1, busqueda.length()));
+
+		String ceromes = "";
+
+		LinkedList<String> fechasRojas = new LinkedList<String>();
+
+		fechasRojas.add(busqueda);
+
+		if (ultimoDiaMes(dia, mes, year)) {
+
+			dia = 1;
+
+			if (mes == 12) {
+				mes = 1;
+			}
+
+			else {
+				++mes;
+			}
+
+		} else {
+			++dia;
+		}
+
+		for (int x = 0; x < 15; x++) {
+
+			if (mes <= 9) {
+				ceromes = "0";
+			}
+
+			busqueda = dia + "/" + ceromes + mes + "/" + year;
+
+			fechasRojas.add(busqueda);
+
+			if (ultimoDiaMes(dia, mes, year)) {
+
+				dia = 1;
+
+				if (mes == 12) {
+					mes = 1;
+				}
+
+				else {
+					++mes;
+				}
+
+			} else {
+				++dia;
+			}
+
+		}
+
+		for (int i = 0; i < 15; i++) {
+
+			repetido = buscarFechasVencimientos(lista, fechasRojas.get(i), 1);
+
+			if (repetido.size() > 0) {
+
+				for (int x = 0; x < repetido.size(); x++) {
+					resultado.add(repetido.get(x));
+				}
+
+			}
+
+		}
+
+		return resultado;
+
+	}
+
+	public static LinkedList<Integer> buscarVencimientosVerdes(LinkedList<String> lista, String busqueda) {
 
 		LinkedList<Integer> repetido = new LinkedList<Integer>();
 
@@ -98,6 +227,8 @@ public class Metodos {
 		int vueltasComprobacion = 1;
 
 		boolean cambioFebrero = false;
+
+		String ceromes = "";
 
 		if (dia != 29 && dia != 30 && dia != 31 && mes != 11 && mes != 12) {
 
@@ -146,11 +277,7 @@ public class Metodos {
 				mesEspecial = true;
 			}
 
-			if (!cambioFebrero && mes == 2 && dia == 29) {
-				vueltasComprobacion = 2;
-			}
-
-			if (dia == 30 && mes == 6) {
+			if ((!cambioFebrero && mes == 2 && dia == 29) || (dia == 30 && mes == 6)) {
 				vueltasComprobacion = 2;
 			}
 
@@ -159,8 +286,6 @@ public class Metodos {
 			}
 
 		}
-
-		String ceromes = "";
 
 		for (int i = 0; i < vueltasComprobacion; i++) {
 
@@ -172,13 +297,9 @@ public class Metodos {
 				ceromes = "0";
 			}
 
-//			busqueda = dia + "/" + ceromes + mes + "/" + year;
-//
-//			repetido = buscarFechasVencimientos(lista, busqueda,1);
-
 			busqueda = dia + "/" + ceromes + mes + "/" + year;
 
-			repetido = buscarFechasVencimientos(lista, busqueda, 1);
+			repetido = buscarFechasVencimientos(lista, busqueda, 4);
 
 		}
 
@@ -194,28 +315,39 @@ public class Metodos {
 
 		indice = lista.indexOf(busqueda);
 
+		String pintura = "";
+
+		switch (color) {
+
+		case 1:
+			pintura = "R";
+			break;
+
+		case 2:
+			pintura = "O";
+			break;
+
+		case 3:
+			pintura = "A";
+			break;
+
+		case 4:
+			pintura = "V";
+			break;
+
+		default:
+			pintura = "V";
+			break;
+
+		}
+
 		while (indice != -1) {
 
+			Vencimiento.colores.add(pintura);
+			Vencimiento.colores.add(pintura);
+			Vencimiento.colores.add(pintura);
+			Vencimiento.colores.add(pintura);
 			repetido.add(indice);
-
-			switch (color) {
-
-			case 1:
-				break;
-
-			case 2:
-				break;
-
-			case 3:
-				break;
-
-			case 4:
-				break;
-
-			default:
-				break;
-
-			}
 
 			lista.set(indice, null);
 
