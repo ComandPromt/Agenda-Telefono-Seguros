@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -83,19 +84,20 @@ public class Metodos {
 			throws IOException, FileNotFoundException, ClassNotFoundException {
 
 		LinkedList<String> arrayList2 = new LinkedList<String>();
+		try {
+			File archivo = new File(file);
 
-		File archivo = new File(file);
+			if (archivo.exists()) {
 
-		if (archivo.exists()) {
+				ObjectInputStream leyendoFichero = new ObjectInputStream(new FileInputStream(file));
 
-			ObjectInputStream leyendoFichero = new ObjectInputStream(new FileInputStream(file));
+				arrayList2.add(leyendoFichero.readObject().toString());
 
-			arrayList2.add(leyendoFichero.readObject().toString());
+				leyendoFichero.close();
 
-			leyendoFichero.close();
-
+			}
+		} catch (Exception e) {
 		}
-
 		return arrayList2;
 	}
 
@@ -144,23 +146,29 @@ public class Metodos {
 
 		String ceromes = "";
 
+		String cerodia = "";
+
 		LinkedList<String> fechasRojas = new LinkedList<String>();
 
-		fechasRojas.add(busqueda);
-
 		if (ultimoDiaMes(dia, mes, year)) {
+
+			// Se miran los vencimientos
+			// Antes de que cumplan
 
 			dia = 1;
 
 			if (mes == 12) {
 				mes = 1;
+				++year;
 			}
 
 			else {
 				++mes;
 			}
 
-		} else {
+		}
+
+		else {
 			++dia;
 		}
 
@@ -170,7 +178,21 @@ public class Metodos {
 				ceromes = "0";
 			}
 
-			busqueda = dia + "/" + ceromes + mes + "/" + year;
+			else {
+				ceromes = "";
+			}
+
+			if (dia <= 9) {
+				cerodia = "0";
+			}
+
+			else {
+				cerodia = "";
+			}
+
+			busqueda = cerodia + dia + "/" + ceromes + mes + "/" + year;
+
+			FormatoTabla.FechasVencimientosRojos.add(busqueda);
 
 			fechasRojas.add(busqueda);
 
@@ -180,13 +202,16 @@ public class Metodos {
 
 				if (mes == 12) {
 					mes = 1;
+					++year;
 				}
 
 				else {
 					++mes;
 				}
 
-			} else {
+			}
+
+			else {
 				++dia;
 			}
 
@@ -199,6 +224,7 @@ public class Metodos {
 			if (repetido.size() > 0) {
 
 				for (int x = 0; x < repetido.size(); x++) {
+
 					resultado.add(repetido.get(x));
 				}
 
@@ -210,9 +236,246 @@ public class Metodos {
 
 	}
 
+	public static LinkedList<Integer> buscarVencimientosAmarillo(LinkedList<String> lista, String busqueda) {
+
+		LinkedList<Integer> repetido = new LinkedList<Integer>();
+
+		LinkedList<Integer> resultado = new LinkedList<Integer>();
+
+		LinkedList<Integer> meses31 = new LinkedList<Integer>();
+
+		int dia, mes, year;
+
+		meses31.add(1);
+
+		meses31.add(3);
+
+		meses31.add(5);
+
+		meses31.add(7);
+
+		meses31.add(8);
+
+		meses31.add(10);
+
+		meses31.add(12);
+
+		dia = Integer.parseInt(busqueda.substring(0, busqueda.indexOf("/")));
+
+		mes = Integer.parseInt(busqueda.substring(busqueda.indexOf("/") + 1, busqueda.lastIndexOf("/")));
+
+		year = Integer.parseInt(busqueda.substring(busqueda.lastIndexOf("/") + 1, busqueda.length()));
+
+		String ceromes = "";
+
+		String cerodia = "";
+
+		LinkedList<String> fechasAmarillas = new LinkedList<String>();
+
+		if (dia == 31 && meses31.contains(mes) || dia == 30 && !meses31.contains(mes)
+				|| dia == 28 && mes == 2 && !esBisiesto(year) || dia == 29 && mes == 2 && esBisiesto(year)) {
+			dia = 1;
+		}
+
+		else {
+			++dia;
+		}
+
+		if (mes == 12) {
+			mes = 1;
+		} else {
+
+			mes++;
+
+		}
+
+		if (mes <= 9) {
+			ceromes = "0";
+		}
+
+		else {
+			ceromes = "";
+		}
+
+		if (dia <= 9) {
+			cerodia = "0";
+		}
+
+		else {
+			cerodia = "";
+		}
+
+		busqueda = cerodia + dia + "/" + ceromes + mes + "/" + year;
+
+		for (int x = 0; x < 30; x++) {
+
+			if (x > 0) {
+				++dia;
+			}
+
+			if (dia == 29 && mes == 2 && !esBisiesto(year) ||
+
+					year < 3344 && dia == 30 && mes == 2 && esBisiesto(year) || dia == 31 && !meses31.contains(mes)
+					|| dia == 32 && meses31.contains(mes)) {
+				dia = 1;
+				++mes;
+			}
+
+			if (dia == 32 && mes == 12) {
+				dia = 1;
+				++year;
+			}
+
+			if (mes <= 9) {
+				ceromes = "0";
+			} else {
+				ceromes = "";
+			}
+
+			if (dia <= 9) {
+				cerodia = "0";
+			}
+
+			else {
+				cerodia = "";
+			}
+
+			busqueda = cerodia + dia + "/" + ceromes + mes + "/" + year;
+
+			FormatoTabla.FechasVencimientosAmarillos.add(busqueda);
+
+			fechasAmarillas.add(busqueda);
+
+		}
+
+		for (int i = 0; i < 30; i++) {
+
+			repetido = buscarFechasVencimientos(lista, fechasAmarillas.get(i), 3);
+
+			if (repetido.size() > 0) {
+
+				for (int x = 0; x < repetido.size(); x++) {
+
+					resultado.add(repetido.get(x));
+				}
+
+			}
+
+		}
+
+		return resultado;
+	}
+
+	public static LinkedList<Integer> buscarVencimientosNaranja(LinkedList<String> lista, String busqueda) {
+
+		LinkedList<Integer> repetido = new LinkedList<Integer>();
+
+		LinkedList<Integer> resultado = new LinkedList<Integer>();
+
+		LinkedList<Integer> meses31 = new LinkedList<Integer>();
+
+		int dia, mes, year;
+
+		meses31.add(1);
+
+		meses31.add(3);
+
+		meses31.add(5);
+
+		meses31.add(7);
+
+		meses31.add(8);
+
+		meses31.add(10);
+
+		meses31.add(12);
+
+		dia = Integer.parseInt(busqueda.substring(0, busqueda.indexOf("/")));
+
+		mes = Integer.parseInt(busqueda.substring(busqueda.indexOf("/") + 1, busqueda.lastIndexOf("/")));
+
+		year = Integer.parseInt(busqueda.substring(busqueda.lastIndexOf("/") + 1, busqueda.length()));
+
+		String ceromes = "";
+
+		String cerodia = "";
+
+		LinkedList<String> fechasNaranjas = new LinkedList<String>();
+
+		if (dia >= 16 && !meses31.contains(mes)) {
+
+			dia -= 15;
+
+			++mes;
+		}
+
+		else {
+
+			dia += 16;
+		}
+
+		for (int x = 0; x < 15; x++) {
+
+			if (dia == 29 && mes == 2 && !esBisiesto(year) ||
+
+					year < 3344 && dia == 30 && mes == 2 && esBisiesto(year) || dia == 31 && !meses31.contains(mes)
+					|| dia == 32 && meses31.contains(mes)) {
+				dia = 1;
+				++mes;
+			}
+
+			if (dia == 32 && mes == 12) {
+				dia = 1;
+				++year;
+			}
+
+			if (mes <= 9) {
+				ceromes = "0";
+			} else {
+				ceromes = "";
+			}
+
+			if (dia <= 9) {
+				cerodia = "0";
+			}
+
+			else {
+				cerodia = "";
+			}
+
+			busqueda = cerodia + dia + "/" + ceromes + mes + "/" + year;
+
+			FormatoTabla.FechasVencimientosNaranjas.add(busqueda);
+
+			fechasNaranjas.add(busqueda);
+
+			++dia;
+
+		}
+
+		for (int i = 0; i < 15; i++) {
+
+			repetido = buscarFechasVencimientos(lista, fechasNaranjas.get(i), 2);
+
+			if (repetido.size() > 0) {
+
+				for (int x = 0; x < repetido.size(); x++) {
+
+					resultado.add(repetido.get(x));
+				}
+
+			}
+
+		}
+
+		return resultado;
+	}
+
 	public static LinkedList<Integer> buscarVencimientosVerdes(LinkedList<String> lista, String busqueda) {
 
 		LinkedList<Integer> repetido = new LinkedList<Integer>();
+
+		String cerodia = "";
 
 		int dia, mes, year;
 
@@ -237,6 +500,7 @@ public class Metodos {
 			}
 
 			mes += 2;
+
 		}
 
 		else {
@@ -297,7 +561,21 @@ public class Metodos {
 				ceromes = "0";
 			}
 
-			busqueda = dia + "/" + ceromes + mes + "/" + year;
+			else {
+				ceromes = "";
+			}
+
+			if (dia <= 9) {
+				cerodia = "0";
+			}
+
+			else {
+				cerodia = "";
+			}
+
+			busqueda = cerodia + dia + "/" + ceromes + mes + "/" + year;
+
+			FormatoTabla.FechasVencimientosVerdes.add(busqueda);
 
 			repetido = buscarFechasVencimientos(lista, busqueda, 4);
 
@@ -310,6 +588,27 @@ public class Metodos {
 	public static LinkedList<Integer> buscarFechasVencimientos(LinkedList<String> lista, String busqueda, int color) {
 
 		LinkedList<Integer> repetido = new LinkedList<Integer>();
+
+		Date date = new Date();
+
+		int dia = date.getDay();
+		int mes = date.getMonth();
+		String cerodia = "";
+		String ceromes = "";
+
+		if (dia <= 9) {
+			cerodia = "0";
+		} else {
+			cerodia = "";
+		}
+
+		if (mes <= 9) {
+			ceromes = "0";
+		} else {
+			ceromes = "";
+		}
+
+		String hoy = cerodia + dia + "/" + ceromes + mes + "/" + date.getYear();
 
 		int indice = -1;
 
@@ -328,7 +627,14 @@ public class Metodos {
 			break;
 
 		case 3:
-			pintura = "A";
+
+			if (hoy.toString().equals(busqueda)) {
+				pintura = "V";
+			}
+
+			else {
+				pintura = "A";
+			}
 			break;
 
 		case 4:
@@ -336,17 +642,20 @@ public class Metodos {
 			break;
 
 		default:
-			pintura = "V";
+			pintura = "B";
 			break;
 
 		}
 
 		while (indice != -1) {
 
+			Vencimiento.contactosVencimientos.add(Agenda.contactos.get(indice));
+
 			Vencimiento.colores.add(pintura);
 			Vencimiento.colores.add(pintura);
 			Vencimiento.colores.add(pintura);
 			Vencimiento.colores.add(pintura);
+
 			repetido.add(indice);
 
 			lista.set(indice, null);
@@ -493,14 +802,16 @@ public class Metodos {
 
 	public static void mensaje(String mensaje, int titulo, boolean filtro) {
 
-		String tituloSuperior = "", sonido = "";
+		String tituloSuperior = "";
 
 		int tipo = 0;
 
 		switch (titulo) {
 
 		case 1:
+
 			if (filtro) {
+
 				AlertError error;
 
 				error = new AlertError(null, false);
@@ -511,7 +822,9 @@ public class Metodos {
 			}
 
 			else {
+
 				tipo = JOptionPane.ERROR_MESSAGE;
+
 				tituloSuperior = "Error";
 			}
 

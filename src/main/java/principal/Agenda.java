@@ -66,12 +66,11 @@ import utils.MetodosPdf;
 @SuppressWarnings("all")
 
 public class Agenda extends JFrame {
-	public static int contador = 0;
+
 	JButton observacion = new JButton("Ver Observacion");
 	int indice;
 	JTextPane vtos = new JTextPane();
 	Timer t = new Timer();
-	public static Llamada mostrarLlamada = new Llamada();
 	Vencimiento mTask = new Vencimiento();
 	ArrayList<Objeto> arrayList1;
 	private JButton buscar;
@@ -215,7 +214,7 @@ public class Agenda extends JFrame {
 	}
 
 	public static LinkedList<String> vencimientosDecesos = new <String>LinkedList();
-
+	public static LinkedList<String> vencimientosVida = new <String>LinkedList();
 	static LinkedList<String> fechaDecesos = new <String>LinkedList();
 
 	static LinkedList<String> emails = new <String>LinkedList();
@@ -375,15 +374,29 @@ public class Agenda extends JFrame {
 		this.setLocationRelativeTo(null);
 
 		JMenuBar menuBar = new JMenuBar();
+
 		setJMenuBar(menuBar);
 
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Insertar");
+
 		mntmNewMenuItem_1.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/insert.png")));
+
 		mntmNewMenuItem_1.addMouseListener(new MouseAdapter() {
+
 			@Override
+
 			public void mousePressed(MouseEvent e) {
-				new Nuevo().setVisible(true);
+
+				try {
+					new Nuevo().setVisible(true);
+				}
+
+				catch (Exception e1) {
+
+				}
+
 			}
+
 		});
 
 		mntmNewMenuItem_1.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -575,7 +588,7 @@ public class Agenda extends JFrame {
 		JMenu mnNewMenu_1 = new JMenu("Exportar");
 		mnNewMenu_1.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/config.png")));
 		mnNewMenu_1.setForeground(Color.BLACK);
-		mnNewMenu_1.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mnNewMenu_1.setFont(new Font("Dialog", Font.PLAIN, 16));
 		menuBar.add(mnNewMenu_1);
 
 		JMenuItem mntmNewMenuItem_2 = new JMenuItem("PDF");
@@ -701,7 +714,7 @@ public class Agenda extends JFrame {
 		JScrollPane jScrollPane1;
 		JPanel panelCasa;
 		jScrollPane1 = new JScrollPane();
-		jList1.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		jList1.setFont(new Font("Dialog", Font.PLAIN, 18));
 		jList1.setFixedCellHeight(40);
 
 		jPanel5.setBackground(new java.awt.Color(88, 205, 170));
@@ -941,12 +954,6 @@ public class Agenda extends JFrame {
 
 				btnNewButton.setEnabled(true);
 
-//				DefaultListModel model = new DefaultListModel();
-//
-//				model.clear();
-//
-//				jList1.setModel(model);
-
 				limpiarContactos();
 
 				verNotas();
@@ -963,16 +970,7 @@ public class Agenda extends JFrame {
 
 			public void actionPerformed(ActionEvent arg0) {
 
-				if (!Agenda.mostrarLlamada.isShowing()) {
-
-					try {
-						Llamada.verTabla(true);
-					} catch (Exception e1) {
-						//
-					}
-
-					Agenda.mostrarLlamada.setVisible(true);
-				}
+				new Llamada(1).setVisible(true);
 
 			}
 
@@ -1262,49 +1260,4 @@ public class Agenda extends JFrame {
 		Agenda.telefonos = telefonos;
 	}
 
-	public static void ponerFechasDeceso() {
-
-		String nota;
-
-		ArrayList<Objeto> arrayList1 = new ArrayList<Objeto>();
-
-		ArrayList<Objeto> arrayList2;
-
-		LinkedList<String> agenda = new <String>LinkedList();
-
-		try {
-
-			arrayList2 = leer("contactos.dat");
-
-			String cadena, fechaDeceso, datoVida, datoHogar, datoCoche, obs, telefono;
-
-			fechaDecesos = new LinkedList<String>();
-
-			fechaDecesos.clear();
-
-			if (arrayList2 != null) {
-
-				for (int i = 0; i < arrayList2.size(); i++) {
-
-					agenda.add(arrayList2.get(i).toString());
-				}
-
-				Collections.sort(agenda);
-
-				for (int i = 0; i < agenda.size(); i++) {
-
-					cadena = agenda.get(i);
-
-					fechaDeceso = cadena.substring(cadena.indexOf("▒") + 1, cadena.indexOf("╣"));
-
-					fechaDecesos.add(convertirFecha(fechaDeceso, false));
-
-				}
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
 }
