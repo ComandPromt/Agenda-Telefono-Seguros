@@ -30,48 +30,37 @@ public class FormatoTabla extends DefaultTableCellRenderer {
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean selected, boolean focused,
 			int row, int column) {
 
-		try {
+		if (indice < table.getRowCount()) {
 
-			try {
+			fecha = table.getValueAt(indice, 2).toString();
 
-				if (indice < table.getRowCount()) {
+			if (FechasVencimientosRojos.contains(fecha)) {
 
-					fecha = table.getValueAt(indice, 2).toString();
-
-					if (FechasVencimientosRojos.contains(fecha)) {
-
-						table.setValueAt("- 15 DÍAS", indice, 3);
-
-					}
-
-					if (FechasVencimientosNaranjas.contains(fecha)) {
-						table.setValueAt("+15 DÍAS <--> 1 MES", indice, 3);
-
-					}
-
-					if (FechasVencimientosAmarillos.contains(fecha)) {
-						table.setValueAt("+1 MES <--> -2 MESES", indice, 3);
-
-					}
-
-					if (FechasVencimientosVerdes.contains(fecha)) {
-						table.setValueAt("¡LLAMAR YA!", indice, 3);
-
-					}
-
-					++indice;
-
-				}
-
-			} catch (Exception e) {
+				table.setValueAt("- 15 DÍAS", indice, 3);
 
 			}
 
-			super.getTableCellRendererComponent(table, value, selected, focused, row, column);
+			if (FechasVencimientosNaranjas.contains(fecha)) {
+				table.setValueAt("+15 DÍAS <--> 1 MES", indice, 3);
 
-		} catch (Exception e) {
+			}
+
+			if (FechasVencimientosAmarillos.contains(fecha)) {
+				table.setValueAt("+1 MES <--> -2 MESES", indice, 3);
+
+			}
+
+			if (FechasVencimientosVerdes.contains(fecha)) {
+				table.setValueAt("¡LLAMAR YA!", indice, 3);
+
+			}
+
+			++indice;
 
 		}
+
+		super.getTableCellRendererComponent(table, value, selected, focused, row, column);
+
 		return this;
 
 	}

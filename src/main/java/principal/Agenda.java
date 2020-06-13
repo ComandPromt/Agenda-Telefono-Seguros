@@ -66,8 +66,9 @@ import utils.MetodosPdf;
 @SuppressWarnings("all")
 
 public class Agenda extends JFrame {
-
-	JButton observacion = new JButton("Ver Observacion");
+	static JLabel nuevosVencimientos = new JLabel("");
+	private boolean verContacto = true;
+	JButton observacion = new JButton("Obs");
 	int indice;
 	JTextPane vtos = new JTextPane();
 	Timer t = new Timer();
@@ -90,15 +91,6 @@ public class Agenda extends JFrame {
 	String cnota;
 	JTextPane tlf = new JTextPane();
 	JTextPane direccion = new JTextPane();
-	static JButton vto;
-
-	public static String getVto() {
-		return vto.getText();
-	}
-
-	public static void setVto(String dato) {
-		vto.setText(dato);
-	}
 
 	public static void vaciarCampos() {
 		Agenda.nombre.setText("");
@@ -106,8 +98,145 @@ public class Agenda extends JFrame {
 	}
 
 	public void vaciarDatos() {
-		nombre.setText("");
+		Agenda.nombre.setText("");
 
+	}
+
+	private void verVencimientoLlamada(int seguro) {
+
+		if (!verContacto) {
+
+			verContactos();
+		}
+
+		new Llamada(seguro).setVisible(true);
+
+	}
+
+	private void ponerEnAgenda(int tipo) {
+
+		int vueltas = 0;
+
+		switch (tipo) {
+
+		case 1:
+			vueltas = Vencimiento.getIndiceDeceso().size();
+			break;
+		case 2:
+			vueltas = Vencimiento.getIndiceVida().size();
+			break;
+		case 3:
+			vueltas = Vencimiento.getIndiceHogar().size();
+			break;
+		case 4:
+			vueltas = Vencimiento.getIndiceCoche().size();
+			break;
+		case 5:
+			vueltas = Vencimiento.getIndiceComercio().size();
+			break;
+		case 6:
+			vueltas = Vencimiento.getIndiceComunidad().size();
+			break;
+		}
+
+		if (vueltas == 0) {
+			Metodos.mensaje("No hay vencimientos", 3, true);
+			verContactos();
+		}
+
+		else {
+
+			verContacto = false;
+
+			tlf.setText("");
+
+			vtos.setText("");
+
+			LinkedList<String> contactoTelefono = new LinkedList();
+
+			LinkedList<String> contactoDirecciones = new LinkedList();
+			LinkedList<String> contactoEmail = new LinkedList();
+			LinkedList<String> contactoObservaciones = new LinkedList();
+			LinkedList<String> fechasDecesos = new LinkedList();
+
+			DefaultListModel model = new DefaultListModel();
+
+			model.clear();
+
+			jList1.setModel(model);
+
+			int indiceVencimiento = -1;
+
+			for (int i = 0; i < vueltas; i++) {
+
+				switch (tipo) {
+
+				case 1:
+					indiceVencimiento = Vencimiento.getIndiceDeceso().get(i);
+					fechasDecesos.add("Deceso --> " + vencimientosDecesos.get(i));
+					break;
+
+				case 2:
+					indiceVencimiento = Vencimiento.getIndiceVida().get(i);
+					fechasDecesos.add("Vida --> " + vencimientosVida.get(i));
+					break;
+
+				case 3:
+					indiceVencimiento = Vencimiento.getIndiceHogar().get(i);
+					fechasDecesos.add("Hogar --> " + vencimientosHogar.get(i));
+					break;
+
+				case 4:
+					indiceVencimiento = Vencimiento.getIndiceCoche().get(i);
+					fechasDecesos.add("Coche --> " + vencimientosCoche.get(i));
+					break;
+
+				case 5:
+					indiceVencimiento = Vencimiento.getIndiceComercio().get(i);
+					fechasDecesos.add("Comercio --> " + vencimientosComercio.get(i));
+					break;
+
+				case 6:
+					indiceVencimiento = Vencimiento.getIndiceComunidad().get(i);
+					fechasDecesos.add("Comunidad --> " + vencimientosComunidad.get(i));
+					break;
+				}
+
+				if (indiceVencimiento < telefonos.size()) {
+					contactoTelefono.add(telefonos.get(indiceVencimiento));
+					contactoDirecciones.add(direcciones.get(indiceVencimiento));
+					contactoEmail.add(emails.get(indiceVencimiento));
+					contactoObservaciones.add(observaciones.get(indiceVencimiento));
+				}
+
+				if (indiceVencimiento < contactos.size()) {
+					model.addElement(contactos.get(indiceVencimiento));
+				}
+
+			}
+
+			telefonos.clear();
+
+			direcciones.clear();
+
+			emails.clear();
+
+			observaciones.clear();
+
+			emails = contactoEmail;
+
+			observaciones = contactoObservaciones;
+
+			direcciones = contactoDirecciones;
+
+			telefonos = contactoTelefono;
+
+			vencimientos.clear();
+
+			vencimientos = fechasDecesos;
+
+			jList1.setModel(model);
+		}
 	}
 
 	public static ArrayList<Objeto> leer(String file)
@@ -215,6 +344,11 @@ public class Agenda extends JFrame {
 
 	public static LinkedList<String> vencimientosDecesos = new <String>LinkedList();
 	public static LinkedList<String> vencimientosVida = new <String>LinkedList();
+	public static LinkedList<String> vencimientosHogar = new <String>LinkedList();
+	public static LinkedList<String> vencimientosCoche = new <String>LinkedList();
+	public static LinkedList<String> vencimientosComercio = new <String>LinkedList();
+	public static LinkedList<String> vencimientosComunidad = new <String>LinkedList();
+
 	static LinkedList<String> fechaDecesos = new <String>LinkedList();
 
 	static LinkedList<String> emails = new <String>LinkedList();
@@ -222,6 +356,10 @@ public class Agenda extends JFrame {
 	static LinkedList<String> fechaVida = new <String>LinkedList();
 
 	static LinkedList<String> fechaHogar = new <String>LinkedList();
+
+	static LinkedList<String> fechaComercio = new <String>LinkedList();
+
+	static LinkedList<String> fechaComunidad = new <String>LinkedList();
 
 	static LinkedList<String> fechaCoche = new <String>LinkedList();
 
@@ -347,6 +485,13 @@ public class Agenda extends JFrame {
 		return fecha;
 	}
 
+	private void verContactos() {
+
+		limpiarContactos();
+
+		verNotas();
+	}
+
 	public Agenda() throws IOException, SQLException {
 
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Agenda.class.getResource("/imagenes/agenda.png")));
@@ -357,13 +502,15 @@ public class Agenda extends JFrame {
 
 		initComponents();
 
+		mTask.verTablaVencimientos();
+
 		directorioActual = new File(".").getCanonicalPath() + separador;
 
 		setResizable(false);
 
 		setAutoRequestFocus(false);
 
-		this.setSize(new Dimension(760, 600));
+		this.setSize(new Dimension(760, 650));
 
 		buscar.setToolTipText("Buscar");
 
@@ -377,7 +524,13 @@ public class Agenda extends JFrame {
 
 		setJMenuBar(menuBar);
 
+		JMenu mnAcciones = new JMenu("Acciones");
+		mnAcciones.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mnAcciones.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/utilities.png")));
+		menuBar.add(mnAcciones);
+
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Insertar");
+		mnAcciones.add(mntmNewMenuItem_1);
 
 		mntmNewMenuItem_1.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/insert.png")));
 
@@ -401,9 +554,11 @@ public class Agenda extends JFrame {
 
 		mntmNewMenuItem_1.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 
-		menuBar.add(mntmNewMenuItem_1);
+		JSeparator separator_2 = new JSeparator();
+		mnAcciones.add(separator_2);
 
 		JMenuItem mntmNewMenuItem = new JMenuItem("Actualizar");
+		mnAcciones.add(mntmNewMenuItem);
 
 		mntmNewMenuItem.addMouseListener(new MouseAdapter() {
 
@@ -471,9 +626,12 @@ public class Agenda extends JFrame {
 
 		mntmNewMenuItem.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/actualizar.png")));
 		mntmNewMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		menuBar.add(mntmNewMenuItem);
+
+		JSeparator separator_4 = new JSeparator();
+		mnAcciones.add(separator_4);
 
 		JMenuItem mntmNewMenuItem_5 = new JMenuItem("Eliminar");
+		mnAcciones.add(mntmNewMenuItem_5);
 		mntmNewMenuItem_5.setSelectedIcon(null);
 		mntmNewMenuItem_5.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/delete.png")));
 
@@ -502,6 +660,8 @@ public class Agenda extends JFrame {
 							fechaVida.remove(indice);
 							fechaHogar.remove(indice);
 							fechaCoche.remove(indice);
+							fechaComercio.remove(indice);
+							fechaComunidad.remove(indice);
 							direcciones.remove(indice);
 							telefonos.remove(indice);
 							vencimientos.remove(indice);
@@ -563,12 +723,287 @@ public class Agenda extends JFrame {
 
 		mntmNewMenuItem_5.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 
-		menuBar.add(mntmNewMenuItem_5);
+		JMenu mnNewMenu_2 = new JMenu("Ver Vencimientos");
+		mnNewMenu_2.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mnNewMenu_2.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/view.png")));
+		menuBar.add(mnNewMenu_2);
+
+		JMenu mnNewMenu_3 = new JMenu("Deceso");
+		mnNewMenu_3.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mnNewMenu_3.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/deceso.png")));
+		mnNewMenu_2.add(mnNewMenu_3);
+
+		JMenuItem mntmNewMenuItem_8 = new JMenuItem("En Agenda");
+
+		mnNewMenu_3.add(mntmNewMenuItem_8);
+
+		mntmNewMenuItem_8.addMouseListener(new MouseAdapter() {
+
+			@Override
+
+			public void mousePressed(MouseEvent e) {
+
+				ponerEnAgenda(1);
+
+			}
+
+		});
+
+		mntmNewMenuItem_8.setFont(new Font("Dialog", Font.PLAIN, 16));
+
+		mntmNewMenuItem_8.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/agenda.png")));
+
+		JSeparator separator_11 = new JSeparator();
+
+		mnNewMenu_3.add(separator_11);
+
+		JMenuItem mntmNewMenuItem_16 = new JMenuItem("En Llamadas");
+
+		mntmNewMenuItem_16.addMouseListener(new MouseAdapter() {
+
+			@Override
+
+			public void mousePressed(MouseEvent e) {
+
+				verVencimientoLlamada(1);
+
+			}
+
+		});
+
+		mntmNewMenuItem_16.setFont(new Font("Dialog", Font.PLAIN, 16));
+
+		mntmNewMenuItem_16.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/llamada.png")));
+
+		mnNewMenu_3.add(mntmNewMenuItem_16);
+
+		JSeparator separator_5 = new JSeparator();
+
+		mnNewMenu_2.add(separator_5);
+
+		JMenu mnNewMenu_4 = new JMenu("Vida");
+
+		mnNewMenu_4.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/heart.png")));
+		mnNewMenu_4.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mnNewMenu_2.add(mnNewMenu_4);
+
+		JMenuItem mntmNewMenuItem_9 = new JMenuItem("En Agenda");
+
+		mnNewMenu_4.add(mntmNewMenuItem_9);
+
+		mntmNewMenuItem_9.addMouseListener(new MouseAdapter() {
+
+			@Override
+
+			public void mousePressed(MouseEvent e) {
+
+				ponerEnAgenda(2);
+
+			}
+
+		});
+
+		mntmNewMenuItem_9.setFont(new Font("Dialog", Font.PLAIN, 16));
+
+		mntmNewMenuItem_9.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/agenda.png")));
+
+		JMenuItem mntmNewMenuItem_16_1 = new JMenuItem("En Llamadas");
+		mntmNewMenuItem_16_1.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/llamada.png")));
+
+		mntmNewMenuItem_16_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				verVencimientoLlamada(2);
+			}
+
+		});
+
+		JSeparator separator_12 = new JSeparator();
+		mnNewMenu_4.add(separator_12);
+
+		mntmNewMenuItem_16_1.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mnNewMenu_4.add(mntmNewMenuItem_16_1);
+
+		JSeparator separator_6 = new JSeparator();
+		mnNewMenu_2.add(separator_6);
+
+		JMenu mnNewMenu_5 = new JMenu("Hogar");
+		mnNewMenu_5.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mnNewMenu_5.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/home.png")));
+		mnNewMenu_2.add(mnNewMenu_5);
+
+		JMenuItem mntmNewMenuItem_10 = new JMenuItem("En Agenda");
+		mnNewMenu_5.add(mntmNewMenuItem_10);
+		mntmNewMenuItem_10.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				ponerEnAgenda(3);
+			}
+		});
+		mntmNewMenuItem_10.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mntmNewMenuItem_10.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/agenda.png")));
+
+		JMenuItem mntmNewMenuItem_17 = new JMenuItem("En Llamadas");
+		mntmNewMenuItem_17.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mntmNewMenuItem_17.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/llamada.png")));
+		mntmNewMenuItem_17.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				verVencimientoLlamada(3);
+			}
+		});
+
+		JSeparator separator_13 = new JSeparator();
+		mnNewMenu_5.add(separator_13);
+		mnNewMenu_5.add(mntmNewMenuItem_17);
+
+		JSeparator separator_7 = new JSeparator();
+		mnNewMenu_2.add(separator_7);
+
+		JMenu mnNewMenu_6 = new JMenu("Coche");
+		mnNewMenu_6.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mnNewMenu_6.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/car.png")));
+		mnNewMenu_2.add(mnNewMenu_6);
+
+		JMenuItem mntmNewMenuItem_11 = new JMenuItem("En Agenda");
+		mnNewMenu_6.add(mntmNewMenuItem_11);
+		mntmNewMenuItem_11.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				ponerEnAgenda(4);
+			}
+		});
+		mntmNewMenuItem_11.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mntmNewMenuItem_11.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/agenda.png")));
+
+		JMenuItem mntmNewMenuItem_18 = new JMenuItem("En Llamadas");
+		mntmNewMenuItem_18.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mntmNewMenuItem_18.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/llamada.png")));
+		mntmNewMenuItem_18.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				verVencimientoLlamada(4);
+			}
+		});
+
+		JSeparator separator_14 = new JSeparator();
+		mnNewMenu_6.add(separator_14);
+		mnNewMenu_6.add(mntmNewMenuItem_18);
+
+		JSeparator separator_8 = new JSeparator();
+		mnNewMenu_2.add(separator_8);
+
+		JMenu mnNewMenu_7 = new JMenu("Comercio");
+		mnNewMenu_7.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mnNewMenu_7.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/shop.png")));
+		mnNewMenu_2.add(mnNewMenu_7);
+
+		JMenuItem mntmNewMenuItem_12 = new JMenuItem("En Agenda");
+		mnNewMenu_7.add(mntmNewMenuItem_12);
+		mntmNewMenuItem_12.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				ponerEnAgenda(5);
+			}
+		});
+		mntmNewMenuItem_12.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/agenda.png")));
+		mntmNewMenuItem_12.setFont(new Font("Dialog", Font.PLAIN, 16));
+
+		JMenuItem mntmNewMenuItem_19 = new JMenuItem("En Llamadas");
+		mntmNewMenuItem_19.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mntmNewMenuItem_19.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/llamada.png")));
+		mntmNewMenuItem_19.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				verVencimientoLlamada(5);
+			}
+		});
+
+		JSeparator separator_15 = new JSeparator();
+		mnNewMenu_7.add(separator_15);
+		mnNewMenu_7.add(mntmNewMenuItem_19);
+
+		JSeparator separator_9 = new JSeparator();
+		mnNewMenu_2.add(separator_9);
+
+		JMenu mnNewMenu_8 = new JMenu("Comunidad");
+		mnNewMenu_8.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mnNewMenu_8.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/comunidad.png")));
+		mnNewMenu_2.add(mnNewMenu_8);
+
+		JMenuItem mntmNewMenuItem_13 = new JMenuItem("En Agenda");
+		mnNewMenu_8.add(mntmNewMenuItem_13);
+		mntmNewMenuItem_13.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				ponerEnAgenda(6);
+			}
+		});
+		mntmNewMenuItem_13.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/agenda.png")));
+		mntmNewMenuItem_13.setFont(new Font("Dialog", Font.PLAIN, 16));
+
+		JMenuItem mntmNewMenuItem_20 = new JMenuItem("En Llamadas");
+		mntmNewMenuItem_20.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mntmNewMenuItem_20.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/llamada.png")));
+		mntmNewMenuItem_20.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				verVencimientoLlamada(6);
+			}
+		});
+
+		JSeparator separator_16 = new JSeparator();
+		mnNewMenu_8.add(separator_16);
+		mnNewMenu_8.add(mntmNewMenuItem_20);
+
+		JSeparator separator_18 = new JSeparator();
+		mnNewMenu_2.add(separator_18);
+
+		JMenu mnNewMenu_9 = new JMenu("Todos");
+		mnNewMenu_9.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mnNewMenu_9.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/agenda.png")));
+		mnNewMenu_2.add(mnNewMenu_9);
+
+		JMenuItem mntmNewMenuItem_14 = new JMenuItem("En Agenda");
+		mnNewMenu_9.add(mntmNewMenuItem_14);
+		mntmNewMenuItem_14.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+				verContacto = true;
+
+				verContactos();
+
+			}
+
+		});
+
+		mntmNewMenuItem_14.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/agenda.png")));
+		mntmNewMenuItem_14.setFont(new Font("Dialog", Font.PLAIN, 16));
+
+		JMenuItem mntmNewMenuItem_15 = new JMenuItem("En Llamadas");
+		mntmNewMenuItem_15.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mntmNewMenuItem_15.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/llamada.png")));
+		mntmNewMenuItem_15.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+				if (!verContacto) {
+					verContactos();
+				}
+
+				new Llamada(0).setVisible(true);
+			}
+		});
+
+		JSeparator separator_17 = new JSeparator();
+		mnNewMenu_9.add(separator_17);
+		mnNewMenu_9.add(mntmNewMenuItem_15);
 
 		JMenu mnNewMenu = new JMenu("Importar");
 		mnNewMenu.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		mnNewMenu.setForeground(Color.BLACK);
-		mnNewMenu.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/utilities.png")));
+		mnNewMenu.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/import.png")));
 		menuBar.add(mnNewMenu);
 
 		JMenuItem mntmNewMenuItem_6 = new JMenuItem("Vcard");
@@ -777,11 +1212,11 @@ public class Agenda extends JFrame {
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblNewLabel.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/telefono.png")));
 
-		vtos.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		vtos.setFont(new Font("Tahoma", Font.PLAIN, 12));
 
 		tlf.setFont(new Font("Tahoma", Font.PLAIN, 16));
 
-		direccion.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		direccion.setFont(new Font("Tahoma", Font.PLAIN, 12));
 
 		email = new JTextField();
 		email.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -795,23 +1230,26 @@ public class Agenda extends JFrame {
 		lblNewLabel_1_1.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/city.png")));
 		lblNewLabel_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
-		JCheckBox chckbxNewCheckBox = new JCheckBox("Lo he llamado");
+		JCheckBox chckbxNewCheckBox = new JCheckBox("");
 		chckbxNewCheckBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		observacion.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/view.png")));
 
 		observacion.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
 
 				indice = jList1.getSelectedIndex();
-
-				Metodos.mensaje(observaciones.get(indice), 2, true);
+				if (indice > -1) {
+					Metodos.mensaje(observaciones.get(indice), 2, true);
+				}
 			}
 
 		});
 
-		observacion.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		observacion.setFont(new Font("Tahoma", Font.BOLD, 16));
 
-		JButton btnAadirObservacion = new JButton("+ Observacion");
+		JButton btnAadirObservacion = new JButton("+ Obs");
+		btnAadirObservacion.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/obs.png")));
 
 		btnAadirObservacion.addActionListener(new ActionListener() {
 
@@ -821,196 +1259,96 @@ public class Agenda extends JFrame {
 
 		});
 
-		btnAadirObservacion.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnAadirObservacion.setFont(new Font("Tahoma", Font.BOLD, 16));
+
+		JLabel lblNewLabel_2 = new JLabel("");
+		lblNewLabel_2.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/llamada.png")));
 
 		GroupLayout panelCasaLayout = new GroupLayout(panelCasa);
 		panelCasaLayout.setHorizontalGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(panelCasaLayout.createSequentialGroup().addContainerGap().addGroup(panelCasaLayout
-						.createParallelGroup(Alignment.LEADING).addComponent(jLabel5)
+						.createParallelGroup(Alignment.LEADING)
 						.addComponent(lblNewLabel_1_1, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnAadirObservacion, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
-						.addComponent(jLabel3).addComponent(lblNewLabel).addComponent(lblNewLabel_1)).addGap(13)
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(panelCasaLayout.createSequentialGroup().addGroup(panelCasaLayout
-										.createParallelGroup(Alignment.TRAILING)
-										.addGroup(panelCasaLayout.createSequentialGroup().addComponent(observacion)
-												.addGap(18).addComponent(chckbxNewCheckBox)
-												.addPreferredGap(ComponentPlacement.RELATED))
-										.addComponent(vtos, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 260,
-												Short.MAX_VALUE)
-										.addComponent(email, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-										.addGroup(panelCasaLayout.createSequentialGroup()
-												.addComponent(nombre, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-												.addPreferredGap(ComponentPlacement.RELATED))
-										.addComponent(direccion, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 260,
-												Short.MAX_VALUE))
-										.addGap(10))
-								.addGroup(panelCasaLayout.createSequentialGroup()
-										.addComponent(tlf, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-										.addContainerGap()))));
+						.addComponent(lblNewLabel_1).addComponent(jLabel3).addComponent(lblNewLabel)
+						.addComponent(jLabel5)
+						.addComponent(btnAadirObservacion, GroupLayout.PREFERRED_SIZE, 146, GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING).addGroup(panelCasaLayout
+								.createParallelGroup(Alignment.TRAILING)
+								.addGroup(panelCasaLayout.createSequentialGroup().addComponent(observacion).addGap(27)
+										.addComponent(lblNewLabel_2).addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(chckbxNewCheckBox))
+								.addComponent(tlf, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
+								.addComponent(nombre, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
+								.addComponent(vtos, GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE))
+								.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING, false)
+										.addComponent(email)
+										.addComponent(direccion, GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)))
+						.addGap(40)));
 		panelCasaLayout.setVerticalGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING).addGroup(panelCasaLayout
-				.createSequentialGroup()
-				.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnAadirObservacion, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-						.addComponent(observacion).addComponent(chckbxNewCheckBox))
+				.createSequentialGroup().addContainerGap()
 				.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(panelCasaLayout.createSequentialGroup().addGap(18).addComponent(nombre,
-								GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addGroup(panelCasaLayout.createSequentialGroup().addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 59, GroupLayout.PREFERRED_SIZE)))
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(btnAadirObservacion, GroupLayout.PREFERRED_SIZE, 41,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 46,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(observacion, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE))
+						.addComponent(chckbxNewCheckBox))
 				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING).addComponent(lblNewLabel)
-						.addGroup(panelCasaLayout.createSequentialGroup().addGap(7)
-								.addComponent(tlf, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)))
-				.addGap(12)
-				.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(panelCasaLayout.createSequentialGroup().addGap(32).addComponent(jLabel5))
-						.addGroup(panelCasaLayout.createSequentialGroup().addGap(7).addComponent(vtos,
-								GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)))
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(panelCasaLayout.createSequentialGroup().addGap(6)
-								.addComponent(direccion, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE)
-										.addComponent(email, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE)
-										.addComponent(lblNewLabel_1)))
-						.addGroup(panelCasaLayout.createSequentialGroup().addGap(22).addComponent(lblNewLabel_1_1,
-								GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)))
+				.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING).addGroup(panelCasaLayout
+						.createSequentialGroup()
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 59, GroupLayout.PREFERRED_SIZE)
+								.addComponent(nombre, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(panelCasaLayout.createSequentialGroup().addComponent(lblNewLabel).addGap(44)
+										.addComponent(jLabel5).addGap(88).addComponent(lblNewLabel_1_1,
+												GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE))
+								.addGroup(panelCasaLayout.createSequentialGroup()
+										.addComponent(tlf, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(vtos,
+												GroupLayout.PREFERRED_SIZE, 173, GroupLayout.PREFERRED_SIZE)))
+						.addGap(26)
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(email, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)))
+						.addGroup(panelCasaLayout.createSequentialGroup().addGap(299).addComponent(direccion,
+								GroupLayout.PREFERRED_SIZE, 79, GroupLayout.PREFERRED_SIZE)))
 				.addContainerGap()));
 
 		panelCasa.setLayout(panelCasaLayout);
+		nuevosVencimientos.setFont(new Font("Dialog", Font.BOLD, 14));
 
-		JButton btnNewButton = new JButton("Vtos Decesos");
-
-		btnNewButton.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				tlf.setText("");
-
-				vtos.setText("");
-
-				LinkedList<String> contactoTelefono = new LinkedList();
-
-				LinkedList<String> fechasDecesos = new LinkedList();
-
-				DefaultListModel model = new DefaultListModel();
-
-				model.clear();
-
-				jList1.setModel(model);
-
-				int indiceVencimiento = -1;
-
-				for (int i = 0; i < Vencimiento.getIndiceDeceso().size(); i++) {
-
-					indiceVencimiento = Vencimiento.getIndiceDeceso().get(i);
-
-					contactoTelefono.add(telefonos.get(indiceVencimiento));
-
-					fechasDecesos.add("Deceso --> " + vencimientosDecesos.get(i));
-
-					model.addElement(contactos.get(indiceVencimiento));
-
-				}
-
-				telefonos.clear();
-
-				telefonos = contactoTelefono;
-
-				vencimientos.clear();
-
-				vencimientos = fechasDecesos;
-
-				jList1.setModel(model);
-
-				btnNewButton.setEnabled(false);
-
-			}
-
-		});
-
-		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 14));
-
-		JButton btnNewButton_1 = new JButton("Vtos Vida");
-
-		btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-
-		JButton btnNewButton_2 = new JButton("Vtos Hogar");
-
-		btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 14));
-
-		JButton btnNewButton_3 = new JButton("Vtos Coche");
-
-		btnNewButton_3.setFont(new Font("Tahoma", Font.BOLD, 14));
-
-		JButton btnNewButton_4 = new JButton("Todos");
-
-		btnNewButton_4.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				btnNewButton.setEnabled(true);
-
-				limpiarContactos();
-
-				verNotas();
-
-			}
-
-		});
-
-		btnNewButton_4.setFont(new Font("Tahoma", Font.BOLD, 14));
-
-		vto = new JButton("Vtos: ");
-
-		vto.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent arg0) {
-
-				new Llamada(1).setVisible(true);
-
-			}
-
-		});
+		nuevosVencimientos.setHorizontalAlignment(SwingConstants.CENTER);
 
 		GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
-
 		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel3Layout
-				.createSequentialGroup().addGap(18)
+				.createSequentialGroup().addContainerGap(37, Short.MAX_VALUE)
 				.addGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING, false)
-						.addGroup(jPanel3Layout.createSequentialGroup().addComponent(btnNewButton)
-								.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(btnNewButton_1)
-								.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnNewButton_2)
-								.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnNewButton_3)
-								.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(btnNewButton_4).addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(vto, GroupLayout.PREFERRED_SIZE, 132, GroupLayout.PREFERRED_SIZE))
+						.addComponent(nuevosVencimientos, Alignment.LEADING, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addGroup(jPanel3Layout.createSequentialGroup()
 								.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 233, GroupLayout.PREFERRED_SIZE)
 								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addComponent(panelCasa, GroupLayout.PREFERRED_SIZE, 424, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)))
-				.addContainerGap(7, Short.MAX_VALUE)));
+								.addComponent(panelCasa, GroupLayout.PREFERRED_SIZE, 424, GroupLayout.PREFERRED_SIZE)))
+				.addContainerGap(49, Short.MAX_VALUE)));
 		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(jPanel3Layout.createSequentialGroup()
-						.addGroup(jPanel3Layout.createParallelGroup(Alignment.BASELINE).addComponent(btnNewButton)
-								.addComponent(btnNewButton_1).addComponent(btnNewButton_2).addComponent(btnNewButton_3)
-								.addComponent(btnNewButton_4).addComponent(vto))
-						.addGap(3)
-						.addGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING, false)
-								.addComponent(panelCasa, 0, 0, Short.MAX_VALUE)
-								.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE))
-						.addContainerGap(41, Short.MAX_VALUE)));
+				.addGroup(jPanel3Layout.createSequentialGroup().addComponent(nuevosVencimientos).addGap(3)
+						.addGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
+								.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE)
+								.addComponent(panelCasa, GroupLayout.PREFERRED_SIZE, 501, Short.MAX_VALUE))
+						.addContainerGap()));
 		jPanel3.setLayout(jPanel3Layout);
 
 		GroupLayout layout = new GroupLayout(getContentPane());
 		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 727, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(368, Short.MAX_VALUE)));
+						.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 755, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(340, Short.MAX_VALUE)));
 		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap()
 						.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 531, GroupLayout.PREFERRED_SIZE)
@@ -1025,7 +1363,7 @@ public class Agenda extends JFrame {
 
 				verNotas();
 
-				t.scheduleAtFixedRate(mTask, 0, 60000);
+				t.scheduleAtFixedRate(mTask, 0, 100);
 
 			} catch (Exception e) {
 				//
@@ -1062,7 +1400,8 @@ public class Agenda extends JFrame {
 			fechaVida.clear();
 
 			fechaHogar.clear();
-
+			fechaComercio.clear();
+			fechaComunidad.clear();
 			fechaCoche.clear();
 
 			telefonos.clear();
@@ -1073,7 +1412,8 @@ public class Agenda extends JFrame {
 
 			arrayList2 = leer("contactos.dat");
 
-			String correo, cadena, fechaDeceso, datoVida, datoHogar, datoCoche, obs, telefono;
+			String correo, cadena, fechaDeceso, datoVida, datoHogar, datoCoche, datoComercio, datoComunidad, obs,
+					telefono;
 
 			String cliente, direccion, localidad, codPostal, provincia;
 
@@ -1096,7 +1436,11 @@ public class Agenda extends JFrame {
 
 					datoHogar = cadena.substring(cadena.indexOf("║") + 1, cadena.indexOf("╝"));
 
-					datoCoche = cadena.substring(cadena.indexOf("╝") + 1, cadena.length());
+					datoCoche = cadena.substring(cadena.indexOf("╝") + 1, cadena.indexOf("¥"));
+
+					datoComercio = cadena.substring(cadena.indexOf("¥") + 1, cadena.indexOf("¶"));
+
+					datoComunidad = cadena.substring(cadena.indexOf("¶") + 1, cadena.length());
 
 					obs = cadena.substring(cadena.indexOf("»") + 1, cadena.indexOf("¬"));
 
@@ -1134,9 +1478,18 @@ public class Agenda extends JFrame {
 
 					fechaCoche.add(convertirFecha(datoCoche, false));
 
+					fechaComercio.add(convertirFecha(datoComercio, false));
+
+					fechaComunidad.add(convertirFecha(datoComunidad, false));
+
+					// Dato comercio y dato comunidad
+
+					// guardarlos en la lista
+
 					vencimientos.add("Deceso --> " + fechaDecesos.getLast() + "\n\n" + "Vida --> " + fechaVida.getLast()
 							+ "\n\n" + "Hogar --> " + fechaHogar.getLast() + "\n\n" + "Coche --> "
-							+ fechaCoche.getLast());
+							+ fechaCoche.getLast() + "\n\n" + "Comercio --> " + fechaComercio.getLast() + "\n\n"
+							+ "Comunidad --> " + fechaComunidad.getLast());
 
 					if (direccion.isEmpty() || localidad.isEmpty() || codPostal.isEmpty() || provincia.isEmpty()) {
 						direcciones.add("");
@@ -1169,6 +1522,14 @@ public class Agenda extends JFrame {
 		} catch (NullPointerException e1) {
 			return true;
 		}
+	}
+
+	public static LinkedList<String> getFechaComercio() {
+		return fechaComercio;
+	}
+
+	public static LinkedList<String> getFechaComunidad() {
+		return fechaComunidad;
 	}
 
 	public static void main(String[] args) {
@@ -1243,6 +1604,14 @@ public class Agenda extends JFrame {
 		Agenda.fechaHogar.add(fecha);
 	}
 
+	public static void setFechaComunidad(String fecha) {
+		Agenda.fechaComunidad.add(fecha);
+	}
+
+	public static void setFechaComercio(String fecha) {
+		Agenda.fechaComercio.add(fecha);
+	}
+
 	public static LinkedList<String> getFechaCoche() {
 		return fechaCoche;
 	}
@@ -1259,5 +1628,4 @@ public class Agenda extends JFrame {
 	public static void setTelefonos(LinkedList<String> telefonos) {
 		Agenda.telefonos = telefonos;
 	}
-
 }

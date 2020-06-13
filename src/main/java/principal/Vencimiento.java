@@ -1,6 +1,8 @@
 package principal;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,11 +22,31 @@ public class Vencimiento extends TimerTask {
 
 	static LinkedList<Integer> indiceDeceso = new <Integer>LinkedList();
 
+	public static LinkedList<Integer> getIndiceHogar() {
+		return indiceHogar;
+	}
+
+	public static LinkedList<Integer> getIndiceComercio() {
+		return indiceComercio;
+	}
+
+	public static LinkedList<Integer> getIndiceComunidad() {
+		return indiceComunidad;
+	}
+
+	private String nuevoVencimiento = "Vtos: ";
 	static LinkedList<Integer> indiceVida = new <Integer>LinkedList();
-
+	static LinkedList<Integer> indiceHogar = new <Integer>LinkedList();
+	static LinkedList<Integer> indiceComercio = new <Integer>LinkedList();
+	static LinkedList<Integer> indiceComunidad = new <Integer>LinkedList();
+	static LinkedList<Integer> indiceCoche = new <Integer>LinkedList();
 	static LinkedList<Integer> vencimientos = new <Integer>LinkedList();
-
+	private int numDeceso, numHogar, numVida, numCoche, numComercio, numComunidad;
 	static LinkedList<Integer> vencimientosVerdes = new <Integer>LinkedList();
+
+	public static LinkedList<Integer> getIndiceCoche() {
+		return indiceCoche;
+	}
 
 	public static LinkedList<String> colores = new LinkedList();
 
@@ -41,6 +63,54 @@ public class Vencimiento extends TimerTask {
 	@Override
 
 	public void run() {
+
+		numDeceso = Agenda.vencimientosDecesos.size();
+
+		numVida = Agenda.vencimientosVida.size();
+
+		numHogar = Agenda.vencimientosHogar.size();
+
+		numCoche = Agenda.vencimientosCoche.size();
+
+		numComercio = Agenda.vencimientosComercio.size();
+
+		numComunidad = Agenda.vencimientosComunidad.size();
+
+		if (numDeceso > 0 || numVida > 0 || numHogar > 0 || numCoche > 0 || numComercio > 0 || numComunidad > 0) {
+
+			Agenda.nuevosVencimientos.setText(nuevoVencimiento);
+
+			if (numDeceso > 0) {
+				Agenda.nuevosVencimientos
+						.setText(Agenda.nuevosVencimientos.getText() + "Decesos: " + numDeceso + " || ");
+			}
+
+			if (Agenda.vencimientosVida.size() > 0) {
+				Agenda.nuevosVencimientos.setText(Agenda.nuevosVencimientos.getText() + "Vida: " + numVida + " || ");
+			}
+
+			if (Agenda.vencimientosHogar.size() > 0) {
+				Agenda.nuevosVencimientos.setText(Agenda.nuevosVencimientos.getText() + "Hogar: " + numHogar + " || ");
+			}
+
+			if (Agenda.vencimientosCoche.size() > 0) {
+				Agenda.nuevosVencimientos.setText(Agenda.nuevosVencimientos.getText() + "Coche: " + numCoche + " || ");
+			}
+
+			if (Agenda.vencimientosComercio.size() > 0) {
+				Agenda.nuevosVencimientos
+						.setText(Agenda.nuevosVencimientos.getText() + "Comercio: " + numComercio + " || ");
+			}
+
+			if (Agenda.vencimientosComunidad.size() > 0) {
+				Agenda.nuevosVencimientos.setText(Agenda.nuevosVencimientos.getText() + "Comunidad: " + numComunidad);
+			}
+
+		}
+
+	}
+
+	public static void verTablaVencimientos() {
 
 		try {
 
@@ -66,52 +136,54 @@ public class Vencimiento extends TimerTask {
 
 			Agenda.vencimientosVida.clear();
 
-			Agenda.verNotas();
-
 			Date fecha = new Date();
 
 			indiceVida = buscarColoresVencimientos(fecha.toString(), Agenda.fechaVida);
 
 			indiceDeceso = buscarColoresVencimientos(fecha.toString(), Agenda.fechaDecesos);
 
+			indiceHogar = buscarColoresVencimientos(fecha.toString(), Agenda.fechaHogar);
+
+			indiceCoche = buscarColoresVencimientos(fecha.toString(), Agenda.fechaCoche);
+
+			indiceComercio = buscarColoresVencimientos(fecha.toString(), Agenda.fechaComercio);
+
+			indiceComunidad = buscarColoresVencimientos(fecha.toString(), Agenda.fechaComunidad);
+
 			if (indiceDeceso.size() > 0) {
 
-				arrayList1.clear();
-
-				arrayList2 = Metodos.leer("fechasDecesos.dat");
-
-				if (Agenda.vencimientos.size() > 0) {
-
-					ponerVencimientos(1);
-
-				}
-
-				ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
-						new FileOutputStream("fechasDecesos.dat"));
-
-				escribiendoFichero.writeObject(arrayList1);
-
-				escribiendoFichero.close();
-
+				actualizarVencimientos("fechasDecesos.dat", 1);
 			}
 
 			if (indiceVida.size() > 0) {
 
-				arrayList1.clear();
+				actualizarVencimientos("fechasVida.dat", 2);
 
-				arrayList2 = Metodos.leer("fechasVida.dat");
+			}
 
-				if (Agenda.vencimientos.size() > 0) {
+			if (indiceHogar.size() > 0) {
 
-					ponerVencimientos(2);
+				actualizarVencimientos("fechasHogar.dat", 3);
 
-				}
+			}
 
-				ObjectOutputStream escribiendoFichero = new ObjectOutputStream(new FileOutputStream("fechasVida.dat"));
+			if (indiceCoche.size() > 0) {
 
-				escribiendoFichero.writeObject(arrayList1);
+				actualizarVencimientos("fechasCoche.dat", 4);
 
-				escribiendoFichero.close();
+			}
+
+			System.out.println("INDICE COMERCIO: " + indiceComercio.size());
+
+			if (indiceComercio.size() > 0) {
+
+				actualizarVencimientos("fechasComercio.dat", 5);
+
+			}
+
+			if (indiceComunidad.size() > 0) {
+
+				actualizarVencimientos("fechasComunidad.dat", 6);
 
 			}
 
@@ -124,6 +196,26 @@ public class Vencimiento extends TimerTask {
 		catch (Exception e) {
 
 		}
+	}
+
+	private static void actualizarVencimientos(String archivo, int tipo)
+			throws IOException, FileNotFoundException, ClassNotFoundException {
+
+		arrayList1.clear();
+
+		arrayList2 = Metodos.leer(archivo);
+
+		if (Agenda.vencimientos.size() > 0) {
+
+			ponerVencimientos(tipo);
+
+		}
+
+		ObjectOutputStream escribiendoFichero = new ObjectOutputStream(new FileOutputStream(archivo));
+
+		escribiendoFichero.writeObject(arrayList1);
+
+		escribiendoFichero.close();
 	}
 
 	public static LinkedList<Integer> buscarColoresVencimientos(String fecha, LinkedList tipoVencimiento) {
@@ -163,7 +255,7 @@ public class Vencimiento extends TimerTask {
 
 	}
 
-	private void ponerVencimientos(int tipo) {
+	private static void ponerVencimientos(int tipo) {
 
 		LinkedList<Integer> indices = new LinkedList<Integer>();
 
@@ -176,11 +268,29 @@ public class Vencimiento extends TimerTask {
 		int indice2 = 0;
 
 		switch (tipo) {
+
 		case 1:
 			indices = indiceDeceso;
 			break;
+
 		case 2:
 			indices = indiceVida;
+			break;
+
+		case 3:
+			indices = indiceHogar;
+			break;
+
+		case 4:
+			indices = indiceCoche;
+			break;
+
+		case 5:
+			indices = indiceComercio;
+			break;
+
+		case 6:
+			indices = indiceComunidad;
 			break;
 
 		}
@@ -230,6 +340,74 @@ public class Vencimiento extends TimerTask {
 						}
 
 						Agenda.vencimientosVida.add(fechaVto);
+
+						break;
+
+					case 3:
+
+						indice1 = indicevtoDeceso.indexOf("Hogar --> ") + 10;
+
+						indice2 = indicevtoDeceso.indexOf("Coche");
+
+						if (indice1 > -1 && indice2 > -1) {
+
+							fechaVto = indicevtoDeceso.substring(indice1, indice2);
+
+							fechaVto = fechaVto.trim();
+						}
+
+						Agenda.vencimientosHogar.add(fechaVto);
+
+						break;
+
+					case 4:
+
+						indice1 = indicevtoDeceso.indexOf("Coche --> ") + 10;
+
+						indice2 = indicevtoDeceso.indexOf("Comercio");
+
+						if (indice1 > -1 && indice2 > -1) {
+
+							fechaVto = indicevtoDeceso.substring(indice1, indice2);
+
+							fechaVto = fechaVto.trim();
+						}
+
+						Agenda.vencimientosCoche.add(fechaVto);
+
+						break;
+
+					case 5:
+
+						indice1 = indicevtoDeceso.indexOf("Comercio --> ") + 13;
+
+						indice2 = indicevtoDeceso.indexOf("Comunidad");
+
+						if (indice1 > -1 && indice2 > -1) {
+
+							fechaVto = indicevtoDeceso.substring(indice1, indice2);
+							System.out.println("PONGO comercio: " + fechaVto);
+							fechaVto = fechaVto.trim();
+						}
+
+						Agenda.vencimientosComercio.add(fechaVto);
+
+						break;
+
+					case 6:
+
+						indice1 = indicevtoDeceso.indexOf("Comunidad --> ") + 14;
+
+						indice2 = indicevtoDeceso.length();
+
+						if (indice1 > -1 && indice2 > -1) {
+
+							fechaVto = indicevtoDeceso.substring(indice1, indice2);
+
+							fechaVto = fechaVto.trim();
+						}
+
+						Agenda.vencimientosComunidad.add(fechaVto);
 
 						break;
 

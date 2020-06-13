@@ -3,6 +3,7 @@ package principal;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -10,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.util.Date;
 import java.util.LinkedList;
 
 import javax.swing.GroupLayout;
@@ -71,6 +71,7 @@ public class Llamada extends javax.swing.JFrame {
 	static int tipoDeceso = 0;
 
 	public Llamada(int tipo) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Llamada.class.getResource("/imagenes/telefono.png")));
 
 		tipoDeceso = tipo;
 
@@ -89,16 +90,39 @@ public class Llamada extends javax.swing.JFrame {
 
 		case 2:
 			seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/heart.png")));
+			System.out.println("AAAAAAAAAAAAA " + Agenda.vencimientosVida.size());
 			vencimientos = Agenda.vencimientosVida;
+			break;
+
+		case 3:
+			seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/home.png")));
+			vencimientos = Agenda.vencimientosHogar;
+			break;
+
+		case 4:
+			seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/car.png")));
+
+			vencimientos = Agenda.vencimientosCoche;
+			break;
+
+		case 5:
+			seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/shop.png")));
+			vencimientos = Agenda.vencimientosComercio;
+			break;
+
+		case 6:
+			seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/comunidad.png")));
+
+			System.out.println("AAAAAAAAAAAAA " + Agenda.vencimientosComunidad.size());
+
+			vencimientos = Agenda.vencimientosComunidad;
 			break;
 
 		}
 
 		initComponents();
-		comboBox.setFont(new Font("Dialog", Font.BOLD, 16));
 
-		// seguro.setIcon(new
-		// ImageIcon(Llamada.class.getResource("/imagenes/heart.png")));
+		comboBox.setFont(new Font("Dialog", Font.BOLD, 16));
 
 		comboBox.addItem("Decesos");
 
@@ -141,8 +165,8 @@ public class Llamada extends javax.swing.JFrame {
 		model.getDataVector().removeAllElements();
 
 		model = (DefaultTableModel) jTable1.getModel();
+
 		String tlf = "";
-		// Agenda.ponerFechasDeceso();
 
 		try {
 
@@ -164,9 +188,27 @@ public class Llamada extends javax.swing.JFrame {
 					tlf = Agenda.telefonos.get(Vencimiento.getIndiceVida().get(i));
 					break;
 
-				}
+				case 3:
+					contactoVto = Agenda.contactos.get(Vencimiento.getIndiceHogar().get(i));
+					tlf = Agenda.telefonos.get(Vencimiento.getIndiceVida().get(i));
+					break;
 
-				System.out.println("AÑADO A TABLA: " + contactoVto);
+				case 4:
+					contactoVto = Agenda.contactos.get(Vencimiento.getIndiceCoche().get(i));
+					tlf = Agenda.telefonos.get(Vencimiento.getIndiceVida().get(i));
+					break;
+
+				case 5:
+					contactoVto = Agenda.contactos.get(Vencimiento.getIndiceComercio().get(i));
+					tlf = Agenda.telefonos.get(Vencimiento.getIndiceVida().get(i));
+					break;
+
+				case 6:
+					contactoVto = Agenda.contactos.get(Vencimiento.getIndiceComunidad().get(i));
+					tlf = Agenda.telefonos.get(Vencimiento.getIndiceVida().get(i));
+					break;
+
+				}
 
 				model.addRow(new Object[] { contactoVto, tlf, lista.get(i), "" });
 
@@ -267,8 +309,6 @@ public class Llamada extends javax.swing.JFrame {
 
 				dispose();
 
-				Date fecha = new Date();
-
 				switch (valor) {
 
 				case "Decesos":
@@ -278,6 +318,30 @@ public class Llamada extends javax.swing.JFrame {
 				case "Vida":
 
 					new Llamada(2).setVisible(true);
+
+					break;
+
+				case "Hogar":
+
+					new Llamada(3).setVisible(true);
+
+					break;
+
+				case "Coche":
+
+					new Llamada(4).setVisible(true);
+
+					break;
+
+				case "Comercio":
+
+					new Llamada(5).setVisible(true);
+
+					break;
+
+				case "Comunidad":
+
+					new Llamada(6).setVisible(true);
 
 					break;
 
@@ -408,7 +472,7 @@ public class Llamada extends javax.swing.JFrame {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-				new Llamada(1).setVisible(true);
+				new Llamada(0).setVisible(true);
 			}
 
 		});

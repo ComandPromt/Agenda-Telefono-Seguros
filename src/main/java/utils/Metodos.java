@@ -32,7 +32,7 @@ import alertas.AlertWarningSalir;
 import principal.Agenda;
 import principal.Vencimiento;
 
-public class Metodos {
+public abstract class Metodos {
 
 	public static boolean ultimoDiaMes(int dia, int mes, int year) {
 

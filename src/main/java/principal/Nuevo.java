@@ -36,7 +36,8 @@ import utils.Metodos;
 public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeListener {
 
 	private MaterialTextField nombrec;
-
+	JCheckBox checkComercio = new JCheckBox("");
+	JCheckBox checkComunidad = new JCheckBox("");
 	private JCheckBox checkHogar = new JCheckBox("");
 
 	private JCheckBox checkCoche = new JCheckBox("");
@@ -77,7 +78,7 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 		String telefonoc = Metodos.eliminarEspacios(telefono.getText());
 
-		String fechaDecesos, fechaVida, fechaCoche, fechaHogar = "";
+		String fechaDecesos, fechaVida, fechaCoche, fechaHogar, fechaComercio, fechaComunidad;
 
 		String datoLocalidad = Metodos.eliminarEspacios(localidad.getText());
 
@@ -110,7 +111,7 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 				}
 
 				if (!checkDeceso.isSelected() && !checkCoche.isSelected() && !checkVida.isSelected()
-						&& !checkHogar.isSelected()) {
+						&& !checkHogar.isSelected() && !checkComercio.isSelected() && !checkComunidad.isSelected()) {
 					Metodos.mensaje("Por favor, selecciona un seguro como mínimo", 1, false);
 				}
 
@@ -139,19 +140,27 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 							fechaHogar = Agenda.convertirFecha(hogar.getDatoFecha().toString(), true);
 							fechaVida = Agenda.convertirFecha(vida.getDatoFecha().toString(), true);
 							fechaCoche = Agenda.convertirFecha(coche.getDatoFecha().toString(), true);
+							fechaComercio = Agenda.convertirFecha(comercio.getDatoFecha().toString(), true);
+							fechaComunidad = Agenda.convertirFecha(comunidad.getDatoFecha().toString(), true);
 
 							Agenda.setfechaDecesos(fechaDecesos);
 
 							Agenda.setFechaCoche(fechaCoche);
 
-							Agenda.setFechaVida(fechaCoche);
+							Agenda.setFechaVida(fechaVida);
 
-							Agenda.setFechaHogar(fechaCoche);
+							Agenda.setFechaHogar(fechaHogar);
+
+							Agenda.setFechaComercio(fechaComercio);
+
+							Agenda.setFechaComunidad(fechaComunidad);
 
 							Object datoFechaDeceso = null;
 							Object datoFechaCoche = null;
 							Object datoFechaVida = null;
 							Object datoFechaHogar = null;
+							Object datoFechaComercio = null;
+							Object datoFechaComunidad = null;
 
 							if (checkDeceso.isSelected()) {
 								datoFechaDeceso = new Date(fechaDecesos);
@@ -169,10 +178,22 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 								datoFechaHogar = new Date(fechaHogar);
 							}
 
+							if (checkComercio.isSelected()) {
+								datoFechaComercio = new Date(fechaComercio);
+							}
+
+							if (checkComunidad.isSelected()) {
+								datoFechaComunidad = new Date(fechaComunidad);
+							}
+
+							System.out.println("DECESO: " + datoFechaDeceso + " VIDA: " + datoFechaVida + " HOGAR: "
+									+ datoFechaHogar + " COCHE: " + datoFechaCoche + " COMERCIO: " + datoFechaComercio
+									+ " COMUNIDAD: " + datoFechaComunidad);
+
 							arrayList1.add(new Objeto(nombre + "«" + datoEmail + "»" + notap + "¬" + telefonoc + "═"
 									+ datoDireccion + "▓" + datoLocalidad + "░" + datoCodPostal + "┤" + datoProvincia
 									+ "▒" + datoFechaDeceso + "╣" + datoFechaVida + "║" + datoFechaHogar + "╝"
-									+ datoFechaCoche));
+									+ datoFechaCoche + "¥" + datoFechaComercio + "¶" + datoFechaComunidad));
 
 							ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
 									new FileOutputStream("contactos.dat"));
@@ -203,6 +224,9 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 			Metodos.mensaje("Por favor, rellena todos los datos", 3, true);
 
 		}
+
+		Vencimiento.verTablaVencimientos();
+
 	}
 
 	public Nuevo() {
@@ -389,14 +413,10 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		jLabel5_2_1_1.setText("Comercio");
 		jLabel5_2_1_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
 
-		JCheckBox checkCoche_1 = new JCheckBox("");
-
 		JLabel jLabel5_2_1_1_1 = new JLabel();
 		jLabel5_2_1_1_1.setIcon(new ImageIcon(Nuevo.class.getResource("/imagenes/comunidad.png")));
 		jLabel5_2_1_1_1.setText("Comunidad");
 		jLabel5_2_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
-
-		JCheckBox checkCoche_1_1 = new JCheckBox("");
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.TRAILING).addGroup(layout.createSequentialGroup()
@@ -425,102 +445,91 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 												.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
 														.addComponent(nombrec)
 														.addComponent(direccion, 173, 173, Short.MAX_VALUE))))
-								.addGap(18))
-								.addGroup(layout.createSequentialGroup().addGroup(layout
-										.createParallelGroup(Alignment.TRAILING)
-										.addGroup(layout.createSequentialGroup()
-												.addGroup(layout.createParallelGroup(Alignment.LEADING)
-														.addComponent(jLabel5, GroupLayout.PREFERRED_SIZE, 109,
-																GroupLayout.PREFERRED_SIZE)
-														.addComponent(jLabel5_2_1))
-												.addPreferredGap(ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
-												.addGroup(layout.createParallelGroup(Alignment.LEADING)
-														.addComponent(checkVida, GroupLayout.PREFERRED_SIZE, 21,
-																GroupLayout.PREFERRED_SIZE)
-														.addComponent(checkCoche))
-												.addGap(4))
-										.addGroup(layout.createSequentialGroup().addComponent(jLabel5_2_1_1)
-												.addPreferredGap(ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-												.addComponent(checkCoche_1, GroupLayout.PREFERRED_SIZE, 21,
-														GroupLayout.PREFERRED_SIZE)
-												.addGap(2))
-										.addGroup(
-												layout.createSequentialGroup().addComponent(jLabel5_2_1_1_1).addGap(14)
-														.addComponent(checkCoche_1_1, GroupLayout.PREFERRED_SIZE, 21,
-																GroupLayout.PREFERRED_SIZE)
-														.addGap(2)))
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addGroup(layout.createParallelGroup(Alignment.LEADING)
-												.addComponent(comercio, GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-												.addComponent(coche, 0, 0, Short.MAX_VALUE)
-												.addComponent(comunidad, GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-												.addComponent(vida, GroupLayout.PREFERRED_SIZE, 162,
-														GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(ComponentPlacement.RELATED)))
-						.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(lblNewLabel_3_1)
-								.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
-										.addGroup(layout.createParallelGroup(Alignment.TRAILING).addGroup(layout
-												.createSequentialGroup().addGroup(layout
-														.createParallelGroup(Alignment.LEADING).addGroup(layout
-																.createSequentialGroup().addGroup(layout
-																		.createParallelGroup(Alignment.LEADING)
-																		.addGroup(layout.createSequentialGroup()
-																				.addComponent(lblNewLabel_1,
-																						GroupLayout.DEFAULT_SIZE, 87,
-																						Short.MAX_VALUE)
-																				.addGap(49)
-																				.addComponent(lblNewLabel_2_1,
-																						GroupLayout.PREFERRED_SIZE, 8,
-																						GroupLayout.PREFERRED_SIZE))
-																		.addComponent(
-																				lblNewLabel_3_1_2,
-																				GroupLayout.DEFAULT_SIZE, 144,
-																				Short.MAX_VALUE)
-																		.addGroup(layout.createSequentialGroup()
-																				.addGroup(layout.createParallelGroup(
-																						Alignment.TRAILING, false)
-																						.addComponent(lblHogar,
-																								Alignment.LEADING,
-																								GroupLayout.DEFAULT_SIZE,
-																								GroupLayout.DEFAULT_SIZE,
-																								Short.MAX_VALUE)
-																						.addComponent(
-																								jLabel5_2,
-																								Alignment.LEADING,
-																								GroupLayout.DEFAULT_SIZE,
-																								GroupLayout.DEFAULT_SIZE,
-																								Short.MAX_VALUE))
-																				.addPreferredGap(
-																						ComponentPlacement.UNRELATED)
-																				.addGroup(layout
-																						.createParallelGroup(
-																								Alignment.LEADING)
-																						.addComponent(checkHogar,
-																								GroupLayout.PREFERRED_SIZE,
-																								21,
-																								GroupLayout.PREFERRED_SIZE)
-																						.addComponent(checkDeceso,
-																								GroupLayout.PREFERRED_SIZE,
-																								21,
-																								GroupLayout.PREFERRED_SIZE))))
-																.addPreferredGap(ComponentPlacement.RELATED))
-														.addGroup(layout.createSequentialGroup()
-																.addComponent(lblNewLabel).addGap(2)))
-												.addGroup(layout.createParallelGroup(Alignment.TRAILING)
-														.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 118,
-																GroupLayout.PREFERRED_SIZE)
-														.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
-																.addComponent(hogar, 0, 0, Short.MAX_VALUE)
-																.addComponent(deceso, 0, 0, Short.MAX_VALUE)
-																.addComponent(codpostal, GroupLayout.DEFAULT_SIZE, 146,
+								.addGap(18)).addGroup(
+										layout.createSequentialGroup()
+												.addGroup(layout.createParallelGroup(
+														Alignment.TRAILING)
+														.addGroup(layout.createSequentialGroup().addGroup(layout
+																.createParallelGroup(Alignment.LEADING)
+																.addComponent(jLabel5, GroupLayout.PREFERRED_SIZE, 109,
+																		GroupLayout.PREFERRED_SIZE)
+																.addComponent(jLabel5_2_1))
+																.addPreferredGap(ComponentPlacement.RELATED, 36,
 																		Short.MAX_VALUE)
-																.addComponent(localidad).addComponent(telefono,
-																		GroupLayout.DEFAULT_SIZE, 146,
-																		Short.MAX_VALUE))))
-												.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 302,
-														Short.MAX_VALUE))
-										.addGap(124))))
-						.addComponent(lblNewLabel_4))
+																.addGroup(layout.createParallelGroup(Alignment.TRAILING)
+																		.addGroup(layout.createSequentialGroup()
+																				.addComponent(checkVida,
+																						GroupLayout.PREFERRED_SIZE, 21,
+																						GroupLayout.PREFERRED_SIZE)
+																				.addGap(4))
+																		.addGroup(layout.createSequentialGroup()
+																				.addComponent(checkCoche).addGap(2))))
+														.addGroup(layout.createSequentialGroup()
+																.addComponent(jLabel5_2_1_1)
+																.addPreferredGap(ComponentPlacement.RELATED, 28,
+																		Short.MAX_VALUE)
+																.addComponent(checkComercio, GroupLayout.PREFERRED_SIZE,
+																		21, GroupLayout.PREFERRED_SIZE)
+																.addGap(2))
+														.addGroup(layout.createSequentialGroup()
+																.addComponent(jLabel5_2_1_1_1)
+																.addPreferredGap(ComponentPlacement.UNRELATED)
+																.addComponent(checkComunidad,
+																		GroupLayout.PREFERRED_SIZE, 21,
+																		GroupLayout.PREFERRED_SIZE)
+																.addGap(2)))
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addGroup(layout.createParallelGroup(Alignment.LEADING)
+														.addComponent(comercio, GroupLayout.DEFAULT_SIZE, 162,
+																Short.MAX_VALUE)
+														.addComponent(coche, 0, 0, Short.MAX_VALUE)
+														.addComponent(comunidad, GroupLayout.DEFAULT_SIZE, 162,
+																Short.MAX_VALUE)
+														.addComponent(vida, GroupLayout.PREFERRED_SIZE, 162,
+																GroupLayout.PREFERRED_SIZE))
+												.addPreferredGap(ComponentPlacement.RELATED)))
+						.addGroup(layout.createParallelGroup(Alignment.TRAILING).addGroup(layout.createSequentialGroup()
+								.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout
+										.createParallelGroup(Alignment.LEADING)
+										.addGroup(layout.createSequentialGroup().addGroup(layout
+												.createParallelGroup(Alignment.LEADING)
+												.addGroup(layout.createSequentialGroup()
+														.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 87,
+																Short.MAX_VALUE)
+														.addGap(49).addComponent(lblNewLabel_2_1,
+																GroupLayout.PREFERRED_SIZE, 8,
+																GroupLayout.PREFERRED_SIZE))
+												.addComponent(lblNewLabel_3_1_2, GroupLayout.DEFAULT_SIZE, 144,
+														Short.MAX_VALUE)
+												.addGroup(layout.createSequentialGroup()
+														.addGroup(layout.createParallelGroup(Alignment.TRAILING, false)
+																.addComponent(lblHogar, Alignment.LEADING,
+																		GroupLayout.DEFAULT_SIZE,
+																		GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+																.addComponent(jLabel5_2, Alignment.LEADING,
+																		GroupLayout.DEFAULT_SIZE,
+																		GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+														.addPreferredGap(ComponentPlacement.UNRELATED)
+														.addGroup(layout.createParallelGroup(Alignment.LEADING)
+																.addComponent(checkHogar, GroupLayout.PREFERRED_SIZE,
+																		21, GroupLayout.PREFERRED_SIZE)
+																.addComponent(checkDeceso, GroupLayout.PREFERRED_SIZE,
+																		21, GroupLayout.PREFERRED_SIZE))))
+												.addPreferredGap(ComponentPlacement.RELATED))
+										.addGroup(layout.createSequentialGroup().addComponent(lblNewLabel).addGap(2)))
+										.addGroup(layout.createSequentialGroup().addComponent(lblNewLabel_3_1)
+												.addPreferredGap(ComponentPlacement.RELATED)))
+								.addGroup(layout.createParallelGroup(Alignment.TRAILING)
+										.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 118,
+												GroupLayout.PREFERRED_SIZE)
+										.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+												.addComponent(hogar, 0, 0, Short.MAX_VALUE)
+												.addComponent(deceso, 0, 0, Short.MAX_VALUE)
+												.addComponent(codpostal, GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
+												.addComponent(localidad).addComponent(telefono,
+														GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE))))
+								.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE))
+						.addGap(124)).addComponent(lblNewLabel_4))
 				.addGap(256)
 				.addComponent(lblNewLabel_3_1_1, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
 				.addGap(129)));
@@ -541,23 +550,24 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 																.addComponent(nombrec, GroupLayout.PREFERRED_SIZE, 33,
 																		GroupLayout.PREFERRED_SIZE)
 																.addComponent(lblNewLabel_2))
-												.addPreferredGap(ComponentPlacement.RELATED).addGroup(layout
-														.createParallelGroup(Alignment.BASELINE).addComponent(
-																lblNewLabel_3)
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+														.addComponent(lblNewLabel_3)
 														.addComponent(direccion, GroupLayout.PREFERRED_SIZE, 33,
 																GroupLayout.PREFERRED_SIZE)
-														.addComponent(lblNewLabel_3_1, GroupLayout.PREFERRED_SIZE, 63,
-																GroupLayout.PREFERRED_SIZE)
 														.addComponent(localidad, GroupLayout.PREFERRED_SIZE, 33,
+																GroupLayout.PREFERRED_SIZE)
+														.addComponent(lblNewLabel_3_1, GroupLayout.PREFERRED_SIZE, 63,
 																GroupLayout.PREFERRED_SIZE)))
-								.addGroup(
-										layout.createSequentialGroup().addGap(31).addComponent(
+								.addGroup(layout
+										.createSequentialGroup().addGap(31).addComponent(
 												lblNewLabel_2_1, GroupLayout.PREFERRED_SIZE, 24,
 												GroupLayout.PREFERRED_SIZE)))
 						.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
-								.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout
-										.createSequentialGroup().addGap(18).addComponent(lblNewLabel_3_1_1,
-												GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE))
+								.addGroup(layout.createParallelGroup(Alignment.LEADING)
+										.addGroup(layout.createSequentialGroup().addGap(18).addComponent(
+												lblNewLabel_3_1_1, GroupLayout.PREFERRED_SIZE, 63,
+												GroupLayout.PREFERRED_SIZE))
 										.addGroup(layout.createSequentialGroup().addGap(8).addComponent(lblNewLabel_3_2,
 												GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE))
 										.addGroup(layout.createSequentialGroup().addGap(6)
@@ -593,37 +603,35 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 												.addGroup(layout.createSequentialGroup().addGap(32)
 														.addComponent(checkVida, GroupLayout.PREFERRED_SIZE, 21,
 																GroupLayout.PREFERRED_SIZE))
-												.addGroup(layout.createSequentialGroup().addGap(23).addComponent(vida,
-														GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												.addGroup(layout.createSequentialGroup().addGap(23).addComponent(
+														vida, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 														GroupLayout.PREFERRED_SIZE)))
-												.addGap(21)
 												.addGroup(layout.createParallelGroup(Alignment.LEADING)
-														.addComponent(checkCoche)
-														.addComponent(coche, GroupLayout.PREFERRED_SIZE, 41,
-																GroupLayout.PREFERRED_SIZE))))
+														.addGroup(layout.createSequentialGroup().addGap(21)
+																.addComponent(coche, GroupLayout.PREFERRED_SIZE, 41,
+																		GroupLayout.PREFERRED_SIZE))
+														.addGroup(
+																layout.createSequentialGroup().addGap(30)
+																		.addComponent(checkCoche)))))
 								.addGroup(layout.createParallelGroup(Alignment.LEADING)
 										.addGroup(layout.createSequentialGroup().addGap(18).addComponent(comercio,
 												GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
-										.addGroup(layout.createSequentialGroup().addGap(26).addComponent(checkCoche_1,
+										.addGroup(layout.createSequentialGroup().addGap(26).addComponent(checkComercio,
 												GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))
 										.addGroup(layout.createSequentialGroup()
 												.addPreferredGap(ComponentPlacement.UNRELATED)
 												.addComponent(jLabel5_2_1_1, GroupLayout.PREFERRED_SIZE, 60,
 														GroupLayout.PREFERRED_SIZE)))
-								.addGap(14)
 								.addGroup(layout.createParallelGroup(Alignment.LEADING)
-										.addGroup(layout.createSequentialGroup()
-												.addPreferredGap(ComponentPlacement.RELATED)
-												.addComponent(jLabel5_2_1_1_1, GroupLayout.PREFERRED_SIZE, 48,
-														GroupLayout.PREFERRED_SIZE))
-										.addGroup(layout.createSequentialGroup()
-												.addPreferredGap(ComponentPlacement.RELATED)
+										.addGroup(layout.createSequentialGroup().addGap(14)
 												.addGroup(layout.createParallelGroup(Alignment.LEADING)
-														.addComponent(checkCoche_1_1, GroupLayout.PREFERRED_SIZE, 21,
+														.addComponent(jLabel5_2_1_1_1, GroupLayout.PREFERRED_SIZE, 48,
 																GroupLayout.PREFERRED_SIZE)
-														.addComponent(
-																comunidad, GroupLayout.PREFERRED_SIZE, 41,
-																GroupLayout.PREFERRED_SIZE)))))
+														.addComponent(comunidad, GroupLayout.PREFERRED_SIZE, 41,
+																GroupLayout.PREFERRED_SIZE)))
+										.addGroup(
+												layout.createSequentialGroup().addGap(23).addComponent(checkComunidad,
+														GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))))
 								.addGroup(layout.createSequentialGroup().addGroup(layout
 										.createParallelGroup(Alignment.LEADING)
 										.addGroup(layout.createSequentialGroup()
@@ -637,7 +645,7 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 												.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 53,
 														GroupLayout.PREFERRED_SIZE))
 										.addGroup(layout.createSequentialGroup().addGap(76).addComponent(lblNewLabel,
-												GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)))
+												GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
 										.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(scrollPane,
 												GroupLayout.PREFERRED_SIZE, 117, GroupLayout.PREFERRED_SIZE)
 										.addGap(25)))
