@@ -26,7 +26,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Timer;
@@ -66,14 +65,16 @@ import utils.MetodosPdf;
 @SuppressWarnings("all")
 
 public class Agenda extends JFrame {
+
 	static JLabel nuevosVencimientos = new JLabel("");
 	private boolean verContacto = true;
 	JButton observacion = new JButton("Obs");
 	int indice;
-	JTextPane vtos = new JTextPane();
+	static JTextPane vtos = new JTextPane();
 	Timer t = new Timer();
 	Vencimiento mTask = new Vencimiento();
 	ArrayList<Objeto> arrayList1;
+
 	private JButton buscar;
 	private static JButton contacto;
 	private JButton editar;
@@ -82,34 +83,88 @@ public class Agenda extends JFrame {
 	static String directorioActual, separador, os;
 	private static JTextField nombre;
 	public static DefaultListModel<String> modelo = new DefaultListModel<>();
-	private static LinkedList<String> notas = new LinkedList<>();
 	String iduser;
 	transient ResultSet rs;
 	transient Statement s;
 	String cnombre;
 	String ctipo;
 	String cnota;
-	JTextPane tlf = new JTextPane();
-	JTextPane direccion = new JTextPane();
+	static JTextPane tlf = new JTextPane();
+	static JTextPane direccion = new JTextPane();
+	public static LinkedList<String> vencimientosDecesos = new <String>LinkedList();
+	public static LinkedList<String> vencimientosVida = new <String>LinkedList();
+	public static LinkedList<String> vencimientosHogar = new <String>LinkedList();
+	public static LinkedList<String> vencimientosCoche = new <String>LinkedList();
+	public static LinkedList<String> vencimientosComercio = new <String>LinkedList();
+	public static LinkedList<String> vencimientosComunidad = new <String>LinkedList();
+
+	static LinkedList<String> fechaDecesos = new <String>LinkedList();
+
+	static LinkedList<String> emails = new <String>LinkedList();
+
+	static LinkedList<String> fechaVida = new <String>LinkedList();
+
+	static LinkedList<String> fechaHogar = new <String>LinkedList();
+
+	static LinkedList<String> fechaComercio = new <String>LinkedList();
+
+	static LinkedList<String> fechaComunidad = new <String>LinkedList();
+
+	static LinkedList<String> fechaCoche = new <String>LinkedList();
+
+	static LinkedList<String> observaciones = new <String>LinkedList();
+
+	public static LinkedList<String> contactos = new <String>LinkedList();
 
 	public static void vaciarCampos() {
+
 		Agenda.nombre.setText("");
-
-	}
-
-	public void vaciarDatos() {
-		Agenda.nombre.setText("");
-
+		Agenda.tlf.setText("");
+		Agenda.vtos.setText("");
+		Agenda.direccion.setText("");
+		Agenda.email.setText("");
 	}
 
 	private void verVencimientoLlamada(int seguro) {
 
 		if (!verContacto) {
 
-			verContactos();
+			verNotas();
 		}
 
-		new Llamada(seguro).setVisible(true);
+		int vencimientos = 0;
+
+		switch (seguro) {
+
+		case 1:
+			vencimientos = vencimientosDecesos.size();
+			break;
+		case 2:
+			vencimientos = vencimientosVida.size();
+			break;
+		case 3:
+			vencimientos = vencimientosHogar.size();
+			break;
+		case 4:
+			vencimientos = vencimientosCoche.size();
+			break;
+		case 5:
+			vencimientos = vencimientosComercio.size();
+			break;
+		case 6:
+			vencimientos = vencimientosComunidad.size();
+			break;
+		}
+
+		if (vencimientos == 0) {
+			Metodos.mensaje("No hay vencimientos", 3, true);
+			verNotas();
+		}
+
+		else {
+
+			new Llamada(seguro).setVisible(true);
+		}
 
 	}
 
@@ -120,28 +175,28 @@ public class Agenda extends JFrame {
 		switch (tipo) {
 
 		case 1:
-			vueltas = Vencimiento.getIndiceDeceso().size();
+			vueltas = vencimientosDecesos.size();
 			break;
 		case 2:
-			vueltas = Vencimiento.getIndiceVida().size();
+			vueltas = vencimientosVida.size();
 			break;
 		case 3:
-			vueltas = Vencimiento.getIndiceHogar().size();
+			vueltas = vencimientosHogar.size();
 			break;
 		case 4:
-			vueltas = Vencimiento.getIndiceCoche().size();
+			vueltas = vencimientosCoche.size();
 			break;
 		case 5:
-			vueltas = Vencimiento.getIndiceComercio().size();
+			vueltas = vencimientosComercio.size();
 			break;
 		case 6:
-			vueltas = Vencimiento.getIndiceComunidad().size();
+			vueltas = vencimientosComunidad.size();
 			break;
 		}
 
 		if (vueltas == 0) {
 			Metodos.mensaje("No hay vencimientos", 3, true);
-			verContactos();
+			verNotas();
 		}
 
 		else {
@@ -210,6 +265,7 @@ public class Agenda extends JFrame {
 				}
 
 				if (indiceVencimiento < contactos.size()) {
+
 					model.addElement(contactos.get(indiceVencimiento));
 				}
 
@@ -218,7 +274,10 @@ public class Agenda extends JFrame {
 			telefonos.clear();
 
 			direcciones.clear();
-
+			contactodirecciones.clear();
+			contactocodigopostal.clear();
+			contactolocalidades.clear();
+			contactoprovincias.clear();
 			emails.clear();
 
 			observaciones.clear();
@@ -236,6 +295,7 @@ public class Agenda extends JFrame {
 			vencimientos = fechasDecesos;
 
 			jList1.setModel(model);
+
 		}
 	}
 
@@ -342,31 +402,6 @@ public class Agenda extends JFrame {
 		Agenda.separador = separador;
 	}
 
-	public static LinkedList<String> vencimientosDecesos = new <String>LinkedList();
-	public static LinkedList<String> vencimientosVida = new <String>LinkedList();
-	public static LinkedList<String> vencimientosHogar = new <String>LinkedList();
-	public static LinkedList<String> vencimientosCoche = new <String>LinkedList();
-	public static LinkedList<String> vencimientosComercio = new <String>LinkedList();
-	public static LinkedList<String> vencimientosComunidad = new <String>LinkedList();
-
-	static LinkedList<String> fechaDecesos = new <String>LinkedList();
-
-	static LinkedList<String> emails = new <String>LinkedList();
-
-	static LinkedList<String> fechaVida = new <String>LinkedList();
-
-	static LinkedList<String> fechaHogar = new <String>LinkedList();
-
-	static LinkedList<String> fechaComercio = new <String>LinkedList();
-
-	static LinkedList<String> fechaComunidad = new <String>LinkedList();
-
-	static LinkedList<String> fechaCoche = new <String>LinkedList();
-
-	static LinkedList<String> observaciones = new <String>LinkedList();
-
-	public static LinkedList<String> contactos = new <String>LinkedList();
-
 	public LinkedList<String> getContactos() {
 		return contactos;
 	}
@@ -375,9 +410,13 @@ public class Agenda extends JFrame {
 
 	static LinkedList<String> direcciones = new <String>LinkedList();
 
+	static LinkedList<String> contactodirecciones = new <String>LinkedList();
+	static LinkedList<String> contactolocalidades = new <String>LinkedList();
+	static LinkedList<String> contactoprovincias = new <String>LinkedList();
+	static LinkedList<String> contactocodigopostal = new <String>LinkedList();
 	static LinkedList<String> vencimientos = new <String>LinkedList();
 
-	private JTextField email;
+	private static JTextField email;
 
 	protected static void limpiarContactos() {
 		modelo.removeAllElements();
@@ -389,82 +428,117 @@ public class Agenda extends JFrame {
 
 		String fecha = "";
 
-		if (!cadena.equals("null")) {
+		String mes = "";
 
-			String mes = "", year = "";
+		String year = "";
 
-			int dia;
+		int dia;
 
-			int limiteMes = cadena.indexOf(" ") + 4;
+		String mesCorto = "";
 
-			year = cadena.substring(cadena.lastIndexOf(" ") + 1, cadena.length());
+		String diaCorto = "";
 
-			mes = cadena.substring(cadena.indexOf(" ") + 1, limiteMes);
+		int mesFecha = 0;
 
-			cadena = cadena.substring(limiteMes + 1, cadena.length());
+		String busquedaMes = "";
 
-			dia = Integer.parseInt(cadena.substring(0, cadena.indexOf(" ")));
+		String busquedaDia = "";
 
-			int mesFecha = 0;
+		if (!cadena.isEmpty() && !cadena.contains("null")) {
 
-			switch (mes) {
+			if (cadena.indexOf(" ") == -1) {
 
-			case "Jan":
-				mesFecha = 1;
-				break;
+				busquedaDia = cadena.substring(0, cadena.indexOf("/"));
 
-			case "Feb":
-				mesFecha = 2;
-				break;
+				busquedaMes = cadena.substring(cadena.indexOf("/") + 1, cadena.lastIndexOf("/"));
 
-			case "Mar":
-				mesFecha = 3;
-				break;
+				if (busquedaDia.indexOf("0") == 0) {
+					dia = Integer.parseInt(busquedaDia.substring(1, busquedaDia.length()));
+					diaCorto = "0";
+				}
 
-			case "Apr":
-				mesFecha = 4;
-				break;
+				else {
+					dia = Integer.parseInt(busquedaDia);
+				}
 
-			case "May":
-				mesFecha = 5;
-				break;
+				if (busquedaMes.contains("0")) {
+					mesFecha = Integer.parseInt(busquedaMes.substring(1, busquedaMes.length()));
+					mesCorto = "0";
+				}
 
-			case "Jun":
-				mesFecha = 6;
-				break;
+				else {
+					mesFecha = Integer.parseInt(busquedaMes);
+				}
 
-			case "Jul":
-				mesFecha = 7;
-				break;
+				year = cadena.substring(cadena.lastIndexOf("/") + 1, cadena.length());
 
-			case "Aug":
-				mesFecha = 8;
-				break;
+			} else {
 
-			case "Sep":
-				mesFecha = 9;
-				break;
+				int limiteMes = cadena.indexOf(" ") + 4;
 
-			case "Oct":
-				mesFecha = 10;
-				break;
+				year = cadena.substring(cadena.lastIndexOf(" ") + 1, cadena.length());
 
-			case "Nov":
-				mesFecha = 11;
-				break;
+				mes = cadena.substring(cadena.indexOf(" ") + 1, limiteMes);
 
-			case "Dec":
-				mesFecha = 12;
-				break;
+				cadena = cadena.substring(limiteMes + 1, cadena.length());
 
-			default:
-				break;
+				dia = Integer.parseInt(cadena.substring(0, cadena.indexOf(" ")));
 
+				switch (mes) {
+
+				case "Jan":
+					mesFecha = 1;
+					break;
+
+				case "Feb":
+					mesFecha = 2;
+					break;
+
+				case "Mar":
+					mesFecha = 3;
+					break;
+
+				case "Apr":
+					mesFecha = 4;
+					break;
+
+				case "May":
+					mesFecha = 5;
+					break;
+
+				case "Jun":
+					mesFecha = 6;
+					break;
+
+				case "Jul":
+					mesFecha = 7;
+					break;
+
+				case "Aug":
+					mesFecha = 8;
+					break;
+
+				case "Sep":
+					mesFecha = 9;
+					break;
+
+				case "Oct":
+					mesFecha = 10;
+					break;
+
+				case "Nov":
+					mesFecha = 11;
+					break;
+
+				case "Dec":
+					mesFecha = 12;
+					break;
+
+				default:
+					break;
+
+				}
 			}
-
-			String mesCorto = "";
-
-			String diaCorto = "";
 
 			if (mesFecha <= 9) {
 				mesCorto = "0";
@@ -485,15 +559,9 @@ public class Agenda extends JFrame {
 		return fecha;
 	}
 
-	private void verContactos() {
-
-		limpiarContactos();
-
-		verNotas();
-	}
-
 	public Agenda() throws IOException, SQLException {
 
+		arrayList1 = new ArrayList<Objeto>();
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Agenda.class.getResource("/imagenes/agenda.png")));
 
 		os = System.getProperty("os.name");
@@ -501,6 +569,8 @@ public class Agenda extends JFrame {
 		separador = Metodos.saberSeparador(os);
 
 		initComponents();
+
+		Metodos.cearCarpetas();
 
 		mTask.verTablaVencimientos();
 
@@ -510,7 +580,7 @@ public class Agenda extends JFrame {
 
 		setAutoRequestFocus(false);
 
-		this.setSize(new Dimension(760, 650));
+		this.setSize(new Dimension(760, 670));
 
 		buscar.setToolTipText("Buscar");
 
@@ -525,6 +595,7 @@ public class Agenda extends JFrame {
 		setJMenuBar(menuBar);
 
 		JMenu mnAcciones = new JMenu("Acciones");
+		mnAcciones.setForeground(Color.BLACK);
 		mnAcciones.setFont(new Font("Dialog", Font.PLAIN, 16));
 		mnAcciones.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/utilities.png")));
 		menuBar.add(mnAcciones);
@@ -647,40 +718,54 @@ public class Agenda extends JFrame {
 					if (JOptionPane.showConfirmDialog(null, "Quieres borrar a " + contacto, "Borrar contactos",
 							JOptionPane.YES_NO_OPTION) == 0) {
 
+						vaciarCampos();
+
+						vencimientosDecesos.clear();
+
+						vencimientosVida.clear();
+
+						vencimientosHogar.clear();
+
+						vencimientosCoche.clear();
+
+						vencimientosComercio.clear();
+
+						vencimientosComunidad.clear();
+
 						int indice = jList1.getSelectedIndex();
 
 						if (indice >= 0 && contactos.get(indice).equals(contacto)) {
 
-							contactos.remove(indice);
+							verNotas();
 
-							observaciones.remove(indice);
-
-							fechaDecesos.remove(indice);
-							emails.remove(indice);
-							fechaVida.remove(indice);
-							fechaHogar.remove(indice);
-							fechaCoche.remove(indice);
-							fechaComercio.remove(indice);
-							fechaComunidad.remove(indice);
-							direcciones.remove(indice);
-							telefonos.remove(indice);
-							vencimientos.remove(indice);
 							nombre.setText("");
-
-							limpiarContactos();
-
-							Metodos.eliminarFichero("contactos.dat");
 
 							arrayList1.clear();
 
 							if (contactos.size() > 0) {
 
+								Metodos.eliminarFichero("contactos.dat");
+
+								Metodos.eliminarFichero("fechasDecesos.dat");
+								Metodos.eliminarFichero("fechasVida.dat");
+								Metodos.eliminarFichero("fechasHogar.dat");
+								Metodos.eliminarFichero("fechasCoche.dat");
+								Metodos.eliminarFichero("fechasComercio.dat");
+								Metodos.eliminarFichero("fechasComunidad.dat");
+
 								for (int i = 0; i < contactos.size(); i++) {
 
-//									fecha = new Date(fechaDecesos.get(i).toString());
-//
-//									arrayList1.add(new Objeto(contactos.get(i) + "«" + fecha + "»"
-//											+ observaciones.get(i) + "¬" + telefonos.get(i)));
+									if (!contacto.equals(contactos.get(i))) {
+
+										arrayList1.add(new Objeto(contactos.get(i) + "«" + emails.get(i) + "»"
+												+ observaciones.get(i) + "¬" + telefonos.get(i) + "═"
+												+ contactodirecciones.get(i) + "▓" + contactolocalidades.get(i) + "░"
+												+ contactocodigopostal.get(i) + "┤" + contactoprovincias.get(i) + "▒"
+												+ fechaDecesos.get(i) + "╣" + fechaVida.get(i) + "║" + fechaHogar.get(i)
+												+ "╝" + fechaCoche.get(i) + "¥" + fechaComercio.get(i) + "¶"
+												+ fechaComunidad.get(i)));
+
+									}
 
 								}
 
@@ -689,16 +774,29 @@ public class Agenda extends JFrame {
 								try {
 
 									escribiendoFichero = new ObjectOutputStream(new FileOutputStream("contactos.dat"));
+
 									escribiendoFichero.writeObject(arrayList1);
 
 									escribiendoFichero.close();
-
+									vaciarCampos();
 									verNotas();
+
+									Vencimiento.actualizarVencimientos("fechasDecesos.dat", 1);
+
+									Vencimiento.actualizarVencimientos("fechasVida.dat", 2);
+
+									Vencimiento.actualizarVencimientos("fechasHogar.dat", 3);
+
+									Vencimiento.actualizarVencimientos("fechasCoche.dat", 4);
+
+									Vencimiento.actualizarVencimientos("fechasComercio.dat", 5);
+
+									Vencimiento.actualizarVencimientos("fechasComunidad.dat", 6);
 
 								}
 
 								catch (Exception e1) {
-
+									Metodos.mensaje("Error", 1, true);
 								}
 
 							}
@@ -724,6 +822,7 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_5.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 
 		JMenu mnNewMenu_2 = new JMenu("Ver Vencimientos");
+		mnNewMenu_2.setForeground(Color.BLACK);
 		mnNewMenu_2.setFont(new Font("Dialog", Font.PLAIN, 16));
 		mnNewMenu_2.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/view.png")));
 		menuBar.add(mnNewMenu_2);
@@ -734,6 +833,7 @@ public class Agenda extends JFrame {
 		mnNewMenu_2.add(mnNewMenu_3);
 
 		JMenuItem mntmNewMenuItem_8 = new JMenuItem("En Agenda");
+		mntmNewMenuItem_8.setFont(new Font("Dialog", Font.PLAIN, 16));
 
 		mnNewMenu_3.add(mntmNewMenuItem_8);
 
@@ -748,8 +848,6 @@ public class Agenda extends JFrame {
 			}
 
 		});
-
-		mntmNewMenuItem_8.setFont(new Font("Dialog", Font.PLAIN, 16));
 
 		mntmNewMenuItem_8.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/agenda.png")));
 
@@ -972,7 +1070,7 @@ public class Agenda extends JFrame {
 
 				verContacto = true;
 
-				verContactos();
+				verNotas();
 
 			}
 
@@ -989,7 +1087,7 @@ public class Agenda extends JFrame {
 			public void mousePressed(MouseEvent e) {
 
 				if (!verContacto) {
-					verContactos();
+					verNotas();
 				}
 
 				new Llamada(0).setVisible(true);
@@ -1082,16 +1180,40 @@ public class Agenda extends JFrame {
 				guardarContactos();
 			}
 		});
+
 		mntmNewMenuItem_7.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+
 		mntmNewMenuItem_7.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/vcard.png")));
+
 		mntmNewMenuItem_7.setSelectedIcon(null);
+
 		mnNewMenu_1.add(mntmNewMenuItem_7);
+
+		JMenuItem mntmNewMenuItem_21 = new JMenuItem("Sobre");
+		mntmNewMenuItem_21.setFont(new Font("Dialog", Font.PLAIN, 16));
+
+		mntmNewMenuItem_21.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				try {
+					About effect = new About();
+					effect.start();
+
+				} catch (Exception e1) {
+
+				}
+			}
+
+		});
+
+		mntmNewMenuItem_21.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/about.png")));
+
+		menuBar.add(mntmNewMenuItem_21);
 
 	}
 
 	private void initComponents() throws SQLException, IOException {
-
-		arrayList1 = new ArrayList<Objeto>();
 
 		JLabel jLabel1;
 		JPanel jPanel3;
@@ -1212,14 +1334,14 @@ public class Agenda extends JFrame {
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblNewLabel.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/telefono.png")));
 
-		vtos.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		vtos.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
 		tlf.setFont(new Font("Tahoma", Font.PLAIN, 16));
 
-		direccion.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		direccion.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
 		email = new JTextField();
-		email.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		email.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		email.setColumns(10);
 
 		JLabel lblNewLabel_1 = new JLabel("Email");
@@ -1231,6 +1353,52 @@ public class Agenda extends JFrame {
 		lblNewLabel_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
 		JCheckBox chckbxNewCheckBox = new JCheckBox("");
+		chckbxNewCheckBox.addMouseListener(new MouseAdapter() {
+
+			@Override
+
+			public void mousePressed(MouseEvent e) {
+
+				try {
+
+					int indice = jList1.getSelectedIndex();
+
+					if (indice > -1) {
+
+						if (!chckbxNewCheckBox.isSelected()) {
+
+							// segggee
+
+//							arrayList1.clear();
+//
+//							arrayList1 = leer("llamadas.dat");
+//
+//							arrayList1.set(indice, new Objeto(true));
+//
+//							Metodos.eliminarFichero("llamadas.dat");
+//
+//							ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
+//									new FileOutputStream("llamadas.dat"));
+//
+//							escribiendoFichero.writeObject(arrayList1);
+//
+//							escribiendoFichero.close();
+						}
+
+						else {
+							System.out.println("modifico para que notifique");
+						}
+
+					}
+
+					else {
+						Metodos.mensaje("Por favor, selecciona un contacto", 3, true);
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		chckbxNewCheckBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		observacion.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/view.png")));
 
@@ -1267,58 +1435,57 @@ public class Agenda extends JFrame {
 		GroupLayout panelCasaLayout = new GroupLayout(panelCasa);
 		panelCasaLayout.setHorizontalGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(panelCasaLayout.createSequentialGroup().addContainerGap().addGroup(panelCasaLayout
-						.createParallelGroup(Alignment.LEADING)
+						.createParallelGroup(Alignment.LEADING).addComponent(jLabel3)
+						.addComponent(btnAadirObservacion, GroupLayout.PREFERRED_SIZE, 146, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblNewLabel).addComponent(jLabel5)
 						.addComponent(lblNewLabel_1_1, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblNewLabel_1).addComponent(jLabel3).addComponent(lblNewLabel)
-						.addComponent(jLabel5)
-						.addComponent(btnAadirObservacion, GroupLayout.PREFERRED_SIZE, 146, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING).addGroup(panelCasaLayout
-								.createParallelGroup(Alignment.TRAILING)
-								.addGroup(panelCasaLayout.createSequentialGroup().addComponent(observacion).addGap(27)
-										.addComponent(lblNewLabel_2).addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(chckbxNewCheckBox))
-								.addComponent(tlf, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
-								.addComponent(nombre, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
-								.addComponent(vtos, GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE))
-								.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING, false)
-										.addComponent(email)
-										.addComponent(direccion, GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)))
+						.addComponent(lblNewLabel_1)).addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(email, GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+								.addComponent(direccion, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 220,
+										Short.MAX_VALUE)
+								.addComponent(tlf, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+								.addGroup(Alignment.TRAILING,
+										panelCasaLayout.createSequentialGroup().addComponent(observacion).addGap(27)
+												.addComponent(lblNewLabel_2).addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(chckbxNewCheckBox))
+								.addComponent(nombre, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 220,
+										Short.MAX_VALUE)
+								.addComponent(vtos, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE))
 						.addGap(40)));
-		panelCasaLayout.setVerticalGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING).addGroup(panelCasaLayout
-				.createSequentialGroup().addContainerGap()
-				.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
+		panelCasaLayout.setVerticalGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(panelCasaLayout.createSequentialGroup().addContainerGap().addGroup(panelCasaLayout
+						.createParallelGroup(Alignment.LEADING)
 						.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(btnAadirObservacion, GroupLayout.PREFERRED_SIZE, 41,
 										GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 46,
-										GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE)
 								.addComponent(observacion, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE))
-						.addComponent(chckbxNewCheckBox))
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING).addGroup(panelCasaLayout
-						.createSequentialGroup()
+						.addComponent(chckbxNewCheckBox)).addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 59, GroupLayout.PREFERRED_SIZE)
 								.addComponent(nombre, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(panelCasaLayout.createSequentialGroup().addComponent(lblNewLabel).addGap(44)
-										.addComponent(jLabel5).addGap(88).addComponent(lblNewLabel_1_1,
-												GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE))
-								.addGroup(panelCasaLayout.createSequentialGroup()
-										.addComponent(tlf, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(vtos,
-												GroupLayout.PREFERRED_SIZE, 173, GroupLayout.PREFERRED_SIZE)))
-						.addGap(26)
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
+						.addPreferredGap(
+								ComponentPlacement.RELATED)
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING).addGroup(panelCasaLayout
+								.createSequentialGroup().addGap(6)
+								.addComponent(tlf, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+								.addGap(18)
+								.addComponent(vtos, GroupLayout.PREFERRED_SIZE, 204, GroupLayout.PREFERRED_SIZE)
+								.addGap(7)
+								.addComponent(direccion, GroupLayout.PREFERRED_SIZE, 87, GroupLayout.PREFERRED_SIZE)
+								.addGap(18)
 								.addComponent(email, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)))
-						.addGroup(panelCasaLayout.createSequentialGroup().addGap(299).addComponent(direccion,
-								GroupLayout.PREFERRED_SIZE, 79, GroupLayout.PREFERRED_SIZE)))
-				.addContainerGap()));
+										GroupLayout.PREFERRED_SIZE)
+								.addGap(20))
+								.addGroup(panelCasaLayout.createSequentialGroup().addComponent(lblNewLabel).addGap(70)
+										.addComponent(jLabel5)
+										.addPreferredGap(ComponentPlacement.RELATED, 123, Short.MAX_VALUE)
+										.addComponent(lblNewLabel_1_1, GroupLayout.PREFERRED_SIZE, 48,
+												GroupLayout.PREFERRED_SIZE)
+										.addGap(18).addComponent(lblNewLabel_1, GroupLayout.PREFERRED_SIZE, 49,
+												GroupLayout.PREFERRED_SIZE)
+										.addContainerGap()))));
 
 		panelCasa.setLayout(panelCasaLayout);
 		nuevosVencimientos.setFont(new Font("Dialog", Font.BOLD, 14));
@@ -1339,9 +1506,8 @@ public class Agenda extends JFrame {
 		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(jPanel3Layout.createSequentialGroup().addComponent(nuevosVencimientos).addGap(3)
 						.addGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
-								.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE)
-								.addComponent(panelCasa, GroupLayout.PREFERRED_SIZE, 501, Short.MAX_VALUE))
-						.addContainerGap()));
+								.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 561, Short.MAX_VALUE)
+								.addComponent(panelCasa, GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE))));
 		jPanel3.setLayout(jPanel3Layout);
 
 		GroupLayout layout = new GroupLayout(getContentPane());
@@ -1351,8 +1517,8 @@ public class Agenda extends JFrame {
 						.addContainerGap(340, Short.MAX_VALUE)));
 		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 531, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(141, Short.MAX_VALUE)));
+						.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 564, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(108, Short.MAX_VALUE)));
 		getContentPane().setLayout(layout);
 
 		if (jList1.getModel().getSize() == 0) {
@@ -1389,6 +1555,8 @@ public class Agenda extends JFrame {
 
 		try {
 
+			limpiarContactos();
+
 			contactos.clear();
 
 			observaciones.clear();
@@ -1400,15 +1568,20 @@ public class Agenda extends JFrame {
 			fechaVida.clear();
 
 			fechaHogar.clear();
+
+			fechaCoche.clear();
 			fechaComercio.clear();
 			fechaComunidad.clear();
-			fechaCoche.clear();
-
 			telefonos.clear();
 
 			direcciones.clear();
 
 			vencimientos.clear();
+
+			contactodirecciones.clear();
+			contactocodigopostal.clear();
+			contactolocalidades.clear();
+			contactoprovincias.clear();
 
 			arrayList2 = leer("contactos.dat");
 
@@ -1423,8 +1596,6 @@ public class Agenda extends JFrame {
 
 					agenda.add(arrayList2.get(i).toString());
 				}
-
-				Collections.sort(agenda);
 
 				for (int i = 0; i < agenda.size(); i++) {
 
@@ -1466,9 +1637,7 @@ public class Agenda extends JFrame {
 
 					observaciones.add(obs);
 
-					if (fechaDeceso != null && !fechaDeceso.isEmpty()) {
-						fechaDecesos.add(convertirFecha(fechaDeceso, false));
-					}
+					fechaDecesos.add(convertirFecha(fechaDeceso, false));
 
 					emails.add(correo);
 
@@ -1482,10 +1651,6 @@ public class Agenda extends JFrame {
 
 					fechaComunidad.add(convertirFecha(datoComunidad, false));
 
-					// Dato comercio y dato comunidad
-
-					// guardarlos en la lista
-
 					vencimientos.add("Deceso --> " + fechaDecesos.getLast() + "\n\n" + "Vida --> " + fechaVida.getLast()
 							+ "\n\n" + "Hogar --> " + fechaHogar.getLast() + "\n\n" + "Coche --> "
 							+ fechaCoche.getLast() + "\n\n" + "Comercio --> " + fechaComercio.getLast() + "\n\n"
@@ -1493,11 +1658,18 @@ public class Agenda extends JFrame {
 
 					if (direccion.isEmpty() || localidad.isEmpty() || codPostal.isEmpty() || provincia.isEmpty()) {
 						direcciones.add("");
+						contactodirecciones.add("");
+						contactocodigopostal.add("");
+						contactolocalidades.add("");
+						contactoprovincias.add("");
 					}
 
 					else {
 						direcciones.add(direccion + "\n\n" + localidad + " (" + codPostal + ")" + "\n\n" + provincia);
-
+						contactodirecciones.add(direccion);
+						contactocodigopostal.add(codPostal);
+						contactolocalidades.add(localidad);
+						contactoprovincias.add(provincia);
 					}
 
 				}

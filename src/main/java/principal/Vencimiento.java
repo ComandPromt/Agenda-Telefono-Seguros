@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.TimerTask;
@@ -14,13 +13,20 @@ import utils.Metodos;
 
 public class Vencimiento extends TimerTask {
 
-	static ArrayList<String> arrayList1 = new ArrayList();
+	static LinkedList<String> arrayList1 = new LinkedList<String>();
 
-	static LinkedList<String> arrayList2 = new LinkedList();
+	static LinkedList<String> arrayList2 = new LinkedList<String>();
 
-	public static LinkedList<String> contactosVencimientos = new LinkedList();
+	public static LinkedList<String> contactosVencimientos = new LinkedList<String>();
+	static LinkedList<Integer> indiceDeceso = new LinkedList<Integer>();
+	static LinkedList<Integer> indiceVida = new LinkedList<Integer>();
+	static LinkedList<Integer> indiceHogar = new LinkedList<Integer>();
+	static LinkedList<Integer> indiceComercio = new LinkedList<Integer>();
+	static LinkedList<Integer> indiceComunidad = new LinkedList<Integer>();
+	static LinkedList<Integer> indiceCoche = new LinkedList<Integer>();
+	static LinkedList<Integer> vencimientos = new LinkedList<Integer>();
 
-	static LinkedList<Integer> indiceDeceso = new <Integer>LinkedList();
+	static LinkedList<Integer> vencimientosVerdes = new LinkedList<Integer>();
 
 	public static LinkedList<Integer> getIndiceHogar() {
 		return indiceHogar;
@@ -35,20 +41,12 @@ public class Vencimiento extends TimerTask {
 	}
 
 	private String nuevoVencimiento = "Vtos: ";
-	static LinkedList<Integer> indiceVida = new <Integer>LinkedList();
-	static LinkedList<Integer> indiceHogar = new <Integer>LinkedList();
-	static LinkedList<Integer> indiceComercio = new <Integer>LinkedList();
-	static LinkedList<Integer> indiceComunidad = new <Integer>LinkedList();
-	static LinkedList<Integer> indiceCoche = new <Integer>LinkedList();
-	static LinkedList<Integer> vencimientos = new <Integer>LinkedList();
-	private int numDeceso, numHogar, numVida, numCoche, numComercio, numComunidad;
-	static LinkedList<Integer> vencimientosVerdes = new <Integer>LinkedList();
 
 	public static LinkedList<Integer> getIndiceCoche() {
 		return indiceCoche;
 	}
 
-	public static LinkedList<String> colores = new LinkedList();
+	public static LinkedList<String> colores = new LinkedList<String>();
 
 	int contador = 0;
 
@@ -64,17 +62,17 @@ public class Vencimiento extends TimerTask {
 
 	public void run() {
 
-		numDeceso = Agenda.vencimientosDecesos.size();
+		int numDeceso = Agenda.vencimientosDecesos.size();
 
-		numVida = Agenda.vencimientosVida.size();
+		int numVida = Agenda.vencimientosVida.size();
 
-		numHogar = Agenda.vencimientosHogar.size();
+		int numHogar = Agenda.vencimientosHogar.size();
 
-		numCoche = Agenda.vencimientosCoche.size();
+		int numCoche = Agenda.vencimientosCoche.size();
 
-		numComercio = Agenda.vencimientosComercio.size();
+		int numComercio = Agenda.vencimientosComercio.size();
 
-		numComunidad = Agenda.vencimientosComunidad.size();
+		int numComunidad = Agenda.vencimientosComunidad.size();
 
 		if (numDeceso > 0 || numVida > 0 || numHogar > 0 || numCoche > 0 || numComercio > 0 || numComunidad > 0) {
 
@@ -85,25 +83,31 @@ public class Vencimiento extends TimerTask {
 						.setText(Agenda.nuevosVencimientos.getText() + "Decesos: " + numDeceso + " || ");
 			}
 
-			if (Agenda.vencimientosVida.size() > 0) {
+			if (!Agenda.vencimientosVida.isEmpty()) {
 				Agenda.nuevosVencimientos.setText(Agenda.nuevosVencimientos.getText() + "Vida: " + numVida + " || ");
 			}
 
-			if (Agenda.vencimientosHogar.size() > 0) {
+			if (!Agenda.vencimientosHogar.isEmpty()) {
 				Agenda.nuevosVencimientos.setText(Agenda.nuevosVencimientos.getText() + "Hogar: " + numHogar + " || ");
 			}
 
-			if (Agenda.vencimientosCoche.size() > 0) {
+			if (!Agenda.vencimientosCoche.isEmpty()) {
 				Agenda.nuevosVencimientos.setText(Agenda.nuevosVencimientos.getText() + "Coche: " + numCoche + " || ");
 			}
 
-			if (Agenda.vencimientosComercio.size() > 0) {
+			if (!Agenda.vencimientosComercio.isEmpty()) {
 				Agenda.nuevosVencimientos
 						.setText(Agenda.nuevosVencimientos.getText() + "Comercio: " + numComercio + " || ");
 			}
 
-			if (Agenda.vencimientosComunidad.size() > 0) {
+			if (!Agenda.vencimientosComunidad.isEmpty()) {
 				Agenda.nuevosVencimientos.setText(Agenda.nuevosVencimientos.getText() + "Comunidad: " + numComunidad);
+			}
+
+			if (Agenda.nuevosVencimientos.getText().indexOf(" || ") == Agenda.nuevosVencimientos.getText().length()
+					- 4) {
+				Agenda.nuevosVencimientos.setText(Agenda.nuevosVencimientos.getText().substring(0,
+						Agenda.nuevosVencimientos.getText().lastIndexOf(" || ")));
 			}
 
 		}
@@ -128,13 +132,13 @@ public class Vencimiento extends TimerTask {
 
 			indiceVida.clear();
 
-			arrayList1.clear();
-
-			arrayList2.clear();
-
 			Agenda.vencimientosDecesos.clear();
 
 			Agenda.vencimientosVida.clear();
+			Agenda.vencimientosHogar.clear();
+			Agenda.vencimientosCoche.clear();
+			Agenda.vencimientosComercio.clear();
+			Agenda.vencimientosComunidad.clear();
 
 			Date fecha = new Date();
 
@@ -173,8 +177,6 @@ public class Vencimiento extends TimerTask {
 
 			}
 
-			System.out.println("INDICE COMERCIO: " + indiceComercio.size());
-
 			if (indiceComercio.size() > 0) {
 
 				actualizarVencimientos("fechasComercio.dat", 5);
@@ -194,14 +196,12 @@ public class Vencimiento extends TimerTask {
 		}
 
 		catch (Exception e) {
-
+			e.printStackTrace();
 		}
 	}
 
-	private static void actualizarVencimientos(String archivo, int tipo)
+	static void actualizarVencimientos(String archivo, int tipo)
 			throws IOException, FileNotFoundException, ClassNotFoundException {
-
-		arrayList1.clear();
 
 		arrayList2 = Metodos.leer(archivo);
 
@@ -218,7 +218,7 @@ public class Vencimiento extends TimerTask {
 		escribiendoFichero.close();
 	}
 
-	public static LinkedList<Integer> buscarColoresVencimientos(String fecha, LinkedList tipoVencimiento) {
+	public static LinkedList<Integer> buscarColoresVencimientos(String fecha, LinkedList<String> tipoVencimiento) {
 
 		LinkedList<Integer> todosLosVencimientos = new LinkedList<Integer>();
 
@@ -256,7 +256,7 @@ public class Vencimiento extends TimerTask {
 	}
 
 	private static void ponerVencimientos(int tipo) {
-
+		arrayList1.clear();
 		LinkedList<Integer> indices = new LinkedList<Integer>();
 
 		String indicevtoDeceso;
@@ -299,7 +299,7 @@ public class Vencimiento extends TimerTask {
 
 			if (indices.get(i).toString() != null) {
 
-				arrayList1.add(indices.get(i).toString());
+				arrayList1.add("aaa");
 
 				if (indices.get(i) < Agenda.vencimientos.size()) {
 
@@ -386,7 +386,6 @@ public class Vencimiento extends TimerTask {
 						if (indice1 > -1 && indice2 > -1) {
 
 							fechaVto = indicevtoDeceso.substring(indice1, indice2);
-							System.out.println("PONGO comercio: " + fechaVto);
 							fechaVto = fechaVto.trim();
 						}
 

@@ -186,10 +186,6 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 								datoFechaComunidad = new Date(fechaComunidad);
 							}
 
-							System.out.println("DECESO: " + datoFechaDeceso + " VIDA: " + datoFechaVida + " HOGAR: "
-									+ datoFechaHogar + " COCHE: " + datoFechaCoche + " COMERCIO: " + datoFechaComercio
-									+ " COMUNIDAD: " + datoFechaComunidad);
-
 							arrayList1.add(new Objeto(nombre + "«" + datoEmail + "»" + notap + "¬" + telefonoc + "═"
 									+ datoDireccion + "▓" + datoLocalidad + "░" + datoCodPostal + "┤" + datoProvincia
 									+ "▒" + datoFechaDeceso + "╣" + datoFechaVida + "║" + datoFechaHogar + "╝"
@@ -197,6 +193,27 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 							ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
 									new FileOutputStream("contactos.dat"));
+
+							escribiendoFichero.writeObject(arrayList1);
+
+							escribiendoFichero.close();
+
+							arrayList1.clear();
+
+							arrayList2 = Agenda.leer("llamada.dat");
+
+							if (arrayList2 != null) {
+
+								for (int i = 0; i < arrayList2.size(); i++) {
+
+									arrayList1.add(arrayList2.get(i));
+								}
+
+							}
+
+							arrayList1.add(new Objeto(false));
+
+							escribiendoFichero = new ObjectOutputStream(new FileOutputStream("llamadas.dat"));
 
 							escribiendoFichero.writeObject(arrayList1);
 

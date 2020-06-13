@@ -66,12 +66,15 @@ public class Llamada extends javax.swing.JFrame {
 
 	LinkedList<String> vencimientos = new LinkedList<String>();
 
-	JComboBox comboBox = new JComboBox();
+	JComboBox<String> comboBox = new JComboBox<String>();
 
 	static int tipoDeceso = 0;
 
 	public Llamada(int tipo) {
+
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Llamada.class.getResource("/imagenes/telefono.png")));
+
+		vencimientos.clear();
 
 		tipoDeceso = tipo;
 
@@ -90,7 +93,6 @@ public class Llamada extends javax.swing.JFrame {
 
 		case 2:
 			seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/heart.png")));
-			System.out.println("AAAAAAAAAAAAA " + Agenda.vencimientosVida.size());
 			vencimientos = Agenda.vencimientosVida;
 			break;
 
@@ -101,7 +103,6 @@ public class Llamada extends javax.swing.JFrame {
 
 		case 4:
 			seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/car.png")));
-
 			vencimientos = Agenda.vencimientosCoche;
 			break;
 
@@ -112,9 +113,6 @@ public class Llamada extends javax.swing.JFrame {
 
 		case 6:
 			seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/comunidad.png")));
-
-			System.out.println("AAAAAAAAAAAAA " + Agenda.vencimientosComunidad.size());
-
 			vencimientos = Agenda.vencimientosComunidad;
 			break;
 
@@ -160,7 +158,7 @@ public class Llamada extends javax.swing.JFrame {
 
 	}
 
-	public static void loadData(LinkedList lista) {
+	public static void loadData(LinkedList<String> lista) {
 
 		model.getDataVector().removeAllElements();
 
@@ -296,7 +294,8 @@ public class Llamada extends javax.swing.JFrame {
 
 		jLabel2.setForeground(new java.awt.Color(255, 255, 255));
 
-		JLabel lblNewLabel = new JLabel("Vencimientos:");
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/filtro.png")));
 		lblNewLabel.setFont(new Font("Dialog", Font.BOLD, 16));
 
 		JButton btnNewButton = new JButton("Ver");

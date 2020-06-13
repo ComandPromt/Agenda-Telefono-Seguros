@@ -84,6 +84,7 @@ public abstract class Metodos {
 			throws IOException, FileNotFoundException, ClassNotFoundException {
 
 		LinkedList<String> arrayList2 = new LinkedList<String>();
+
 		try {
 			File archivo = new File(file);
 
@@ -96,8 +97,11 @@ public abstract class Metodos {
 				leyendoFichero.close();
 
 			}
-		} catch (Exception e) {
 		}
+
+		catch (Exception e) {
+		}
+
 		return arrayList2;
 	}
 
@@ -151,9 +155,6 @@ public abstract class Metodos {
 		LinkedList<String> fechasRojas = new LinkedList<String>();
 
 		if (ultimoDiaMes(dia, mes, year)) {
-
-			// Se miran los vencimientos
-			// Antes de que cumplan
 
 			dia = 1;
 
@@ -585,6 +586,7 @@ public abstract class Metodos {
 
 	}
 
+	@SuppressWarnings("deprecation")
 	public static LinkedList<Integer> buscarFechasVencimientos(LinkedList<String> lista, String busqueda, int color) {
 
 		LinkedList<Integer> repetido = new LinkedList<Integer>();
@@ -592,6 +594,7 @@ public abstract class Metodos {
 		Date date = new Date();
 
 		int dia = date.getDay();
+
 		int mes = date.getMonth();
 		String cerodia = "";
 		String ceromes = "";
@@ -872,10 +875,13 @@ public abstract class Metodos {
 				exito.setTitulo(mensaje);
 
 				exito.setVisible(true);
-			} else {
+			}
+
+			else {
 				tipo = JOptionPane.INFORMATION_MESSAGE;
 				tituloSuperior = "Informacion";
 			}
+
 			break;
 
 		default:
@@ -891,6 +897,24 @@ public abstract class Metodos {
 			JOptionPane.showMessageDialog(null, alerta, tituloSuperior, tipo);
 		}
 
+	}
+
+	public static void cearCarpetas() {
+
+		File directorio = new File("contactos_exportados");
+		directorio.mkdir();
+
+		directorio = new File("contactos_exportados/Excel");
+		directorio.mkdir();
+
+		directorio = new File("contactos_exportados/PDF");
+		directorio.mkdir();
+
+		directorio = new File("contactos_exportados/TXT");
+		directorio.mkdir();
+
+		directorio = new File("contactos_exportados/VCard");
+		directorio.mkdir();
 	}
 
 }
