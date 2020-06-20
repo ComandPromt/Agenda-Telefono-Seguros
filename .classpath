@@ -29,6 +29,5 @@
 	<classpathentry kind="lib" path="libs/swingx-core-1.6.2-2.jar"/>
 	<classpathentry kind="lib" path="libs/NefAnimacion_V2.1_jdk18.jar"/>
 	<classpathentry kind="lib" path="libs/org-netbeans-modules-java-j2seproject-copylibstask.jar"/>
-	<classpathentry kind="lib" path="libs/about.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

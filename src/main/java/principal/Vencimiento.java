@@ -255,8 +255,10 @@ public class Vencimiento extends TimerTask {
 
 	}
 
-	private static void ponerVencimientos(int tipo) {
+	static void ponerVencimientos(int tipo) {
+		
 		arrayList1.clear();
+			
 		LinkedList<Integer> indices = new LinkedList<Integer>();
 
 		String indicevtoDeceso;
@@ -270,26 +272,38 @@ public class Vencimiento extends TimerTask {
 		switch (tipo) {
 
 		case 1:
+			Agenda.vencimientosDecesos.clear();
+			
 			indices = indiceDeceso;
 			break;
 
 		case 2:
+			Agenda.vencimientosVida.clear();
+			
 			indices = indiceVida;
 			break;
 
 		case 3:
+			Agenda.vencimientosHogar.clear();
+			
 			indices = indiceHogar;
 			break;
 
 		case 4:
+			Agenda.vencimientosCoche.clear();
+			
 			indices = indiceCoche;
 			break;
 
 		case 5:
+			Agenda.vencimientosComercio.clear();
+			
 			indices = indiceComercio;
 			break;
 
 		case 6:
+			Agenda.vencimientosComunidad.clear();
+			
 			indices = indiceComunidad;
 			break;
 

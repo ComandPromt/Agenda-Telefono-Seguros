@@ -65,32 +65,35 @@ import utils.MetodosPdf;
 @SuppressWarnings("all")
 
 public class Agenda extends JFrame {
+	
+	private JLabel lblNewLabel_2 = new JLabel("");
+	
+	public static JLabel nuevosVencimientos = new JLabel("");
 
-	static JLabel nuevosVencimientos = new JLabel("");
-	private boolean verContacto = true;
-	JButton observacion = new JButton("Obs");
-	int indice;
-	static JTextPane vtos = new JTextPane();
-	Timer t = new Timer();
+	private JButton observacion = new JButton("Obs");
+	private int indice;
+	private static JTextPane vtos = new JTextPane();
+	private Timer t = new Timer();
 	Vencimiento mTask = new Vencimiento();
-	ArrayList<Objeto> arrayList1;
-
+	private ArrayList<Objeto> arrayList1= new ArrayList<Objeto>();
+	private static int seguro=0;
+	private int paso=0;
 	private JButton buscar;
 	private static JButton contacto;
 	private JButton editar;
-	Date fecha;
+	private Date fecha;
 	public static JList<String> jList1;
-	static String directorioActual, separador, os;
+	private static String directorioActual, separador, os;
 	private static JTextField nombre;
 	public static DefaultListModel<String> modelo = new DefaultListModel<>();
-	String iduser;
-	transient ResultSet rs;
-	transient Statement s;
-	String cnombre;
-	String ctipo;
-	String cnota;
-	static JTextPane tlf = new JTextPane();
-	static JTextPane direccion = new JTextPane();
+	private String iduser;
+	private transient ResultSet rs;
+	private transient Statement s;
+	private String cnombre;
+	private String ctipo;
+	private String cnota;
+	private static JTextPane tlf = new JTextPane();
+	private static JTextPane direccion = new JTextPane();
 	public static LinkedList<String> vencimientosDecesos = new <String>LinkedList();
 	public static LinkedList<String> vencimientosVida = new <String>LinkedList();
 	public static LinkedList<String> vencimientosHogar = new <String>LinkedList();
@@ -98,21 +101,21 @@ public class Agenda extends JFrame {
 	public static LinkedList<String> vencimientosComercio = new <String>LinkedList();
 	public static LinkedList<String> vencimientosComunidad = new <String>LinkedList();
 
-	static LinkedList<String> fechaDecesos = new <String>LinkedList();
+	public static LinkedList<String> fechaDecesos = new <String>LinkedList();
 
-	static LinkedList<String> emails = new <String>LinkedList();
+	private static LinkedList<String> emails = new <String>LinkedList();
 
-	static LinkedList<String> fechaVida = new <String>LinkedList();
+	public static LinkedList<String> fechaVida = new <String>LinkedList();
 
-	static LinkedList<String> fechaHogar = new <String>LinkedList();
+	public static LinkedList<String> fechaHogar = new <String>LinkedList();
 
-	static LinkedList<String> fechaComercio = new <String>LinkedList();
+	public static LinkedList<String> fechaComercio = new <String>LinkedList();
 
-	static LinkedList<String> fechaComunidad = new <String>LinkedList();
+	public static LinkedList<String> fechaComunidad = new <String>LinkedList();
 
-	static LinkedList<String> fechaCoche = new <String>LinkedList();
+	public static LinkedList<String> fechaCoche = new <String>LinkedList();
 
-	static LinkedList<String> observaciones = new <String>LinkedList();
+	private static LinkedList<String> observaciones = new <String>LinkedList();
 
 	public static LinkedList<String> contactos = new <String>LinkedList();
 
@@ -125,51 +128,134 @@ public class Agenda extends JFrame {
 		Agenda.email.setText("");
 	}
 
-	private void verVencimientoLlamada(int seguro) {
+	private void verVencimientoLlamada(int tipoSeguro) throws FileNotFoundException, ClassNotFoundException, IOException {
 
-		if (!verContacto) {
-
-			verNotas();
-		}
+		verNotas();
+			
+		Vencimiento.ponerVencimientos(tipoSeguro);
 
 		int vencimientos = 0;
 
-		switch (seguro) {
+		switch (tipoSeguro) {
 
 		case 1:
+
 			vencimientos = vencimientosDecesos.size();
 			break;
+		
 		case 2:
 			vencimientos = vencimientosVida.size();
 			break;
+		
 		case 3:
 			vencimientos = vencimientosHogar.size();
 			break;
+		
 		case 4:
 			vencimientos = vencimientosCoche.size();
 			break;
+		
 		case 5:
 			vencimientos = vencimientosComercio.size();
 			break;
+		
 		case 6:
 			vencimientos = vencimientosComunidad.size();
 			break;
 		}
-
+		
 		if (vencimientos == 0) {
-			Metodos.mensaje("No hay vencimientos", 3, true);
-			verNotas();
+	
+			mensajeNoHayVencimiento();
+		
 		}
 
 		else {
+		
+			LinkedList<String> lectura=new LinkedList<String> ();
 
-			new Llamada(seguro).setVisible(true);
+			lectura=Metodos.leer(Metodos.saberArchivoLlamada(tipoSeguro));
+
+			if(lectura.size()>0) {
+
+				lectura=Metodos.formatearArray(lectura.get(0));
+
+				int comparaSeguro=saberArraySeguro(tipoSeguro);
+
+				if(lectura.size()==comparaSeguro) {
+					
+					mensajeNoHayVencimiento();
+				}
+				
+				else {
+					
+					new Llamada(tipoSeguro).setVisible(true);
+				
+				}
+				
+			}
+			
+			else {
+		
+				new Llamada(tipoSeguro).setVisible(true);
+			
+			}
+			
 		}
 
 	}
 
+	public static int saberArraySeguro(int seguro) {
+		
+		int resultado=0;
+		
+		switch(seguro) {
+		
+		case 1:
+			resultado = vencimientosDecesos.size();
+			break;
+		
+		case 2:
+			resultado = vencimientosVida.size();
+			break;
+		
+		case 3:
+			resultado = vencimientosHogar.size();
+			break;
+		
+		case 4:
+			resultado = vencimientosCoche.size();
+			break;
+		
+		case 5:
+			resultado = vencimientosComercio.size();
+			break;
+		
+		case 6:
+			resultado = vencimientosComunidad.size();
+			break;
+		}
+			
+		return resultado;
+	}
+
+	public static void mensajeNoHayVencimiento() {
+		
+		Agenda.seguro=0;
+		
+		Metodos.mensaje("No hay vencimientos", 3, true);
+		
+		verNotas();
+	}
+
+
+	
 	private void ponerEnAgenda(int tipo) {
 
+		verNotas();
+		
+		Vencimiento.ponerVencimientos(tipo);
+		
 		int vueltas = 0;
 
 		switch (tipo) {
@@ -177,31 +263,35 @@ public class Agenda extends JFrame {
 		case 1:
 			vueltas = vencimientosDecesos.size();
 			break;
+		
 		case 2:
 			vueltas = vencimientosVida.size();
 			break;
+		
 		case 3:
 			vueltas = vencimientosHogar.size();
 			break;
+		
 		case 4:
 			vueltas = vencimientosCoche.size();
 			break;
+		
 		case 5:
 			vueltas = vencimientosComercio.size();
 			break;
+		
 		case 6:
 			vueltas = vencimientosComunidad.size();
 			break;
+		
 		}
 
 		if (vueltas == 0) {
-			Metodos.mensaje("No hay vencimientos", 3, true);
-			verNotas();
+			
+			mensajeNoHayVencimiento();
 		}
 
 		else {
-
-			verContacto = false;
 
 			tlf.setText("");
 
@@ -580,7 +670,7 @@ public class Agenda extends JFrame {
 
 		setAutoRequestFocus(false);
 
-		this.setSize(new Dimension(760, 670));
+		this.setSize(new Dimension(760, 700));
 
 		buscar.setToolTipText("Buscar");
 
@@ -842,8 +932,10 @@ public class Agenda extends JFrame {
 			@Override
 
 			public void mousePressed(MouseEvent e) {
-
-				ponerEnAgenda(1);
+				
+				seguro=1;
+				
+				ponerEnAgenda(seguro);
 
 			}
 
@@ -863,7 +955,12 @@ public class Agenda extends JFrame {
 
 			public void mousePressed(MouseEvent e) {
 
-				verVencimientoLlamada(1);
+				try {
+					seguro=0;
+					verVencimientoLlamada(1);
+				} catch (Exception e1) {
+					
+				}
 
 			}
 
@@ -894,8 +991,8 @@ public class Agenda extends JFrame {
 			@Override
 
 			public void mousePressed(MouseEvent e) {
-
-				ponerEnAgenda(2);
+				seguro=2;
+				ponerEnAgenda(seguro);
 
 			}
 
@@ -911,7 +1008,12 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_16_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				verVencimientoLlamada(2);
+				try {
+					seguro=0;
+					verVencimientoLlamada(2);
+				} catch (Exception e1) {
+					// 
+				}
 			}
 
 		});
@@ -935,7 +1037,8 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_10.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				ponerEnAgenda(3);
+				seguro=3;
+				ponerEnAgenda(seguro);
 			}
 		});
 		mntmNewMenuItem_10.setFont(new Font("Dialog", Font.PLAIN, 16));
@@ -947,7 +1050,12 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_17.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				verVencimientoLlamada(3);
+				try {
+					seguro=0;
+					verVencimientoLlamada(3);
+				} catch (Exception e1) {
+					// 
+				}
 			}
 		});
 
@@ -968,7 +1076,8 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_11.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				ponerEnAgenda(4);
+				seguro=4;
+				ponerEnAgenda(seguro);
 			}
 		});
 		mntmNewMenuItem_11.setFont(new Font("Dialog", Font.PLAIN, 16));
@@ -980,7 +1089,12 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_18.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				verVencimientoLlamada(4);
+				try {
+					seguro=0;
+					verVencimientoLlamada(4);
+				} catch (Exception e1) {
+					// 
+				}
 			}
 		});
 
@@ -1001,7 +1115,8 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_12.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				ponerEnAgenda(5);
+				seguro=5;
+				ponerEnAgenda(seguro);
 			}
 		});
 		mntmNewMenuItem_12.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/agenda.png")));
@@ -1013,7 +1128,12 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_19.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				verVencimientoLlamada(5);
+				try {
+					seguro=0;
+					verVencimientoLlamada(5);
+				} catch (Exception e1) {
+					// 
+				}
 			}
 		});
 
@@ -1034,7 +1154,8 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_13.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				ponerEnAgenda(6);
+				seguro=6;
+				ponerEnAgenda(seguro);
 			}
 		});
 		mntmNewMenuItem_13.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/agenda.png")));
@@ -1046,7 +1167,12 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_20.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				verVencimientoLlamada(6);
+				try {
+					seguro=0;
+					verVencimientoLlamada(6);
+				} catch (Exception e1) {
+					// 
+				}
 			}
 		});
 
@@ -1067,9 +1193,8 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_14.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-
-				verContacto = true;
-
+				lblNewLabel_2.setIcon(null);
+				seguro=0;
 				verNotas();
 
 			}
@@ -1086,11 +1211,9 @@ public class Agenda extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent e) {
 
-				if (!verContacto) {
 					verNotas();
-				}
-
-				new Llamada(0).setVisible(true);
+			
+					new Llamada(0).setVisible(true);
 			}
 		});
 
@@ -1250,10 +1373,56 @@ public class Agenda extends JFrame {
 						observacion.setEnabled(true);
 					}
 
-				} catch (Exception e1) {
+					if(seguro>0) {
+						
+						++paso;
+						
+						if(paso%2!=0) {
+				
+							if(yaLlamado(seguro,jList1.getSelectedValue())) {
+								
+								lblNewLabel_2.setIcon((new ImageIcon(Agenda.class.getResource("/imagenes/yallamado.png"))));
+							}
+							
+							else {
 
+								lblNewLabel_2.setIcon((new ImageIcon(Agenda.class.getResource("/imagenes/llamar.png"))));
+
+							}									
+
+						}
+					}
+					
+					
+				} catch (Exception e1) {
+//
 				}
 
+			}
+
+			private boolean yaLlamado(int tipoSeguro,String busqueda) throws IOException, FileNotFoundException, ClassNotFoundException {
+			
+				LinkedList<String> lectura=Metodos.leer(Metodos.saberArchivoLlamada(tipoSeguro));
+				
+				lectura=Metodos.formatearArray(lectura.get(0));
+				
+				try {
+										
+				if(lectura.contains(busqueda)) {
+						return true;
+					}
+					
+					else {
+						return false;
+					}
+					
+				}
+				
+				catch(Exception e) {
+					e.printStackTrace();
+					return false;
+				}
+				
 			}
 
 		});
@@ -1351,55 +1520,6 @@ public class Agenda extends JFrame {
 		JLabel lblNewLabel_1_1 = new JLabel("Dirección");
 		lblNewLabel_1_1.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/city.png")));
 		lblNewLabel_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-
-		JCheckBox chckbxNewCheckBox = new JCheckBox("");
-		chckbxNewCheckBox.addMouseListener(new MouseAdapter() {
-
-			@Override
-
-			public void mousePressed(MouseEvent e) {
-
-				try {
-
-					int indice = jList1.getSelectedIndex();
-
-					if (indice > -1) {
-
-						if (!chckbxNewCheckBox.isSelected()) {
-
-							// segggee
-
-//							arrayList1.clear();
-//
-//							arrayList1 = leer("llamadas.dat");
-//
-//							arrayList1.set(indice, new Objeto(true));
-//
-//							Metodos.eliminarFichero("llamadas.dat");
-//
-//							ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
-//									new FileOutputStream("llamadas.dat"));
-//
-//							escribiendoFichero.writeObject(arrayList1);
-//
-//							escribiendoFichero.close();
-						}
-
-						else {
-							System.out.println("modifico para que notifique");
-						}
-
-					}
-
-					else {
-						Metodos.mensaje("Por favor, selecciona un contacto", 3, true);
-					}
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-		chckbxNewCheckBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		observacion.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/view.png")));
 
 		observacion.addActionListener(new ActionListener() {
@@ -1428,64 +1548,161 @@ public class Agenda extends JFrame {
 		});
 
 		btnAadirObservacion.setFont(new Font("Tahoma", Font.BOLD, 16));
+		
+		JButton btnNewButton = new JButton("");
+		
+		btnNewButton.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent arg0) {
+				
+				try {
 
-		JLabel lblNewLabel_2 = new JLabel("");
-		lblNewLabel_2.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/llamada.png")));
+					int indice = jList1.getSelectedIndex();
+
+					if (indice > -1 && seguro>0) {
+						
+						String icono="";
+						String archivo="";
+						
+					archivo=Metodos.saberArchivoLlamada(seguro);
+					
+						icono=lblNewLabel_2.getIcon().toString();
+						
+						icono=icono.substring(icono.lastIndexOf(separador)+1,icono.length());
+
+						if(icono.equals("llamar.png")) {
+						
+							lblNewLabel_2.setIcon((new ImageIcon(Agenda.class.getResource("/imagenes/yallamado.png"))));
+				
+							guardarLlamadas(archivo,false);
+							
+						}
+						
+						else {
+							
+							lblNewLabel_2.setIcon((new ImageIcon(Agenda.class.getResource("/imagenes/llamar.png"))));
+							guardarLlamadas(archivo,true);
+						}
+				
+					}
+
+					else {
+						Metodos.mensaje("Por favor, selecciona un contacto", 3, true);
+					}
+					
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+
+			private void guardarLlamadas(String archivo,boolean borrar)
+					throws IOException, FileNotFoundException, ClassNotFoundException {
+				try {
+				LinkedList<String> llamadasVto=  new LinkedList<String>();
+			
+				llamadasVto = Metodos.leer(archivo);	
+				
+				llamadasVto=Metodos.formatearArray(llamadasVto.get(0));
+				
+				String contacto=jList1.getSelectedValue();
+
+				if(borrar) {
+					llamadasVto.remove(contacto);	
+				}
+				else {
+					llamadasVto.add(contacto);	
+						
+				}
+	
+				Metodos.eliminarFichero(archivo);
+				
+				ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
+										new FileOutputStream(archivo));
+				
+				escribiendoFichero.writeObject(llamadasVto);
+				
+				escribiendoFichero.close();
+				
+				}
+				
+				catch(Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+
+		
+		});
+		
+		btnNewButton.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/llamada.png")));
+		
+
 
 		GroupLayout panelCasaLayout = new GroupLayout(panelCasa);
-		panelCasaLayout.setHorizontalGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(panelCasaLayout.createSequentialGroup().addContainerGap().addGroup(panelCasaLayout
-						.createParallelGroup(Alignment.LEADING).addComponent(jLabel3)
+		panelCasaLayout.setHorizontalGroup(
+			panelCasaLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(panelCasaLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(jLabel3)
 						.addComponent(btnAadirObservacion, GroupLayout.PREFERRED_SIZE, 146, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblNewLabel).addComponent(jLabel5)
+						.addComponent(lblNewLabel)
+						.addComponent(jLabel5)
 						.addComponent(lblNewLabel_1_1, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblNewLabel_1)).addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(email, GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
-								.addComponent(direccion, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 220,
-										Short.MAX_VALUE)
-								.addComponent(tlf, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
-								.addGroup(Alignment.TRAILING,
-										panelCasaLayout.createSequentialGroup().addComponent(observacion).addGap(27)
-												.addComponent(lblNewLabel_2).addPreferredGap(ComponentPlacement.RELATED)
-												.addComponent(chckbxNewCheckBox))
-								.addComponent(nombre, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 220,
-										Short.MAX_VALUE)
-								.addComponent(vtos, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE))
-						.addGap(40)));
-		panelCasaLayout.setVerticalGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(panelCasaLayout.createSequentialGroup().addContainerGap().addGroup(panelCasaLayout
-						.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblNewLabel_1))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(email, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+						.addComponent(direccion, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+						.addComponent(tlf, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+						.addGroup(panelCasaLayout.createSequentialGroup()
+							.addComponent(observacion)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblNewLabel_2)
+							.addGap(5))
+						.addComponent(nombre, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+						.addComponent(vtos, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE))
+					.addGap(52))
+		);
+		panelCasaLayout.setVerticalGroup(
+			panelCasaLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(panelCasaLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(btnAadirObservacion, GroupLayout.PREFERRED_SIZE, 41,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE)
-								.addComponent(observacion, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE))
-						.addComponent(chckbxNewCheckBox)).addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 59, GroupLayout.PREFERRED_SIZE)
-								.addComponent(nombre, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(
-								ComponentPlacement.RELATED)
-						.addGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING).addGroup(panelCasaLayout
-								.createSequentialGroup().addGap(6)
-								.addComponent(tlf, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-								.addGap(18)
-								.addComponent(vtos, GroupLayout.PREFERRED_SIZE, 204, GroupLayout.PREFERRED_SIZE)
-								.addGap(7)
-								.addComponent(direccion, GroupLayout.PREFERRED_SIZE, 87, GroupLayout.PREFERRED_SIZE)
-								.addGap(18)
-								.addComponent(email, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addGap(20))
-								.addGroup(panelCasaLayout.createSequentialGroup().addComponent(lblNewLabel).addGap(70)
-										.addComponent(jLabel5)
-										.addPreferredGap(ComponentPlacement.RELATED, 123, Short.MAX_VALUE)
-										.addComponent(lblNewLabel_1_1, GroupLayout.PREFERRED_SIZE, 48,
-												GroupLayout.PREFERRED_SIZE)
-										.addGap(18).addComponent(lblNewLabel_1, GroupLayout.PREFERRED_SIZE, 49,
-												GroupLayout.PREFERRED_SIZE)
-										.addContainerGap()))));
+							.addComponent(btnAadirObservacion, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
+							.addComponent(observacion, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE)
+							.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE))
+						.addComponent(lblNewLabel_2))
+					.addGap(22)
+					.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 59, GroupLayout.PREFERRED_SIZE)
+						.addComponent(nombre, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING)
+						.addGroup(panelCasaLayout.createSequentialGroup()
+							.addGap(6)
+							.addComponent(tlf, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+							.addGap(18)
+							.addComponent(vtos, GroupLayout.PREFERRED_SIZE, 204, GroupLayout.PREFERRED_SIZE)
+							.addGap(7)
+							.addComponent(direccion, GroupLayout.PREFERRED_SIZE, 87, GroupLayout.PREFERRED_SIZE)
+							.addGap(18)
+							.addComponent(email, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addGap(20))
+						.addGroup(panelCasaLayout.createSequentialGroup()
+							.addComponent(lblNewLabel)
+							.addGap(70)
+							.addComponent(jLabel5)
+							.addPreferredGap(ComponentPlacement.RELATED, 123, Short.MAX_VALUE)
+							.addComponent(lblNewLabel_1_1, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
+							.addGap(18)
+							.addComponent(lblNewLabel_1, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE)
+							.addContainerGap())))
+		);
+		lblNewLabel_2.setIcon(null);
 
 		panelCasa.setLayout(panelCasaLayout);
 		nuevosVencimientos.setFont(new Font("Dialog", Font.BOLD, 14));
@@ -1493,32 +1710,45 @@ public class Agenda extends JFrame {
 		nuevosVencimientos.setHorizontalAlignment(SwingConstants.CENTER);
 
 		GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
-		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel3Layout
-				.createSequentialGroup().addContainerGap(37, Short.MAX_VALUE)
-				.addGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING, false)
-						.addComponent(nuevosVencimientos, Alignment.LEADING, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+		jPanel3Layout.setHorizontalGroup(
+			jPanel3Layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(jPanel3Layout.createSequentialGroup()
+					.addContainerGap(37, Short.MAX_VALUE)
+					.addGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING, false)
+						.addComponent(nuevosVencimientos, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addGroup(jPanel3Layout.createSequentialGroup()
-								.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 233, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addComponent(panelCasa, GroupLayout.PREFERRED_SIZE, 424, GroupLayout.PREFERRED_SIZE)))
-				.addContainerGap(49, Short.MAX_VALUE)));
-		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(jPanel3Layout.createSequentialGroup().addComponent(nuevosVencimientos).addGap(3)
-						.addGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
-								.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 561, Short.MAX_VALUE)
-								.addComponent(panelCasa, GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE))));
+							.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 233, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(panelCasa, GroupLayout.PREFERRED_SIZE, 424, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap(49, Short.MAX_VALUE))
+		);
+		jPanel3Layout.setVerticalGroup(
+			jPanel3Layout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(jPanel3Layout.createSequentialGroup()
+					.addComponent(nuevosVencimientos)
+					.addGap(3)
+					.addGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(jScrollPane1)
+						.addComponent(panelCasa, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addContainerGap())
+		);
 		jPanel3.setLayout(jPanel3Layout);
 
 		GroupLayout layout = new GroupLayout(getContentPane());
-		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 755, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(340, Short.MAX_VALUE)));
-		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 564, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(108, Short.MAX_VALUE)));
+		layout.setHorizontalGroup(
+			layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 755, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(340, Short.MAX_VALUE))
+		);
+		layout.setVerticalGroup(
+			layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 603, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(69, Short.MAX_VALUE))
+		);
 		getContentPane().setLayout(layout);
 
 		if (jList1.getModel().getSize() == 0) {

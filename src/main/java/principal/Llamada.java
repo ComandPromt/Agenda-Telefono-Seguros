@@ -11,6 +11,8 @@ import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.LinkedList;
 
 import javax.swing.GroupLayout;
@@ -31,6 +33,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 import utils.FormatoTabla;
+import utils.Metodos;
 
 public class Llamada extends javax.swing.JFrame {
 
@@ -68,7 +71,7 @@ public class Llamada extends javax.swing.JFrame {
 
 	JComboBox<String> comboBox = new JComboBox<String>();
 
-	static int tipoDeceso = 0;
+	static int tipoSeguro = 0;
 
 	public Llamada(int tipo) {
 
@@ -76,7 +79,7 @@ public class Llamada extends javax.swing.JFrame {
 
 		vencimientos.clear();
 
-		tipoDeceso = tipo;
+		tipoSeguro = tipo;
 
 		setAlwaysOnTop(true);
 
@@ -87,35 +90,59 @@ public class Llamada extends javax.swing.JFrame {
 		switch (tipo) {
 
 		case 1:
-			seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/deceso.png")));
-			vencimientos = Agenda.vencimientosDecesos;
+			
+			if(Agenda.vencimientosDecesos.size()>0) {
+				seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/deceso.png")));
+			}
+
+					vencimientos = Agenda.vencimientosDecesos;
 			break;
 
 		case 2:
-			seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/heart.png")));
-			vencimientos = Agenda.vencimientosVida;
+			
+			if(Agenda.vencimientosVida.size()>0) {
+				seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/heart.png")));
+			}
+			
+					vencimientos = Agenda.vencimientosVida;
 			break;
 
 		case 3:
-			seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/home.png")));
-			vencimientos = Agenda.vencimientosHogar;
+			
+			if(Agenda.vencimientosHogar.size()>0) {
+				seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/home.png")));
+			}
+						vencimientos = Agenda.vencimientosHogar;
 			break;
 
 		case 4:
-			seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/car.png")));
-			vencimientos = Agenda.vencimientosCoche;
+			
+			if(Agenda.vencimientosCoche.size()>0) {
+				seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/car.png")));
+			}
+				vencimientos = Agenda.vencimientosCoche;
 			break;
 
 		case 5:
-			seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/shop.png")));
-			vencimientos = Agenda.vencimientosComercio;
+			
+			if(Agenda.vencimientosComercio.size()>0) {
+				seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/shop.png")));
+			}
+				vencimientos = Agenda.vencimientosComercio;
 			break;
 
 		case 6:
-			seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/comunidad.png")));
-			vencimientos = Agenda.vencimientosComunidad;
+			
+			if(Agenda.vencimientosComunidad.size()>0) {
+				seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/comunidad.png")));
+			}
+			
+					vencimientos = Agenda.vencimientosComunidad;
 			break;
 
+			default:
+				break;
+			
 		}
 
 		initComponents();
@@ -142,10 +169,6 @@ public class Llamada extends javax.swing.JFrame {
 
 		verTabla();
 
-		// Si hay vencimientos de vida,hogar y coche ponerlo en el combo,
-
-		// si no, mostrar solo los que tienen vencimientos
-
 	}
 
 	static void verTabla() {
@@ -158,7 +181,7 @@ public class Llamada extends javax.swing.JFrame {
 
 	}
 
-	public static void loadData(LinkedList<String> lista) {
+	public void loadData(LinkedList<String> lista) {
 
 		model.getDataVector().removeAllElements();
 
@@ -172,12 +195,23 @@ public class Llamada extends javax.swing.JFrame {
 
 			ft = new FormatoTabla();
 
+			LinkedList<String> lectura=new LinkedList<String> ();
+					
+			lectura=Metodos.leer(Metodos.saberArchivoLlamada(tipoSeguro));
+
+			if(lectura.size()>0) {
+								
+				lectura=Metodos.formatearArray(lectura.get(0));
+				
+			}
+
 			for (int i = 0; i < lista.size(); i++) {
 
-				switch (tipoDeceso) {
+				switch (tipoSeguro) {
 
 				case 1:
 					contactoVto = Agenda.contactos.get(Vencimiento.getIndiceDeceso().get(i));
+				
 					tlf = Agenda.telefonos.get(Vencimiento.getIndiceDeceso().get(i));
 					break;
 
@@ -207,9 +241,13 @@ public class Llamada extends javax.swing.JFrame {
 					break;
 
 				}
+				
 
-				model.addRow(new Object[] { contactoVto, tlf, lista.get(i), "" });
+				if(!lectura.contains(contactoVto)) {
 
+					model.addRow(new Object[] { contactoVto, tlf, lista.get(i), "" });
+				}
+				
 			}
 		}
 
@@ -304,6 +342,10 @@ public class Llamada extends javax.swing.JFrame {
 
 			public void actionPerformed(ActionEvent arg0) {
 
+				LinkedList<String> lectura=new LinkedList<String> ();
+
+				
+				
 				String valor = comboBox.getSelectedItem().toString();
 
 				dispose();
@@ -311,41 +353,80 @@ public class Llamada extends javax.swing.JFrame {
 				switch (valor) {
 
 				case "Decesos":
-					new Llamada(1).setVisible(true);
+					
+					verLlamadas(1);
+
+					
 					break;
 
 				case "Vida":
 
-					new Llamada(2).setVisible(true);
+					verLlamadas(2);
 
 					break;
 
 				case "Hogar":
 
-					new Llamada(3).setVisible(true);
+					verLlamadas(3);
 
 					break;
 
 				case "Coche":
 
-					new Llamada(4).setVisible(true);
+					verLlamadas(4);
 
 					break;
 
 				case "Comercio":
 
-					new Llamada(5).setVisible(true);
+					verLlamadas(5);
 
 					break;
 
 				case "Comunidad":
 
-					new Llamada(6).setVisible(true);
+					verLlamadas(6);
 
 					break;
 
 				}
 
+			}
+
+			private void verLlamadas(int seguro) {
+				
+				LinkedList<String> lectura;
+				
+				try {
+					
+					lectura=Metodos.leer(Metodos.saberArchivoLlamada(seguro));
+					
+					if(lectura.size()>0) {
+
+						lectura=Metodos.formatearArray(lectura.get(0));
+
+						int comparaSeguro=Agenda.saberArraySeguro(seguro);
+
+						if(lectura.size()==comparaSeguro) {
+							
+							Agenda.mensajeNoHayVencimiento();
+						}
+						
+						else {
+							new Llamada(seguro).setVisible(true);
+					}
+						}
+					
+					else {
+						new Llamada(seguro).setVisible(true);
+					}
+					
+				}
+				
+				catch (Exception e) {
+					//
+				}
+				
 			}
 
 		});

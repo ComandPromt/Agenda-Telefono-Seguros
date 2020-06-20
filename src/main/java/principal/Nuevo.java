@@ -9,7 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,9 +68,22 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 	RSDateChooser comercio = new RSDateChooser();
 
-	protected void guardar() {
+	private void guardarLlamada(int seguro,String contacto) throws FileNotFoundException, ClassNotFoundException, IOException {
 
-		Agenda.jList1.removeAll();
+		ArrayList<Objeto> arrayList1 = new ArrayList<Objeto>();
+		
+		String archivo=Metodos.saberArchivoLlamada(seguro);
+		
+			ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
+				new FileOutputStream(archivo));
+		
+		escribiendoFichero.writeObject(arrayList1);
+
+		escribiendoFichero.close();
+		
+	}
+	
+	protected void guardar() {
 
 		String nombre = Metodos.eliminarEspacios(nombrec.getText());
 
@@ -120,7 +135,7 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 					if (datoEmail.isEmpty() || datoCodPostal.isEmpty() || (comprobarEmail && comprobarCodPostal)) {
 
 						try {
-
+							Agenda.jList1.removeAll();
 							ArrayList<Objeto> arrayList1 = new ArrayList<Objeto>();
 
 							ArrayList<Objeto> arrayList2;
@@ -200,31 +215,36 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 							arrayList1.clear();
 
-							arrayList2 = Agenda.leer("llamada.dat");
-
-							if (arrayList2 != null) {
-
-								for (int i = 0; i < arrayList2.size(); i++) {
-
-									arrayList1.add(arrayList2.get(i));
-								}
-
+							if (checkDeceso.isSelected()) {
+								
+								
+									guardarLlamada(1,nombre);
+								
 							}
-
-							arrayList1.add(new Objeto(false));
-
-							escribiendoFichero = new ObjectOutputStream(new FileOutputStream("llamadas.dat"));
-
-							escribiendoFichero.writeObject(arrayList1);
-
-							escribiendoFichero.close();
-
+							if (checkVida.isSelected()) {
+								guardarLlamada(2,nombre);
+							}
+							if (checkHogar.isSelected()) {
+								guardarLlamada(3,nombre);
+							}
+							if (checkCoche.isSelected()) {
+								guardarLlamada(4,nombre);
+							}
+							if (checkComercio.isSelected()) {
+								guardarLlamada(5,nombre);
+							}
+							if (checkComunidad.isSelected()) {
+								guardarLlamada(6,nombre);
+							}
+					
 							Agenda.limpiarContactos();
 
 							Agenda.vaciarCampos();
 
 							Agenda.verNotas();
-
+							
+							Vencimiento.verTablaVencimientos();
+							
 						}
 
 						catch (Exception e1) {
@@ -242,9 +262,11 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 		}
 
-		Vencimiento.verTablaVencimientos();
+		
 
 	}
+
+
 
 	public Nuevo() {
 

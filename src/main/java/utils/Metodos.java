@@ -917,4 +917,65 @@ public abstract class Metodos {
 		directorio.mkdir();
 	}
 
+	public static String saberArchivoLlamada(int tipoSeguro) {
+		
+		String archivo="";
+		
+		switch(tipoSeguro) {
+		
+		case 1:
+			archivo="llamadaDeceso.dat";
+			break;
+		case 2:
+			
+			archivo="llamadaVida.dat";
+			break;
+			
+		case 3:
+			archivo="llamadaHogar.dat";
+			break;
+			
+		case 4:
+			archivo="llamadaCoche.dat";
+			break;
+			
+		case 5:
+			archivo="llamadaComercio.dat";
+			break;
+			
+		case 6:
+			archivo="llamadaComunidad.dat";
+			break;
+			
+		}
+		
+		return archivo;
+}
+	
+	public static LinkedList<String> formatearArray(String cadena) {
+		
+		LinkedList<String> salida= new LinkedList<String>();
+	
+		cadena=cadena.replace("[","");
+		
+		cadena=cadena.replace("]","");
+		
+		String contacto="";
+		
+		while(cadena.indexOf(",")!=-1) {
+			
+			contacto=cadena.substring(0,cadena.indexOf(",")).trim();
+			
+			if(!contacto.isEmpty()) {
+				salida.add(contacto);
+			}
+				
+			cadena=cadena.substring(cadena.indexOf(",")+1,+cadena.length());
+		}
+		
+		salida.add(cadena.trim());
+		
+		return salida;
+	}
+
 }

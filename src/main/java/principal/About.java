@@ -13,7 +13,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import efectos.PG1;
+
 
 @SuppressWarnings("all")
 
@@ -35,14 +35,14 @@ public class About extends Thread implements ActionListener, ChangeListener {
 
 		JFrame jf = new JFrame("Scroll Effect");
 		jf.setTitle("Sobre");
-		jf.setIconImage(Toolkit.getDefaultToolkit().getImage(PG1.class.getResource("/images/about.png")));
+		jf.setIconImage(Toolkit.getDefaultToolkit().getImage(About.class.getResource("/imagenes/about.png")));
 
 		JPanel jp = new JPanel();
 
 		jf.setSize(600, 350);
 
 		jp.setSize(800, 600);
-		lab.setIcon(new ImageIcon(PG1.class.getResource("/images/dev.png")));
+		lab.setIcon(new ImageIcon(About.class.getResource("/imagenes/dev.png")));
 		lab.setBounds(184, 251, 340, 48);
 
 		lab.setHorizontalAlignment(SwingConstants.CENTER);
@@ -55,14 +55,14 @@ public class About extends Thread implements ActionListener, ChangeListener {
 
 		jf.getContentPane().add(jp);
 		email.setHorizontalAlignment(SwingConstants.CENTER);
-		email.setIcon(new ImageIcon(PG1.class.getResource("/images/email.png")));
+		email.setIcon(new ImageIcon(About.class.getResource("/imagenes/email.png")));
 
 		email.setFont(new Font("Arial", Font.PLAIN, 20));
 		email.setBounds(194, 319, 330, 42);
 		jp.add(email);
 
 		JLabel lblNewLabel_1 = new JLabel("Programa creado por");
-		lblNewLabel_1.setIcon(new ImageIcon(PG1.class.getResource("/images/created.png")));
+		lblNewLabel_1.setIcon(new ImageIcon(About.class.getResource("/imagenes/created.png")));
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1.setFont(new Font("Arial", Font.PLAIN, 20));
 		lblNewLabel_1.setBounds(184, 12, 340, 53);
