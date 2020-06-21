@@ -13,22 +13,25 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-
-
 @SuppressWarnings("all")
 
 public class About extends Thread implements ActionListener, ChangeListener {
+
 	static JLabel lab = new JLabel("Ramón Jesús Gómez Carmona");
+
 	static JLabel email = new JLabel("smr2gocar@gmail.com");
 
 	@Override
 	public void run() {
+
 		try {
 			scrollEffect();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+
+		catch (InterruptedException e) {
+			//
+		}
+
 	}
 
 	public About() {
@@ -80,7 +83,6 @@ public class About extends Thread implements ActionListener, ChangeListener {
 
 			if (x == -196) {
 				x = -80;
-
 			}
 
 			x--;
@@ -96,13 +98,13 @@ public class About extends Thread implements ActionListener, ChangeListener {
 	}
 
 	@Override
-	public void stateChanged(ChangeEvent e) {
+	public void stateChanged(ChangeEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}

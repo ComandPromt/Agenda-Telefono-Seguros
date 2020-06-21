@@ -1,15 +1,15 @@
 package pdf;
 
-public class Url {
+public class Cliente {
 
-	private String url;
+	private String username;
 
 	public String getUsername() {
-		return url;
+		return username;
 	}
 
-	public void setUsername(String username) {
-		this.url = username;
+	public void setUsername(String name) {
+		this.username = name;
 	}
 
 }

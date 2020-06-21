@@ -6,18 +6,18 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.TimerTask;
 
 import utils.FormatoTabla;
 import utils.Metodos;
 
-public class Vencimiento extends TimerTask {
+public class Vencimiento {
 
 	static LinkedList<String> arrayList1 = new LinkedList<String>();
 
 	static LinkedList<String> arrayList2 = new LinkedList<String>();
 
 	public static LinkedList<String> contactosVencimientos = new LinkedList<String>();
+
 	static LinkedList<Integer> indiceDeceso = new LinkedList<Integer>();
 	static LinkedList<Integer> indiceVida = new LinkedList<Integer>();
 	static LinkedList<Integer> indiceHogar = new LinkedList<Integer>();
@@ -40,7 +40,7 @@ public class Vencimiento extends TimerTask {
 		return indiceComunidad;
 	}
 
-	private String nuevoVencimiento = "Vtos: ";
+	private static String nuevoVencimiento = "Vtos: ";
 
 	public static LinkedList<Integer> getIndiceCoche() {
 		return indiceCoche;
@@ -58,58 +58,142 @@ public class Vencimiento extends TimerTask {
 		return indiceDeceso;
 	}
 
-	@Override
+	public static void actualizarTituloVencimientos() {
 
-	public void run() {
+		try {
 
-		int numDeceso = Agenda.vencimientosDecesos.size();
+			int numDeceso = Agenda.vencimientosDecesos.size();
 
-		int numVida = Agenda.vencimientosVida.size();
+			int numVida = Agenda.vencimientosVida.size();
 
-		int numHogar = Agenda.vencimientosHogar.size();
+			int numHogar = Agenda.vencimientosHogar.size();
 
-		int numCoche = Agenda.vencimientosCoche.size();
+			int numCoche = Agenda.vencimientosCoche.size();
 
-		int numComercio = Agenda.vencimientosComercio.size();
+			int numComercio = Agenda.vencimientosComercio.size();
 
-		int numComunidad = Agenda.vencimientosComunidad.size();
+			int numComunidad = Agenda.vencimientosComunidad.size();
 
-		if (numDeceso > 0 || numVida > 0 || numHogar > 0 || numCoche > 0 || numComercio > 0 || numComunidad > 0) {
+			if (numDeceso > 0 || numVida > 0 || numHogar > 0 || numCoche > 0 || numComercio > 0 || numComunidad > 0) {
 
-			Agenda.nuevosVencimientos.setText(nuevoVencimiento);
+				Agenda.nuevosVencimientos.setText(nuevoVencimiento);
 
-			if (numDeceso > 0) {
-				Agenda.nuevosVencimientos
-						.setText(Agenda.nuevosVencimientos.getText() + "Decesos: " + numDeceso + " || ");
+				LinkedList<String> leerLlamadaSeguro = new LinkedList<String>();
+
+				int sizeLlamada = 0;
+
+				if (numDeceso > 0) {
+
+					leerLlamadaSeguro = Metodos.leer(Metodos.saberArchivoLlamada(1));
+					leerLlamadaSeguro = Metodos.formatearArray(leerLlamadaSeguro.get(0));
+					sizeLlamada = leerLlamadaSeguro.size();
+
+					numDeceso -= sizeLlamada;
+
+					if (numDeceso > 0) {
+						Agenda.nuevosVencimientos
+								.setText(Agenda.nuevosVencimientos.getText() + "Decesos: " + numDeceso + " || ");
+
+					}
+
+				}
+
+				if (!Agenda.vencimientosVida.isEmpty()) {
+
+					leerLlamadaSeguro = Metodos.leer(Metodos.saberArchivoLlamada(2));
+					leerLlamadaSeguro = Metodos.formatearArray(leerLlamadaSeguro.get(0));
+					sizeLlamada = leerLlamadaSeguro.size();
+
+					numVida -= sizeLlamada;
+
+					if (numVida > 0) {
+						Agenda.nuevosVencimientos
+								.setText(Agenda.nuevosVencimientos.getText() + "Vida: " + numVida + " || ");
+
+					}
+				}
+
+				if (!Agenda.vencimientosHogar.isEmpty()) {
+
+					leerLlamadaSeguro = Metodos.leer(Metodos.saberArchivoLlamada(3));
+					leerLlamadaSeguro = Metodos.formatearArray(leerLlamadaSeguro.get(0));
+					sizeLlamada = leerLlamadaSeguro.size();
+
+					numHogar -= sizeLlamada;
+
+					if (numHogar > 0) {
+						Agenda.nuevosVencimientos
+								.setText(Agenda.nuevosVencimientos.getText() + "Hogar: " + numHogar + " || ");
+
+					}
+				}
+
+				if (!Agenda.vencimientosCoche.isEmpty()) {
+
+					leerLlamadaSeguro = Metodos.leer(Metodos.saberArchivoLlamada(4));
+					leerLlamadaSeguro = Metodos.formatearArray(leerLlamadaSeguro.get(0));
+					sizeLlamada = leerLlamadaSeguro.size();
+
+					numCoche -= sizeLlamada;
+					if (numCoche > 0) {
+						Agenda.nuevosVencimientos
+								.setText(Agenda.nuevosVencimientos.getText() + "Coche: " + numCoche + " || ");
+
+					}
+				}
+
+				if (!Agenda.vencimientosComercio.isEmpty()) {
+
+					leerLlamadaSeguro = Metodos.leer(Metodos.saberArchivoLlamada(5));
+					leerLlamadaSeguro = Metodos.formatearArray(leerLlamadaSeguro.get(0));
+					sizeLlamada = leerLlamadaSeguro.size();
+
+					numComercio -= sizeLlamada;
+
+					if (numComercio > 0) {
+						Agenda.nuevosVencimientos
+								.setText(Agenda.nuevosVencimientos.getText() + "Comercio: " + numComercio + " || ");
+
+					}
+				}
+
+				if (!Agenda.vencimientosComunidad.isEmpty()) {
+
+					leerLlamadaSeguro = Metodos.leer(Metodos.saberArchivoLlamada(6));
+					leerLlamadaSeguro = Metodos.formatearArray(leerLlamadaSeguro.get(0));
+					sizeLlamada = leerLlamadaSeguro.size();
+
+					numComunidad -= sizeLlamada;
+
+					if (numComunidad > 0) {
+						Agenda.nuevosVencimientos
+								.setText(Agenda.nuevosVencimientos.getText() + "Comunidad: " + numComunidad);
+
+					}
+				}
+
+				if (Agenda.nuevosVencimientos.getText().indexOf(" || ") == Agenda.nuevosVencimientos.getText().length()
+						- 4) {
+					Agenda.nuevosVencimientos.setText(Agenda.nuevosVencimientos.getText().substring(0,
+							Agenda.nuevosVencimientos.getText().lastIndexOf(" || ")));
+				}
+
 			}
 
-			if (!Agenda.vencimientosVida.isEmpty()) {
-				Agenda.nuevosVencimientos.setText(Agenda.nuevosVencimientos.getText() + "Vida: " + numVida + " || ");
+			if (numDeceso == 0 && numVida == 0 && numHogar == 0 && numCoche == 0 && numComercio == 0
+					&& numComunidad == 0) {
+
+				Agenda.nuevosVencimientos.setText("");
 			}
 
-			if (!Agenda.vencimientosHogar.isEmpty()) {
-				Agenda.nuevosVencimientos.setText(Agenda.nuevosVencimientos.getText() + "Hogar: " + numHogar + " || ");
+			String textoVencimientos = Agenda.nuevosVencimientos.getText().trim();
+
+			if (textoVencimientos.substring(textoVencimientos.length() - 2, textoVencimientos.length()).equals("||")) {
+				Agenda.nuevosVencimientos.setText(textoVencimientos.substring(0, textoVencimientos.lastIndexOf("||")));
 			}
 
-			if (!Agenda.vencimientosCoche.isEmpty()) {
-				Agenda.nuevosVencimientos.setText(Agenda.nuevosVencimientos.getText() + "Coche: " + numCoche + " || ");
-			}
-
-			if (!Agenda.vencimientosComercio.isEmpty()) {
-				Agenda.nuevosVencimientos
-						.setText(Agenda.nuevosVencimientos.getText() + "Comercio: " + numComercio + " || ");
-			}
-
-			if (!Agenda.vencimientosComunidad.isEmpty()) {
-				Agenda.nuevosVencimientos.setText(Agenda.nuevosVencimientos.getText() + "Comunidad: " + numComunidad);
-			}
-
-			if (Agenda.nuevosVencimientos.getText().indexOf(" || ") == Agenda.nuevosVencimientos.getText().length()
-					- 4) {
-				Agenda.nuevosVencimientos.setText(Agenda.nuevosVencimientos.getText().substring(0,
-						Agenda.nuevosVencimientos.getText().lastIndexOf(" || ")));
-			}
-
+		} catch (Exception e) {
+			//
 		}
 
 	}
@@ -188,7 +272,7 @@ public class Vencimiento extends TimerTask {
 				actualizarVencimientos("fechasComunidad.dat", 6);
 
 			}
-
+			actualizarTituloVencimientos();
 		}
 
 		catch (java.io.IOException e) {
@@ -196,7 +280,7 @@ public class Vencimiento extends TimerTask {
 		}
 
 		catch (Exception e) {
-			e.printStackTrace();
+			//
 		}
 	}
 
@@ -224,28 +308,29 @@ public class Vencimiento extends TimerTask {
 
 		LinkedList<Integer> indiceVtos = new LinkedList<Integer>();
 
-		todosLosVencimientos = Metodos.buscarVencimientosRojos(tipoVencimiento, Agenda.convertirFecha(fecha, false));
+		todosLosVencimientos = Metodos.buscarVencimientosRojos(tipoVencimiento, Metodos.convertirFecha(fecha, false));
 
 		for (int i = 0; i < todosLosVencimientos.size(); i++) {
 
 			indiceVtos.add(todosLosVencimientos.get(i));
 		}
 
-		todosLosVencimientos = Metodos.buscarVencimientosNaranja(tipoVencimiento, Agenda.convertirFecha(fecha, false));
+		todosLosVencimientos = Metodos.buscarVencimientosNaranja(tipoVencimiento, Metodos.convertirFecha(fecha, false));
 
 		for (int i = 0; i < todosLosVencimientos.size(); i++) {
 
 			indiceVtos.add(todosLosVencimientos.get(i));
 		}
 
-		todosLosVencimientos = Metodos.buscarVencimientosAmarillo(tipoVencimiento, Agenda.convertirFecha(fecha, false));
+		todosLosVencimientos = Metodos.buscarVencimientosAmarillo(tipoVencimiento,
+				Metodos.convertirFecha(fecha, false));
 
 		for (int i = 0; i < todosLosVencimientos.size(); i++) {
 
 			indiceVtos.add(todosLosVencimientos.get(i));
 		}
 
-		todosLosVencimientos = Metodos.buscarVencimientosVerdes(tipoVencimiento, Agenda.convertirFecha(fecha, false));
+		todosLosVencimientos = Metodos.buscarVencimientosVerdes(tipoVencimiento, Metodos.convertirFecha(fecha, false));
 
 		for (int i = 0; i < todosLosVencimientos.size(); i++) {
 			indiceVtos.add(todosLosVencimientos.get(i));
@@ -256,9 +341,9 @@ public class Vencimiento extends TimerTask {
 	}
 
 	static void ponerVencimientos(int tipo) {
-		
+
 		arrayList1.clear();
-			
+
 		LinkedList<Integer> indices = new LinkedList<Integer>();
 
 		String indicevtoDeceso;
@@ -273,37 +358,37 @@ public class Vencimiento extends TimerTask {
 
 		case 1:
 			Agenda.vencimientosDecesos.clear();
-			
+
 			indices = indiceDeceso;
 			break;
 
 		case 2:
 			Agenda.vencimientosVida.clear();
-			
+
 			indices = indiceVida;
 			break;
 
 		case 3:
 			Agenda.vencimientosHogar.clear();
-			
+
 			indices = indiceHogar;
 			break;
 
 		case 4:
 			Agenda.vencimientosCoche.clear();
-			
+
 			indices = indiceCoche;
 			break;
 
 		case 5:
 			Agenda.vencimientosComercio.clear();
-			
+
 			indices = indiceComercio;
 			break;
 
 		case 6:
 			Agenda.vencimientosComunidad.clear();
-			
+
 			indices = indiceComunidad;
 			break;
 
@@ -312,8 +397,6 @@ public class Vencimiento extends TimerTask {
 		for (int i = 0; i < indices.size(); i++) {
 
 			if (indices.get(i).toString() != null) {
-
-				arrayList1.add("aaa");
 
 				if (indices.get(i) < Agenda.vencimientos.size()) {
 

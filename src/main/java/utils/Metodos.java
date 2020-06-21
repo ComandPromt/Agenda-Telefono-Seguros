@@ -34,6 +34,141 @@ import principal.Vencimiento;
 
 public abstract class Metodos {
 
+	public static String convertirFecha(String cadena, boolean tipo) {
+
+		String fecha = "";
+
+		String mes = "";
+
+		String year = "";
+
+		int dia;
+
+		String mesCorto = "";
+
+		String diaCorto = "";
+
+		int mesFecha = 0;
+
+		String busquedaMes = "";
+
+		String busquedaDia = "";
+
+		if (!cadena.isEmpty() && !cadena.contains("null")) {
+
+			if (cadena.indexOf(" ") == -1) {
+
+				busquedaDia = cadena.substring(0, cadena.indexOf("/"));
+
+				busquedaMes = cadena.substring(cadena.indexOf("/") + 1, cadena.lastIndexOf("/"));
+
+				if (busquedaDia.indexOf("0") == 0) {
+					dia = Integer.parseInt(busquedaDia.substring(1, busquedaDia.length()));
+					diaCorto = "0";
+				}
+
+				else {
+					dia = Integer.parseInt(busquedaDia);
+				}
+
+				if (busquedaMes.contains("0")) {
+					mesFecha = Integer.parseInt(busquedaMes.substring(1, busquedaMes.length()));
+					mesCorto = "0";
+				}
+
+				else {
+					mesFecha = Integer.parseInt(busquedaMes);
+				}
+
+				year = cadena.substring(cadena.lastIndexOf("/") + 1, cadena.length());
+
+			} else {
+
+				int limiteMes = cadena.indexOf(" ") + 4;
+
+				year = cadena.substring(cadena.lastIndexOf(" ") + 1, cadena.length());
+
+				mes = cadena.substring(cadena.indexOf(" ") + 1, limiteMes);
+
+				cadena = cadena.substring(limiteMes + 1, cadena.length());
+
+				dia = Integer.parseInt(cadena.substring(0, cadena.indexOf(" ")));
+
+				switch (mes) {
+
+				case "Jan":
+					mesFecha = 1;
+					break;
+
+				case "Feb":
+					mesFecha = 2;
+					break;
+
+				case "Mar":
+					mesFecha = 3;
+					break;
+
+				case "Apr":
+					mesFecha = 4;
+					break;
+
+				case "May":
+					mesFecha = 5;
+					break;
+
+				case "Jun":
+					mesFecha = 6;
+					break;
+
+				case "Jul":
+					mesFecha = 7;
+					break;
+
+				case "Aug":
+					mesFecha = 8;
+					break;
+
+				case "Sep":
+					mesFecha = 9;
+					break;
+
+				case "Oct":
+					mesFecha = 10;
+					break;
+
+				case "Nov":
+					mesFecha = 11;
+					break;
+
+				case "Dec":
+					mesFecha = 12;
+					break;
+
+				default:
+					break;
+
+				}
+			}
+
+			if (mesFecha <= 9) {
+				mesCorto = "0";
+			}
+
+			if (dia <= 9) {
+				diaCorto = "0";
+			}
+
+			if (tipo) {
+				fecha = mesCorto + mesFecha + "/" + diaCorto + dia + "/" + year;
+			} else {
+				fecha = diaCorto + dia + "/" + mesCorto + mesFecha + "/" + year;
+			}
+
+		}
+
+		return fecha;
+	}
+
 	public static boolean ultimoDiaMes(int dia, int mes, int year) {
 
 		boolean resultado = false;
@@ -472,6 +607,88 @@ public abstract class Metodos {
 		return resultado;
 	}
 
+	public static String mostrarFechaDosMeses(String fecha) {
+
+		String resultado = "";
+
+		String cerodia = "";
+
+		String ceromes = "";
+
+		int dia, mes, year;
+
+		dia = Integer.parseInt(fecha.substring(0, fecha.indexOf("/")));
+
+		mes = Integer.parseInt(fecha.substring(fecha.indexOf("/") + 1, fecha.lastIndexOf("/")));
+
+		year = Integer.parseInt(fecha.substring(fecha.lastIndexOf("/") + 1, fecha.length()));
+
+		boolean mesEspecial = false;
+
+		if (dia != 29 && dia != 30 && dia != 31 && mes != 11 && mes != 12) {
+
+			mes += 2;
+
+		}
+
+		else {
+
+			if (mes == 11) {
+
+				mes = 1;
+
+				++year;
+
+				mesEspecial = true;
+			}
+
+			if (mes == 12) {
+
+				mes = 2;
+
+				++year;
+
+				if (dia == 29 || dia == 30 || dia == 31) {
+
+					if ((dia == 31 || dia == 30) && year >= 3344) {
+						dia = 30;
+					}
+
+					else {
+
+						dia = 28;
+
+						if (esBisiesto(year)) {
+
+							dia = 29;
+
+						}
+
+					}
+				}
+
+				mesEspecial = true;
+			}
+
+			if (!mesEspecial) {
+				mes += 2;
+			}
+
+		}
+
+		if (mes <= 9) {
+			ceromes = "0";
+		}
+
+		if (dia <= 9) {
+			cerodia = "0";
+		}
+
+		resultado = cerodia + dia + "/" + ceromes + mes + "/" + year;
+
+		return resultado;
+	}
+
 	public static LinkedList<Integer> buscarVencimientosVerdes(LinkedList<String> lista, String busqueda) {
 
 		LinkedList<Integer> repetido = new LinkedList<Integer>();
@@ -776,18 +993,24 @@ public abstract class Metodos {
 	}
 
 	public static String extraerNombreArchivo(String extension) throws IOException {
+
 		JSONObject json = apiImagenes("archivo." + extension);
+
 		JSONArray imagenesBD = json.getJSONArray("imagenes_bd");
 
-		String outputFilePath = Agenda.getDirectorioActual() + "contactos_exportados" + Agenda.getSeparador()
-				+ imagenesBD.get(0).toString();
+		String outputFilePath = Agenda.getDirectorioActual() + "contactos_exportados" + Agenda.getSeparador() + "PDF"
+				+ Agenda.getSeparador() + imagenesBD.get(0).toString();
+
 		return outputFilePath;
 	}
 
 	public static String saberSeparador(String os) {
+
 		if (os.equals("Linux")) {
 			return "/";
-		} else {
+		}
+
+		else {
 			return "\\";
 		}
 	}
@@ -843,10 +1066,13 @@ public abstract class Metodos {
 				informacion.setTitulo(mensaje);
 
 				informacion.setVisible(true);
-			} else {
+			}
+
+			else {
 				tipo = JOptionPane.INFORMATION_MESSAGE;
 				tituloSuperior = "Informacion";
 			}
+
 			break;
 
 		case 3:
@@ -859,10 +1085,13 @@ public abstract class Metodos {
 				salir.setTitulo(mensaje);
 
 				salir.setVisible(true);
-			} else {
+			}
+
+			else {
 				tipo = JOptionPane.WARNING_MESSAGE;
 				tituloSuperior = "Advertencia";
 			}
+
 			break;
 
 		case 4:
@@ -918,63 +1147,67 @@ public abstract class Metodos {
 	}
 
 	public static String saberArchivoLlamada(int tipoSeguro) {
-		
-		String archivo="";
-		
-		switch(tipoSeguro) {
-		
+
+		String archivo = "";
+
+		switch (tipoSeguro) {
+
 		case 1:
-			archivo="llamadaDeceso.dat";
+			archivo = "llamadaDeceso.dat";
 			break;
 		case 2:
-			
-			archivo="llamadaVida.dat";
+
+			archivo = "llamadaVida.dat";
 			break;
-			
+
 		case 3:
-			archivo="llamadaHogar.dat";
+			archivo = "llamadaHogar.dat";
 			break;
-			
+
 		case 4:
-			archivo="llamadaCoche.dat";
+			archivo = "llamadaCoche.dat";
 			break;
-			
+
 		case 5:
-			archivo="llamadaComercio.dat";
+			archivo = "llamadaComercio.dat";
 			break;
-			
+
 		case 6:
-			archivo="llamadaComunidad.dat";
+			archivo = "llamadaComunidad.dat";
 			break;
-			
+
 		}
-		
+
 		return archivo;
-}
-	
+	}
+
 	public static LinkedList<String> formatearArray(String cadena) {
-		
-		LinkedList<String> salida= new LinkedList<String>();
-	
-		cadena=cadena.replace("[","");
-		
-		cadena=cadena.replace("]","");
-		
-		String contacto="";
-		
-		while(cadena.indexOf(",")!=-1) {
-			
-			contacto=cadena.substring(0,cadena.indexOf(",")).trim();
-			
-			if(!contacto.isEmpty()) {
+
+		LinkedList<String> salida = new LinkedList<String>();
+
+		cadena = cadena.replace("[", "");
+
+		cadena = cadena.replace("]", "");
+
+		String contacto = "";
+
+		while (cadena.indexOf(",") != -1) {
+
+			contacto = cadena.substring(0, cadena.indexOf(",")).trim();
+
+			if (!contacto.isEmpty()) {
 				salida.add(contacto);
 			}
-				
-			cadena=cadena.substring(cadena.indexOf(",")+1,+cadena.length());
+
+			cadena = cadena.substring(cadena.indexOf(",") + 1, +cadena.length());
 		}
-		
-		salida.add(cadena.trim());
-		
+
+		cadena = cadena.trim();
+
+		if (!cadena.isEmpty()) {
+			salida.add(cadena);
+		}
+
 		return salida;
 	}
 

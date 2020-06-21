@@ -40,18 +40,27 @@ import utils.Metodos;
 @SuppressWarnings("all")
 
 public class ImportarVcard extends javax.swing.JFrame implements ActionListener, ChangeListener {
+
 	String valor = "";
+
 	JTextArea drag = new JTextArea();
 
 	LinkedList<String> contactos = new <String>LinkedList();
 
 	LinkedList<String> telefonos = new <String>LinkedList();
 
+	LinkedList<String> emails = new <String>LinkedList();
+
+	LinkedList<String> direcciones = new <String>LinkedList();
+
 	private void guardarContactos(String file) {
 
 		if (!Metodos.extraerExtension(file).equals("vcf")) {
 			Metodos.mensaje("Por favor, selecciona un archivo vcf", 3, true);
-		} else {
+		}
+
+		else {
+
 			try {
 
 				File archivo = null;
@@ -108,7 +117,6 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 					public void onComponentEnd(String name, Context context) {
 
 						if (context.getParentComponents().isEmpty()) {
-							// end of vCard, stop parsing
 							context.stop();
 						}
 
@@ -124,7 +132,8 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 									contactos.add(property.getValue());
 								}
 
-								if (property.getName().equals("TELCELL") || property.getName().equals("TEL")) {
+								if (property.getName().equals("TELHOME") || property.getName().equals("TELCELL")
+										|| property.getName().equals("TEL")) {
 
 									valor = property.getValue().toString().replace("+34", "");
 
@@ -138,6 +147,30 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 
 								}
 
+								if (property.getName().equals("EMAILHOME")) {
+
+									valor = property.getValue().toString();
+
+									valor = valor.replace(" ", "");
+
+									valor = valor.trim();
+
+									emails.add(valor);
+
+								}
+
+								if (property.getName().equals("ADRHOME")) {
+
+									valor = property.getValue().toString();
+
+									valor = valor.replace(" ", "");
+
+									valor = valor.trim();
+
+									direcciones.add(valor);
+
+								}
+
 							}
 
 						}
@@ -147,6 +180,7 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 				});
 
 				ArrayList<Objeto> arrayList1 = new ArrayList<Objeto>();
+
 				ArrayList<Objeto> arrayList2;
 
 				arrayList2 = Agenda.leer("contactos.dat");
@@ -160,12 +194,25 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 
 				}
 
+				Date hoy = new Date();
+
 				for (int i = 0; i < contactos.size(); i++) {
 
 					if (arrayList2 == null || !arrayList2.contains(contactos.get(i))) {
 
-						arrayList1.add(
-								new Objeto(contactos.get(i) + "«" + new Date() + "»" + "" + "¬" + telefonos.get(i)));
+						if (emails.size() == 0 || emails.get(i) == null) {
+							emails.add("");
+						}
+
+						if (direcciones.size() == 0 || direcciones.get(i) == null) {
+							direcciones.add("");
+						}
+
+						System.out.println("direccion: " + direcciones.get(i));
+
+						arrayList1.add(new Objeto(contactos.get(i) + "«" + emails.get(i) + "»" + "" + "¬"
+								+ telefonos.get(i) + "═" + direcciones.get(i) + "▓" + "" + "░" + "" + "┤" + "" + "▒"
+								+ hoy + "╣" + hoy + "║" + hoy + "╝" + hoy + "¥" + hoy + "¶" + hoy));
 
 					}
 
@@ -193,7 +240,7 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 			}
 
 			catch (Exception e) {
-				//
+				e.printStackTrace();
 			}
 
 			dispose();
@@ -202,9 +249,13 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 	}
 
 	public ImportarVcard() {
+
 		setAlwaysOnTop(true);
+
 		setTitle("Importar Contactos");
+
 		setType(Type.NORMAL);
+
 		initComponents();
 
 	}
@@ -212,7 +263,9 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 	private void initComponents() {
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
 		setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
 		setResizable(false);
 
 		JButton btnNewButton = new JButton("");
@@ -224,14 +277,19 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 				File[] files = Metodos.seleccionar("VCard (*.vcf)", "Elije un archivo de contacto");
 
 				if (files != null) {
+
 					try {
 						guardarContactos(files[0].getCanonicalPath());
 
-					} catch (IOException e1) {
+					}
+
+					catch (IOException e1) {
 						//
 					}
 				}
+
 			}
+
 		});
 
 		btnNewButton.setIcon(new ImageIcon(ImportarVcard.class.getResource("/imagenes/abrir.png")));

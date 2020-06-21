@@ -11,8 +11,6 @@ import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.LinkedList;
 
 import javax.swing.GroupLayout;
@@ -39,11 +37,9 @@ public class Llamada extends javax.swing.JFrame {
 
 	static FormatoTabla ft;
 
-	JLabel seguro = new JLabel("");
+	static JLabel iconoVtoSeguro = new JLabel("");
 
 	private static final long serialVersionUID = 1L;
-
-	private JLabel jLabel2;
 
 	private JPanel jPanel1;
 
@@ -73,7 +69,13 @@ public class Llamada extends javax.swing.JFrame {
 
 	static int tipoSeguro = 0;
 
+	static JLabel lblNewLabel_1 = new JLabel("");
+
 	public Llamada(int tipo) {
+
+		iconoVtoSeguro.setFont(new Font("Dialog", Font.PLAIN, 16));
+
+		iconoVtoSeguro.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/utilities.png")));
 
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Llamada.class.getResource("/imagenes/telefono.png")));
 
@@ -87,65 +89,82 @@ public class Llamada extends javax.swing.JFrame {
 
 		setResizable(false);
 
+		initComponents();
+		this.setSize(new Dimension(720, 650));
+		setLocationRelativeTo(null);
+
 		switch (tipo) {
 
+		case 0:
+			iconoVtoSeguro.setText(" Selecciona un seguro para visualizar los vencimientos");
+			iconoVtoSeguro.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/name.png")));
+
+			break;
+
 		case 1:
-			
-			if(Agenda.vencimientosDecesos.size()>0) {
-				seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/deceso.png")));
+
+			if (Agenda.vencimientosDecesos.size() > 0) {
+
+				iconoVtoSeguro.setText("  Vencimientos de Decesos");
+
+				iconoVtoSeguro.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/deceso.png")));
+
 			}
 
-					vencimientos = Agenda.vencimientosDecesos;
+			vencimientos = Agenda.vencimientosDecesos;
 			break;
 
 		case 2:
-			
-			if(Agenda.vencimientosVida.size()>0) {
-				seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/heart.png")));
+
+			if (Agenda.vencimientosVida.size() > 0) {
+				iconoVtoSeguro.setText("  Vencimientos de Vida");
+				iconoVtoSeguro.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/heart.png")));
 			}
-			
-					vencimientos = Agenda.vencimientosVida;
+
+			vencimientos = Agenda.vencimientosVida;
 			break;
 
 		case 3:
-			
-			if(Agenda.vencimientosHogar.size()>0) {
-				seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/home.png")));
+
+			if (Agenda.vencimientosHogar.size() > 0) {
+				iconoVtoSeguro.setText("  Vencimientos de Hogar");
+				iconoVtoSeguro.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/home.png")));
 			}
-						vencimientos = Agenda.vencimientosHogar;
+			vencimientos = Agenda.vencimientosHogar;
 			break;
 
 		case 4:
-			
-			if(Agenda.vencimientosCoche.size()>0) {
-				seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/car.png")));
+
+			if (Agenda.vencimientosCoche.size() > 0) {
+				iconoVtoSeguro.setText("  Vencimientos de Coche");
+				iconoVtoSeguro.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/car.png")));
 			}
-				vencimientos = Agenda.vencimientosCoche;
+			vencimientos = Agenda.vencimientosCoche;
 			break;
 
 		case 5:
-			
-			if(Agenda.vencimientosComercio.size()>0) {
-				seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/shop.png")));
+
+			if (Agenda.vencimientosComercio.size() > 0) {
+				iconoVtoSeguro.setText("  Vencimientos de Comercio");
+				iconoVtoSeguro.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/shop.png")));
 			}
-				vencimientos = Agenda.vencimientosComercio;
+			vencimientos = Agenda.vencimientosComercio;
 			break;
 
 		case 6:
-			
-			if(Agenda.vencimientosComunidad.size()>0) {
-				seguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/comunidad.png")));
+
+			if (Agenda.vencimientosComunidad.size() > 0) {
+				iconoVtoSeguro.setText("  Vencimientos de Comunidad");
+				iconoVtoSeguro.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/comunidad.png")));
 			}
-			
-					vencimientos = Agenda.vencimientosComunidad;
+
+			vencimientos = Agenda.vencimientosComunidad;
 			break;
 
-			default:
-				break;
-			
-		}
+		default:
+			break;
 
-		initComponents();
+		}
 
 		comboBox.setFont(new Font("Dialog", Font.BOLD, 16));
 
@@ -160,8 +179,6 @@ public class Llamada extends javax.swing.JFrame {
 		comboBox.addItem("Comercio");
 
 		comboBox.addItem("Comunidad");
-
-		setSize(new Dimension(800, 520));
 
 		model = (DefaultTableModel) jTable1.getModel();
 
@@ -195,14 +212,14 @@ public class Llamada extends javax.swing.JFrame {
 
 			ft = new FormatoTabla();
 
-			LinkedList<String> lectura=new LinkedList<String> ();
-					
-			lectura=Metodos.leer(Metodos.saberArchivoLlamada(tipoSeguro));
+			LinkedList<String> lectura = new LinkedList<String>();
 
-			if(lectura.size()>0) {
-								
-				lectura=Metodos.formatearArray(lectura.get(0));
-				
+			lectura = Metodos.leer(Metodos.saberArchivoLlamada(tipoSeguro));
+
+			if (lectura.size() > 0) {
+
+				lectura = Metodos.formatearArray(lectura.get(0));
+
 			}
 
 			for (int i = 0; i < lista.size(); i++) {
@@ -211,7 +228,7 @@ public class Llamada extends javax.swing.JFrame {
 
 				case 1:
 					contactoVto = Agenda.contactos.get(Vencimiento.getIndiceDeceso().get(i));
-				
+
 					tlf = Agenda.telefonos.get(Vencimiento.getIndiceDeceso().get(i));
 					break;
 
@@ -241,13 +258,12 @@ public class Llamada extends javax.swing.JFrame {
 					break;
 
 				}
-				
 
-				if(!lectura.contains(contactoVto)) {
+				if (!lectura.contains(contactoVto)) {
 
 					model.addRow(new Object[] { contactoVto, tlf, lista.get(i), "" });
 				}
-				
+
 			}
 		}
 
@@ -284,15 +300,14 @@ public class Llamada extends javax.swing.JFrame {
 		});
 
 		jTextField1 = new javax.swing.JTextField();
+		jTextField1.setToolTipText("sdfsd");
 		jTextField1.setFont(new Font("Tahoma", Font.BOLD, 16));
 		jTextField1.setHorizontalAlignment(SwingConstants.CENTER);
-		jLabel2 = new javax.swing.JLabel();
-		jLabel2.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/lupa.png")));
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		jPanel1.setBackground(Color.WHITE);
-		jTable1.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		jTable1.setFont(new Font("Arial", Font.PLAIN, 15));
 		jTable1.setModel(new javax.swing.table.DefaultTableModel(new Object[][] {
 
 		}, new String[] { "Nombre", "Telefono", "Vencimiento", "Estado" }) {
@@ -328,10 +343,6 @@ public class Llamada extends javax.swing.JFrame {
 			}
 		});
 
-		jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18));
-
-		jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/filtro.png")));
 		lblNewLabel.setFont(new Font("Dialog", Font.BOLD, 16));
@@ -342,10 +353,8 @@ public class Llamada extends javax.swing.JFrame {
 
 			public void actionPerformed(ActionEvent arg0) {
 
-				LinkedList<String> lectura=new LinkedList<String> ();
+				lblNewLabel_1.setText(Agenda.nuevosVencimientos.getText());
 
-				
-				
 				String valor = comboBox.getSelectedItem().toString();
 
 				dispose();
@@ -353,10 +362,9 @@ public class Llamada extends javax.swing.JFrame {
 				switch (valor) {
 
 				case "Decesos":
-					
+
 					verLlamadas(1);
 
-					
 					break;
 
 				case "Vida":
@@ -394,39 +402,40 @@ public class Llamada extends javax.swing.JFrame {
 			}
 
 			private void verLlamadas(int seguro) {
-				
+
 				LinkedList<String> lectura;
-				
+
 				try {
-					
-					lectura=Metodos.leer(Metodos.saberArchivoLlamada(seguro));
-					
-					if(lectura.size()>0) {
 
-						lectura=Metodos.formatearArray(lectura.get(0));
+					lectura = Metodos.leer(Metodos.saberArchivoLlamada(seguro));
 
-						int comparaSeguro=Agenda.saberArraySeguro(seguro);
+					if (seguro > 0 && !lectura.isEmpty()) {
 
-						if(lectura.size()==comparaSeguro) {
-							
-							Agenda.mensajeNoHayVencimiento();
-						}
-						
-						else {
+						lectura = Metodos.formatearArray(lectura.get(0));
+
+						int comparaSeguro = Agenda.saberArraySeguro(seguro);
+
+						if (lectura.size() != comparaSeguro) {
+
 							new Llamada(seguro).setVisible(true);
-					}
+
 						}
-					
-					else {
-						new Llamada(seguro).setVisible(true);
 					}
-					
+
+					else {
+						iconoVtoSeguro.setText(" Selecciona un seguro para visualizar los vencimientos");
+
+						iconoVtoSeguro.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/name.png")));
+
+						new Llamada(0).setVisible(true);
+					}
+
 				}
-				
+
 				catch (Exception e) {
 					//
 				}
-				
+
 			}
 
 		});
@@ -435,54 +444,75 @@ public class Llamada extends javax.swing.JFrame {
 
 		btnNewButton.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/view.png")));
 
+		lblNewLabel_1.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+
+		JLabel lblNewLabel_2 = new JLabel("");
+		lblNewLabel_2.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/lupa.png")));
+		lblNewLabel_2.setFont(new Font("Dialog", Font.BOLD, 16));
+
 		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel1Layout
-				.createSequentialGroup().addGap(26)
-				.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel1Layout
-						.createSequentialGroup().addGap(22).addComponent(lblNewLabel)
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 208, GroupLayout.PREFERRED_SIZE).addGap(17)
-						.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-								.addGroup(jPanel1Layout.createSequentialGroup()
-										.addPreferredGap(ComponentPlacement.RELATED).addComponent(seguro))
-								.addGroup(jPanel1Layout.createSequentialGroup().addGap(61).addComponent(btnNewButton))))
-						.addGroup(Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(Alignment.TRAILING).addGroup(jPanel1Layout
+				.createSequentialGroup()
+				.addGroup(jPanel1Layout.createParallelGroup(Alignment.TRAILING)
+						.addGroup(Alignment.LEADING,
+								jPanel1Layout.createSequentialGroup().addGap(74).addComponent(jScrollPane1,
+										GroupLayout.DEFAULT_SIZE, 699, Short.MAX_VALUE))
+						.addGroup(jPanel1Layout.createSequentialGroup().addContainerGap()
+								.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING).addComponent(lblNewLabel)
+										.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 64,
+												GroupLayout.PREFERRED_SIZE))
+								.addPreferredGap(ComponentPlacement.RELATED)
 								.addGroup(jPanel1Layout.createParallelGroup(Alignment.TRAILING)
-										.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 912, Short.MAX_VALUE)
-										.addGroup(jPanel1Layout.createSequentialGroup().addGap(16).addComponent(jLabel2)
-												.addGap(58).addComponent(jTextField1, GroupLayout.DEFAULT_SIZE, 774,
-														Short.MAX_VALUE)))
-								.addGap(28)))));
-		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel1Layout.createSequentialGroup()
-						.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-								.addGroup(jPanel1Layout.createSequentialGroup().addGap(31).addComponent(jLabel2))
-								.addGroup(jPanel1Layout.createSequentialGroup().addGap(45).addComponent(jTextField1,
-										GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE)))
-						.addGap(18)
-						.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 264, GroupLayout.PREFERRED_SIZE)
-						.addGap(28)
-						.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE).addComponent(lblNewLabel)
-								.addComponent(seguro)
-								.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE)
-								.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
-						.addContainerGap(183, Short.MAX_VALUE)));
+										.addComponent(iconoVtoSeguro, GroupLayout.DEFAULT_SIZE, 685, Short.MAX_VALUE)
+										.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 685, Short.MAX_VALUE)
+										.addGroup(jPanel1Layout.createSequentialGroup()
+												.addComponent(comboBox, 0, 563, Short.MAX_VALUE)
+												.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnNewButton,
+														GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE))
+										.addComponent(jTextField1, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 601,
+												GroupLayout.PREFERRED_SIZE))))
+				.addGap(253)));
+		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel1Layout
+				.createSequentialGroup().addGap(18)
+				.addGroup(jPanel1Layout.createParallelGroup(Alignment.TRAILING, false)
+						.addGroup(jPanel1Layout.createSequentialGroup()
+								.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(lblNewLabel))
+						.addGroup(jPanel1Layout.createSequentialGroup()
+								.addComponent(lblNewLabel_1, GroupLayout.PREFERRED_SIZE, 12, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addComponent(
+										iconoVtoSeguro, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE)
+								.addGap(18)
+								.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE)
+										.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 35,
+												GroupLayout.PREFERRED_SIZE)
+										.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 54,
+												GroupLayout.PREFERRED_SIZE))))
+				.addGap(34).addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 342, GroupLayout.PREFERRED_SIZE)
+				.addContainerGap(446, Short.MAX_VALUE)));
+		iconoVtoSeguro.setHorizontalAlignment(SwingConstants.CENTER);
+		iconoVtoSeguro.setIcon(null);
 		jPanel1.setLayout(jPanel1Layout);
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(jPanel1,
+				GroupLayout.DEFAULT_SIZE, 1026, Short.MAX_VALUE));
+		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup()
+						.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(
-				jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
-		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup()
-						.addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addGap(0, 0, Short.MAX_VALUE)));
 
 		pack();
 		setLocationRelativeTo(null);
-	}// </editor-fold>//GEN-END:initComponents
+	}
 
 	private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_jTextField1KeyReleased
 
@@ -558,5 +588,4 @@ public class Llamada extends javax.swing.JFrame {
 		});
 
 	}
-
 }

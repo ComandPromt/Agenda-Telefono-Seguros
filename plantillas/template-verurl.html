@@ -1,32 +1,49 @@
 <!DOCTYPE html>
+
 <html>
 
 	<head>
-
+		
+		<bookmarks>
+		
+			<bookmark name="1 Introduction" href="#_introduction">
+			
+			</bookmark>
+		
+			<bookmark name="2 User" href="#_user"> 
+			</bookmark>
+			
+		</bookmarks>
+		
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		
-		<title>PDF Generator</title>
+		<title>Listado de Vencimientos</title>
+	
+		<style>
 		
-		<style type="text/css">
-		
-			*{text-align:center;margin:auto;}
+			*{margin:auto;}
 			
 			.tabla{
 				width:200px;
 			}
 			
+			.div{
+				padding-top:40px;
+				text-align:center;
+			}
+			
 			.head1 {
+				text-align:right;
+				padding-right:40px;
 				color: #496192;
 				font-size: x-large;
 			}
 			.head2 {
-				color: #496192;
+				padding-top:20px;
+				padding-right:40px;
+				color: #0561BE;
 				font-size: large;
 				text-align:right;
-			}
-			.head3 {
-				color: #000;
-				font-size:medium;
 			}
 			
 			.paragraph {
@@ -36,33 +53,127 @@
 			.toc { 
 					list-style-type:none;
 			}
-			.toc a::after { content: leader('.') target-counter(attr(href), page); }
-		
-		</style>
-		
-		
-		<bookmarks>
-		
-		<bookmark name="1 Introduction" href="#_introduction">
-			<bookmark name="1.1 Intoduction Sub" href="#_introduction_sub"></bookmark>
-		</bookmark>
-		
-		<bookmark name="2 User" href="#_user"> 
-			<bookmark name="2.1 User Detail" href="#_user_detail"></bookmark>
-			</bookmark>
 			
-		</bookmarks>
+			.toc a::after {
+				 content: leader('.') target-counter(attr(href), page); 
+			}
+				
+		
+			.idc-box { 
+	 
+				margin-top:40px;
+	
+				background: #f9f9f9 none repeat scroll 0 0;
+				border: 1px solid #aaa; display: table; font-size: 95%;
+				margin-bottom: 1em; 
+				padding: 20px;
+				width: 90%;
+			} 
+	   
+			.idc-box .idc-titulo {
+				font-weight: 700;
+				text-align: center; 
+			} 
+	
+			.idc-box li, .idc-box ul, .idc-box ul li{
+		 
+				padding-top: 5px; 
+		
+				list-style: outside none none !important;
+			}
+		 
+		 	.idc-lista {
+				
+				padding-top:20px;
+				margin-left:40%;
 
+			}
+		 
+			.separador{
+				
+			width:80%;
+			}
+		 
+hr {border: 0; height: 0; border-top: 4px double black; text-align:center;
+	
+	}
+
+hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 34px;line-height: 34px; color: black;}
+
+		 
+	</style>
+	
 	</head>
 
 	<body>
 
-		<div style="text-align:center;padding-bottom:20px;">
-
-			<p class="head1">Listado de contactos</p>
-			
+		<div style="color:#124C85;float:right; padding-right:40px;padding-bottom:40px;">
+			<h3>Vencimientos desde el ${principio} hasta el ${fin}</h3>
 		</div>
+
+		<div class="idc-box">
 	
+			<h2 class="idc-titulo head1">Vencimientos</h2>
+	
+			<ul class="idc-lista">
+		
+				<li>
+			
+					<a href="#decesos">1.Decesos</a>
+					
+				</li>
+		
+				<li>
+			
+					<a href="#vida">2.Vida</a>
+				
+				</li>
+		
+				<li>
+			
+					<a href="#hogar">3.Hogar</a>
+				
+				</li>
+		
+				<li>
+			
+					<a href="#coche">4.Coche</a>
+					
+				</li>
+		
+				<li>
+			
+					<a href="#comercio">5.Comercio</a>
+				
+				</li>
+		
+				<li>
+			
+					<a href="#comunidad">6.Comunidad</a>
+				
+				</li>
+				
+			</ul>
+		
+		</div>
+		
+		<div style="clear:both;text-align:center;padding-top:20px;">
+			<p>Los vencimientos se muestran ordenados por fecha,</p>
+			<p>es decir, <span style="color:#14404F;">primero saldrán los vencimientos que están por cumplirse.</span></p>
+			<p style="padding-top:10px;" >Mientras más abajo esté en la tabla, más cerca está el vencimiento</p>
+			<p>de cumplirse en dos meses.</p>
+		</div>
+
+		
+		<div style="clear:both;padding-top:650px;">
+		</div>
+			
+		<div id="decesos" style="text-align:center;">
+
+			<p class="head2">1.Decesos </p>
+			
+		</div> 
+		
 		<table style="border: 1px solid black;text-align:center;">
 		
 			<thead>
@@ -109,7 +220,277 @@
 			</#list>
 			
 		</table>
- 
+	
+	
+				<div id="vida" class="div">
+					
+	<hr class="separador"/>
+	
+			<p class="head2">2.Vida </p>
+			
+		</div> 
+		
+		<table style="border: 1px solid black;text-align:center;">
+		
+			<thead>
+			
+				<tr style="background-color:#CCC0DA">
+					<th align="center">Nombre</th>
+					<th align="center">Teléfono</th>
+					<th align="center">Vencimiento</th>
+					<th align="center">Observación</th>
+				</tr>
+				
+			</thead>
+			
+			<#list 1..users?size as i>
+			
+				<#if i%2==0> 
+				
+					<tr style="background-color:#FABF8F;">
+					
+				<#else>
+				
+					<tr style="background-color:#C4D79B;">
+					
+				</#if>
+				
+					<td class="tabla" align="center">
+					
+					<p align="center">${users[i-1].username}</p></td>
+					
+					<td class="tabla" align="center">
+					
+					<p align="center">${telefonos[i-1].username}</p></td>
+					
+					<td class="tabla" align="center">
+					
+					<p align="center">${vencimientos[i-1].username}</p></td>
+					
+					<td class="tabla" align="center">
+					
+					<p align="center">${observaciones[i-1].username}</p></td>
+					
+					</tr>
+							
+			</#list>
+			
+		</table>
+		
+				<div id="hogar" class="div">
+<hr class="separador"/>
+			<p class="head2">3.Hogar</p>
+			
+		</div> 
+		
+		<table style="border: 1px solid black;text-align:center;">
+		
+			<thead>
+			
+				<tr style="background-color:#CCC0DA">
+					<th align="center">Nombre</th>
+					<th align="center">Teléfono</th>
+					<th align="center">Vencimiento</th>
+					<th align="center">Observación</th>
+				</tr>
+				
+			</thead>
+			
+			<#list 1..users?size as i>
+			
+				<#if i%2==0> 
+				
+					<tr style="background-color:#FABF8F;">
+					
+				<#else>
+				
+					<tr style="background-color:#C4D79B;">
+					
+				</#if>
+				
+					<td class="tabla" align="center">
+					
+					<p align="center">${users[i-1].username}</p></td>
+					
+					<td class="tabla" align="center">
+					
+					<p align="center">${telefonos[i-1].username}</p></td>
+					
+					<td class="tabla" align="center">
+					
+					<p align="center">${vencimientos[i-1].username}</p></td>
+					
+					<td class="tabla" align="center">
+					
+					<p align="center">${observaciones[i-1].username}</p></td>
+					
+					</tr>
+							
+			</#list>
+			
+		</table>
+		
+				<div id="coche" class="div">
+<hr class="separador"/>
+			<p class="head2">4.Coche</p>
+			
+		</div> 
+		
+		<table style="border: 1px solid black;text-align:center;">
+		
+			<thead>
+			
+				<tr style="background-color:#CCC0DA">
+					<th align="center">Nombre</th>
+					<th align="center">Teléfono</th>
+					<th align="center">Vencimiento</th>
+					<th align="center">Observación</th>
+				</tr>
+				
+			</thead>
+			
+			<#list 1..users?size as i>
+			
+				<#if i%2==0> 
+				
+					<tr style="background-color:#FABF8F;">
+					
+				<#else>
+				
+					<tr style="background-color:#C4D79B;">
+					
+				</#if>
+				
+					<td class="tabla" align="center">
+					
+					<p align="center">${users[i-1].username}</p></td>
+					
+					<td class="tabla" align="center">
+					
+					<p align="center">${telefonos[i-1].username}</p></td>
+					
+					<td class="tabla" align="center">
+					
+					<p align="center">${vencimientos[i-1].username}</p></td>
+					
+					<td class="tabla" align="center">
+					
+					<p align="center">${observaciones[i-1].username}</p></td>
+					
+					</tr>
+							
+			</#list>
+			
+		</table>
+		
+				<div id="comercio" class="div">
+<hr class="separador"/>
+			<p class="head2">5.Comercio</p>
+			
+		</div> 
+		
+		<table style="border: 1px solid black;text-align:center;">
+		
+			<thead>
+			
+				<tr style="background-color:#CCC0DA">
+					<th align="center">Nombre</th>
+					<th align="center">Teléfono</th>
+					<th align="center">Vencimiento</th>
+					<th align="center">Observación</th>
+				</tr>
+				
+			</thead>
+			
+			<#list 1..users?size as i>
+			
+				<#if i%2==0> 
+				
+					<tr style="background-color:#FABF8F;">
+					
+				<#else>
+				
+					<tr style="background-color:#C4D79B;">
+					
+				</#if>
+				
+					<td class="tabla" align="center">
+					
+					<p align="center">${users[i-1].username}</p></td>
+					
+					<td class="tabla" align="center">
+					
+					<p align="center">${telefonos[i-1].username}</p></td>
+					
+					<td class="tabla" align="center">
+					
+					<p align="center">${vencimientos[i-1].username}</p></td>
+					
+					<td class="tabla" align="center">
+					
+					<p align="center">${observaciones[i-1].username}</p></td>
+					
+					</tr>
+							
+			</#list>
+			
+		</table>
+		
+				<div id="comunidad" class="div">
+					
+					<hr class="separador"/>
+					
+			<p class="head2">6.Comunidad</p>
+			
+		</div> 
+		
+		<table style="border: 1px solid black;text-align:center;margin-bottom:40px;">
+		
+			<thead>
+			
+				<tr style="background-color:#CCC0DA">
+					<th align="center">Nombre</th>
+					<th align="center">Teléfono</th>
+					<th align="center">Vencimiento</th>
+					<th align="center">Observación</th>
+				</tr>
+				
+			</thead>
+			
+			<#list 1..users?size as i>
+			
+				<#if i%2==0> 
+				
+					<tr style="background-color:#FABF8F;">
+					
+				<#else>
+				
+					<tr style="background-color:#C4D79B;">
+					
+				</#if>
+				
+					<td class="tabla" align="center">
+					
+					<p align="center">${users[i-1].username}</p></td>
+					
+					<td class="tabla" align="center">
+					
+					<p align="center">${telefonos[i-1].username}</p></td>
+					
+					<td class="tabla" align="center">
+					
+					<p align="center">${vencimientos[i-1].username}</p></td>
+					
+					<td class="tabla" align="center">
+					
+					<p align="center">${observaciones[i-1].username}</p></td>
+					
+					</tr>
+							
+			</#list>
+			
+		</table>
+		
 	</body>
 	
 </html>

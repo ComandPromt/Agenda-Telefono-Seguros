@@ -68,21 +68,21 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 	RSDateChooser comercio = new RSDateChooser();
 
-	private void guardarLlamada(int seguro,String contacto) throws FileNotFoundException, ClassNotFoundException, IOException {
+	private void guardarLlamada(int seguro, String contacto)
+			throws FileNotFoundException, ClassNotFoundException, IOException {
 
 		ArrayList<Objeto> arrayList1 = new ArrayList<Objeto>();
-		
-		String archivo=Metodos.saberArchivoLlamada(seguro);
-		
-			ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
-				new FileOutputStream(archivo));
-		
+
+		String archivo = Metodos.saberArchivoLlamada(seguro);
+
+		ObjectOutputStream escribiendoFichero = new ObjectOutputStream(new FileOutputStream(archivo));
+
 		escribiendoFichero.writeObject(arrayList1);
 
 		escribiendoFichero.close();
-		
+
 	}
-	
+
 	protected void guardar() {
 
 		String nombre = Metodos.eliminarEspacios(nombrec.getText());
@@ -135,7 +135,9 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 					if (datoEmail.isEmpty() || datoCodPostal.isEmpty() || (comprobarEmail && comprobarCodPostal)) {
 
 						try {
+
 							Agenda.jList1.removeAll();
+
 							ArrayList<Objeto> arrayList1 = new ArrayList<Objeto>();
 
 							ArrayList<Objeto> arrayList2;
@@ -151,12 +153,12 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 							}
 
-							fechaDecesos = Agenda.convertirFecha(deceso.getDatoFecha().toString(), true);
-							fechaHogar = Agenda.convertirFecha(hogar.getDatoFecha().toString(), true);
-							fechaVida = Agenda.convertirFecha(vida.getDatoFecha().toString(), true);
-							fechaCoche = Agenda.convertirFecha(coche.getDatoFecha().toString(), true);
-							fechaComercio = Agenda.convertirFecha(comercio.getDatoFecha().toString(), true);
-							fechaComunidad = Agenda.convertirFecha(comunidad.getDatoFecha().toString(), true);
+							fechaDecesos = Metodos.convertirFecha(deceso.getDatoFecha().toString(), true);
+							fechaHogar = Metodos.convertirFecha(hogar.getDatoFecha().toString(), true);
+							fechaVida = Metodos.convertirFecha(vida.getDatoFecha().toString(), true);
+							fechaCoche = Metodos.convertirFecha(coche.getDatoFecha().toString(), true);
+							fechaComercio = Metodos.convertirFecha(comercio.getDatoFecha().toString(), true);
+							fechaComunidad = Metodos.convertirFecha(comunidad.getDatoFecha().toString(), true);
 
 							Agenda.setfechaDecesos(fechaDecesos);
 
@@ -216,35 +218,34 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 							arrayList1.clear();
 
 							if (checkDeceso.isSelected()) {
-								
-								
-									guardarLlamada(1,nombre);
-								
+
+								guardarLlamada(1, nombre);
+
 							}
 							if (checkVida.isSelected()) {
-								guardarLlamada(2,nombre);
+								guardarLlamada(2, nombre);
 							}
 							if (checkHogar.isSelected()) {
-								guardarLlamada(3,nombre);
+								guardarLlamada(3, nombre);
 							}
 							if (checkCoche.isSelected()) {
-								guardarLlamada(4,nombre);
+								guardarLlamada(4, nombre);
 							}
 							if (checkComercio.isSelected()) {
-								guardarLlamada(5,nombre);
+								guardarLlamada(5, nombre);
 							}
 							if (checkComunidad.isSelected()) {
-								guardarLlamada(6,nombre);
+								guardarLlamada(6, nombre);
 							}
-					
+
 							Agenda.limpiarContactos();
 
 							Agenda.vaciarCampos();
 
 							Agenda.verNotas();
-							
+
 							Vencimiento.verTablaVencimientos();
-							
+
 						}
 
 						catch (Exception e1) {
@@ -262,11 +263,7 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 
 		}
 
-		
-
 	}
-
-
 
 	public Nuevo() {
 

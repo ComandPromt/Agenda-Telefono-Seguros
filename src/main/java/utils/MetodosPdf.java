@@ -3,15 +3,16 @@ package utils;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import pdf.Cliente;
 import pdf.Fecha;
 import pdf.Obs;
 import pdf.Telefono;
-import pdf.Url;
 
 public abstract class MetodosPdf {
 
@@ -19,17 +20,27 @@ public abstract class MetodosPdf {
 			LinkedList<String> observaciones, LinkedList<String> telefonos, String plantilla)
 			throws Exception, FileNotFoundException {
 
+		Date fecha = new Date();
+
+		String hoy = Metodos.convertirFecha(fecha.toString(), false);
+
+		String hasta = Metodos.mostrarFechaDosMeses(hoy);
+
 		String tampleFile = "plantillas/" + plantilla;
 
 		Map<String, Object> variables = new HashMap<String, Object>();
 
-		List<Url> users = createUserList(usuarios);
+		List<Cliente> users = createUserList(usuarios);
 
 		List<Fecha> fechas = createDateList(vencimientos);
 
 		List<Obs> obs = createObsList(observaciones);
 
 		List<Telefono> tlf = createTlfList(telefonos);
+
+		variables.put("principio", hoy);
+
+		variables.put("fin", hasta);
 
 		variables.put("users", users);
 
@@ -45,9 +56,9 @@ public abstract class MetodosPdf {
 
 	}
 
-	private static List<Url> createUserList(LinkedList<String> urls) {
+	private static List<Cliente> createUserList(LinkedList<String> urls) {
 
-		List<Url> users = new ArrayList<Url>();
+		List<Cliente> users = new ArrayList<Cliente>();
 
 		for (int i = 0; i < urls.size(); i++) {
 			users.add(createUrl(urls.get(i)));
@@ -116,9 +127,9 @@ public abstract class MetodosPdf {
 		return url;
 	}
 
-	private static Url createUrl(String urli) {
+	private static Cliente createUrl(String urli) {
 
-		Url url = new Url();
+		Cliente url = new Cliente();
 
 		url.setUsername(urli);
 

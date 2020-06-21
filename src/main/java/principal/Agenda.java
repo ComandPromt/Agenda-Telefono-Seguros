@@ -26,16 +26,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
-import java.util.Timer;
 
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -65,23 +62,24 @@ import utils.MetodosPdf;
 @SuppressWarnings("all")
 
 public class Agenda extends JFrame {
-	
-	private JLabel lblNewLabel_2 = new JLabel("");
-	
+	private JButton btnNewButton = new JButton("");
+	private static JLabel iconoSeguro = new JLabel("");
+
+	private static JLabel lblNewLabel_2 = new JLabel("");
+
 	public static JLabel nuevosVencimientos = new JLabel("");
 
 	private JButton observacion = new JButton("Obs");
 	private int indice;
 	private static JTextPane vtos = new JTextPane();
-	private Timer t = new Timer();
-	Vencimiento mTask = new Vencimiento();
-	private ArrayList<Objeto> arrayList1= new ArrayList<Objeto>();
-	private static int seguro=0;
-	private int paso=0;
+
+	private ArrayList<Objeto> arrayList1 = new ArrayList<Objeto>();
+	private static int seguro = 0;
+	private int paso = 0;
 	private JButton buscar;
 	private static JButton contacto;
 	private JButton editar;
-	private Date fecha;
+
 	public static JList<String> jList1;
 	private static String directorioActual, separador, os;
 	private static JTextField nombre;
@@ -128,10 +126,58 @@ public class Agenda extends JFrame {
 		Agenda.email.setText("");
 	}
 
-	private void verVencimientoLlamada(int tipoSeguro) throws FileNotFoundException, ClassNotFoundException, IOException {
+	private boolean yaLlamado(int tipoSeguro, String busqueda)
+			throws IOException, FileNotFoundException, ClassNotFoundException {
+
+		LinkedList<String> lectura = Metodos.leer(Metodos.saberArchivoLlamada(tipoSeguro));
+
+		lectura = Metodos.formatearArray(lectura.get(0));
+
+		try {
+
+			if (lectura.contains(busqueda)) {
+				return true;
+			}
+
+			else {
+				return false;
+			}
+
+		}
+
+		catch (Exception e) {
+			return false;
+		}
+
+	}
+
+	private static void verTodasLasLlamadas() {
 
 		verNotas();
-			
+
+		Vencimiento.verTablaVencimientos();
+
+		Vencimiento.ponerVencimientos(1);
+
+		Vencimiento.ponerVencimientos(2);
+
+		Vencimiento.ponerVencimientos(3);
+
+		Vencimiento.ponerVencimientos(4);
+
+		Vencimiento.ponerVencimientos(5);
+
+		Vencimiento.ponerVencimientos(6);
+
+	}
+
+	private void verVencimientoLlamada(int tipoSeguro)
+			throws FileNotFoundException, ClassNotFoundException, IOException {
+
+		verNotas();
+
+		Vencimiento.verTablaVencimientos();
+
 		Vencimiento.ponerVencimientos(tipoSeguro);
 
 		int vencimientos = 0;
@@ -142,153 +188,208 @@ public class Agenda extends JFrame {
 
 			vencimientos = vencimientosDecesos.size();
 			break;
-		
+
 		case 2:
 			vencimientos = vencimientosVida.size();
 			break;
-		
+
 		case 3:
 			vencimientos = vencimientosHogar.size();
 			break;
-		
+
 		case 4:
 			vencimientos = vencimientosCoche.size();
 			break;
-		
+
 		case 5:
 			vencimientos = vencimientosComercio.size();
 			break;
-		
+
 		case 6:
 			vencimientos = vencimientosComunidad.size();
 			break;
 		}
-		
+
 		if (vencimientos == 0) {
-	
+
 			mensajeNoHayVencimiento();
-		
+
 		}
 
 		else {
-		
-			LinkedList<String> lectura=new LinkedList<String> ();
 
-			lectura=Metodos.leer(Metodos.saberArchivoLlamada(tipoSeguro));
+			LinkedList<String> lectura = new LinkedList<String>();
 
-			if(lectura.size()>0) {
+			lectura = Metodos.leer(Metodos.saberArchivoLlamada(tipoSeguro));
 
-				lectura=Metodos.formatearArray(lectura.get(0));
+			if (lectura.size() > 0) {
 
-				int comparaSeguro=saberArraySeguro(tipoSeguro);
+				lectura = Metodos.formatearArray(lectura.get(0));
 
-				if(lectura.size()==comparaSeguro) {
-					
+				int comparaSeguro = saberArraySeguro(tipoSeguro);
+
+				if (lectura.size() == comparaSeguro) {
+
 					mensajeNoHayVencimiento();
 				}
-				
+
 				else {
-					
-					new Llamada(tipoSeguro).setVisible(true);
-				
+
+					mostrarLlamadaConSeguro(tipoSeguro);
 				}
-				
+
 			}
-			
+
 			else {
-		
-				new Llamada(tipoSeguro).setVisible(true);
-			
+
+				mostrarLlamadaConSeguro(tipoSeguro);
 			}
-			
+
 		}
 
 	}
 
+	private void mostrarLlamadaConSeguro(int tipoSeguro) {
+		new Llamada(tipoSeguro).setVisible(true);
+
+		Llamada.lblNewLabel_1.setText(nuevosVencimientos.getText());
+	}
+
+	private String saberIcono() {
+		String icono;
+		icono = lblNewLabel_2.getIcon().toString();
+
+		icono = icono.substring(icono.lastIndexOf(separador) + 1, icono.length());
+		return icono;
+	}
+
 	public static int saberArraySeguro(int seguro) {
-		
-		int resultado=0;
-		
-		switch(seguro) {
-		
+
+		int resultado = 0;
+
+		switch (seguro) {
+
 		case 1:
 			resultado = vencimientosDecesos.size();
 			break;
-		
+
 		case 2:
 			resultado = vencimientosVida.size();
 			break;
-		
+
 		case 3:
 			resultado = vencimientosHogar.size();
 			break;
-		
+
 		case 4:
 			resultado = vencimientosCoche.size();
 			break;
-		
+
 		case 5:
 			resultado = vencimientosComercio.size();
 			break;
-		
+
 		case 6:
 			resultado = vencimientosComunidad.size();
 			break;
 		}
-			
+
 		return resultado;
 	}
 
 	public static void mensajeNoHayVencimiento() {
-		
-		Agenda.seguro=0;
-		
+
+		Agenda.iconoSeguro.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/name.png")));
+
+		Agenda.lblNewLabel_2.setIcon(null);
+
+		seguro = 0;
+
 		Metodos.mensaje("No hay vencimientos", 3, true);
-		
-		verNotas();
+
+		verTodasLasLlamadas();
+
 	}
 
+	private void ponerEnAgenda(int tipo, boolean filtro) {
 
-	
-	private void ponerEnAgenda(int tipo) {
+		btnNewButton.setEnabled(true);
 
 		verNotas();
-		
+
+		Vencimiento.verTablaVencimientos();
+
 		Vencimiento.ponerVencimientos(tipo);
-		
+
 		int vueltas = 0;
+
+		if (!filtro) {
+			iconoSeguro.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/name.png")));
+		}
 
 		switch (tipo) {
 
 		case 1:
+
+			if (vencimientosDecesos.size() > 0) {
+				iconoSeguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/deceso.png")));
+			}
+
 			vueltas = vencimientosDecesos.size();
 			break;
-		
+
 		case 2:
+			if (vencimientosVida.size() > 0) {
+				iconoSeguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/heart.png")));
+			}
+
 			vueltas = vencimientosVida.size();
 			break;
-		
+
 		case 3:
+			if (vencimientosHogar.size() > 0) {
+				iconoSeguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/home.png")));
+			}
+
 			vueltas = vencimientosHogar.size();
 			break;
-		
+
 		case 4:
+			if (vencimientosCoche.size() > 0) {
+				iconoSeguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/car.png")));
+			}
+
 			vueltas = vencimientosCoche.size();
 			break;
-		
+
 		case 5:
+			if (vencimientosComercio.size() > 0) {
+				iconoSeguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/shop.png")));
+			}
+
 			vueltas = vencimientosComercio.size();
 			break;
-		
+
 		case 6:
+
+			if (vencimientosComunidad.size() > 0) {
+				iconoSeguro.setIcon(new ImageIcon(Llamada.class.getResource("/imagenes/comunidad.png")));
+			}
+
 			vueltas = vencimientosComunidad.size();
 			break;
-		
+
 		}
 
 		if (vueltas == 0) {
-			
-			mensajeNoHayVencimiento();
+
+			if (tipo > 0 && filtro) {
+				Metodos.mensaje("No hay vencimientos", 3, true);
+
+			}
+
+			iconoSeguro.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/name.png")));
+
 		}
 
 		else {
@@ -385,7 +486,6 @@ public class Agenda extends JFrame {
 			vencimientos = fechasDecesos;
 
 			jList1.setModel(model);
-
 		}
 	}
 
@@ -407,6 +507,55 @@ public class Agenda extends JFrame {
 		}
 
 		return arrayList2;
+	}
+
+	private void verContactoAgenda(int indice, String contacto) {
+
+		nombre.setEditable(true);
+
+		try {
+
+			nombre.setText(contacto);
+
+			tlf.setText(telefonos.get(indice));
+
+			email.setText(emails.get(indice));
+
+			vtos.setText(vencimientos.get(indice));
+
+			direccion.setText(direcciones.get(indice));
+
+			if (observaciones.get(indice).isEmpty()) {
+				observacion.setEnabled(false);
+			}
+
+			else {
+				observacion.setEnabled(true);
+			}
+
+			if (seguro > 0) {
+
+				++paso;
+
+				if (paso % 2 != 0) {
+
+					if (yaLlamado(seguro, nombre.getText())) {
+
+						lblNewLabel_2.setIcon((new ImageIcon(Agenda.class.getResource("/imagenes/yallamado.png"))));
+					}
+
+					else {
+
+						lblNewLabel_2.setIcon((new ImageIcon(Agenda.class.getResource("/imagenes/llamar.png"))));
+
+					}
+
+				}
+			}
+
+		} catch (Exception e1) {
+//
+		}
 	}
 
 	protected void guardarContactos() {
@@ -514,141 +663,6 @@ public class Agenda extends JFrame {
 		jList1.setModel(modelo);
 	}
 
-	static String convertirFecha(String cadena, boolean tipo) {
-
-		String fecha = "";
-
-		String mes = "";
-
-		String year = "";
-
-		int dia;
-
-		String mesCorto = "";
-
-		String diaCorto = "";
-
-		int mesFecha = 0;
-
-		String busquedaMes = "";
-
-		String busquedaDia = "";
-
-		if (!cadena.isEmpty() && !cadena.contains("null")) {
-
-			if (cadena.indexOf(" ") == -1) {
-
-				busquedaDia = cadena.substring(0, cadena.indexOf("/"));
-
-				busquedaMes = cadena.substring(cadena.indexOf("/") + 1, cadena.lastIndexOf("/"));
-
-				if (busquedaDia.indexOf("0") == 0) {
-					dia = Integer.parseInt(busquedaDia.substring(1, busquedaDia.length()));
-					diaCorto = "0";
-				}
-
-				else {
-					dia = Integer.parseInt(busquedaDia);
-				}
-
-				if (busquedaMes.contains("0")) {
-					mesFecha = Integer.parseInt(busquedaMes.substring(1, busquedaMes.length()));
-					mesCorto = "0";
-				}
-
-				else {
-					mesFecha = Integer.parseInt(busquedaMes);
-				}
-
-				year = cadena.substring(cadena.lastIndexOf("/") + 1, cadena.length());
-
-			} else {
-
-				int limiteMes = cadena.indexOf(" ") + 4;
-
-				year = cadena.substring(cadena.lastIndexOf(" ") + 1, cadena.length());
-
-				mes = cadena.substring(cadena.indexOf(" ") + 1, limiteMes);
-
-				cadena = cadena.substring(limiteMes + 1, cadena.length());
-
-				dia = Integer.parseInt(cadena.substring(0, cadena.indexOf(" ")));
-
-				switch (mes) {
-
-				case "Jan":
-					mesFecha = 1;
-					break;
-
-				case "Feb":
-					mesFecha = 2;
-					break;
-
-				case "Mar":
-					mesFecha = 3;
-					break;
-
-				case "Apr":
-					mesFecha = 4;
-					break;
-
-				case "May":
-					mesFecha = 5;
-					break;
-
-				case "Jun":
-					mesFecha = 6;
-					break;
-
-				case "Jul":
-					mesFecha = 7;
-					break;
-
-				case "Aug":
-					mesFecha = 8;
-					break;
-
-				case "Sep":
-					mesFecha = 9;
-					break;
-
-				case "Oct":
-					mesFecha = 10;
-					break;
-
-				case "Nov":
-					mesFecha = 11;
-					break;
-
-				case "Dec":
-					mesFecha = 12;
-					break;
-
-				default:
-					break;
-
-				}
-			}
-
-			if (mesFecha <= 9) {
-				mesCorto = "0";
-			}
-
-			if (dia <= 9) {
-				diaCorto = "0";
-			}
-
-			if (tipo) {
-				fecha = mesCorto + mesFecha + "/" + diaCorto + dia + "/" + year;
-			} else {
-				fecha = diaCorto + dia + "/" + mesCorto + mesFecha + "/" + year;
-			}
-
-		}
-
-		return fecha;
-	}
-
 	public Agenda() throws IOException, SQLException {
 
 		arrayList1 = new ArrayList<Objeto>();
@@ -662,7 +676,9 @@ public class Agenda extends JFrame {
 
 		Metodos.cearCarpetas();
 
-		mTask.verTablaVencimientos();
+		verTodasLasLlamadas();
+
+		btnNewButton.setEnabled(false);
 
 		directorioActual = new File(".").getCanonicalPath() + separador;
 
@@ -883,6 +899,10 @@ public class Agenda extends JFrame {
 
 									Vencimiento.actualizarVencimientos("fechasComunidad.dat", 6);
 
+									for (int x = 1; x <= 6; x++) {
+										ponerEnAgenda(x, false);
+									}
+
 								}
 
 								catch (Exception e1) {
@@ -932,10 +952,10 @@ public class Agenda extends JFrame {
 			@Override
 
 			public void mousePressed(MouseEvent e) {
-				
-				seguro=1;
-				
-				ponerEnAgenda(seguro);
+
+				seguro = 1;
+
+				ponerEnAgenda(seguro, true);
 
 			}
 
@@ -956,10 +976,11 @@ public class Agenda extends JFrame {
 			public void mousePressed(MouseEvent e) {
 
 				try {
-					seguro=0;
+
+					seguro = 0;
 					verVencimientoLlamada(1);
 				} catch (Exception e1) {
-					
+					//
 				}
 
 			}
@@ -991,8 +1012,8 @@ public class Agenda extends JFrame {
 			@Override
 
 			public void mousePressed(MouseEvent e) {
-				seguro=2;
-				ponerEnAgenda(seguro);
+				seguro = 2;
+				ponerEnAgenda(seguro, true);
 
 			}
 
@@ -1009,10 +1030,10 @@ public class Agenda extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				try {
-					seguro=0;
+					seguro = 0;
 					verVencimientoLlamada(2);
 				} catch (Exception e1) {
-					// 
+					//
 				}
 			}
 
@@ -1037,8 +1058,8 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_10.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				seguro=3;
-				ponerEnAgenda(seguro);
+				seguro = 3;
+				ponerEnAgenda(seguro, true);
 			}
 		});
 		mntmNewMenuItem_10.setFont(new Font("Dialog", Font.PLAIN, 16));
@@ -1051,10 +1072,10 @@ public class Agenda extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				try {
-					seguro=0;
+					seguro = 0;
 					verVencimientoLlamada(3);
 				} catch (Exception e1) {
-					// 
+					//
 				}
 			}
 		});
@@ -1076,8 +1097,8 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_11.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				seguro=4;
-				ponerEnAgenda(seguro);
+				seguro = 4;
+				ponerEnAgenda(seguro, true);
 			}
 		});
 		mntmNewMenuItem_11.setFont(new Font("Dialog", Font.PLAIN, 16));
@@ -1090,10 +1111,10 @@ public class Agenda extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				try {
-					seguro=0;
+					seguro = 0;
 					verVencimientoLlamada(4);
 				} catch (Exception e1) {
-					// 
+					//
 				}
 			}
 		});
@@ -1115,8 +1136,8 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_12.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				seguro=5;
-				ponerEnAgenda(seguro);
+				seguro = 5;
+				ponerEnAgenda(seguro, true);
 			}
 		});
 		mntmNewMenuItem_12.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/agenda.png")));
@@ -1129,10 +1150,10 @@ public class Agenda extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				try {
-					seguro=0;
+					seguro = 0;
 					verVencimientoLlamada(5);
 				} catch (Exception e1) {
-					// 
+					//
 				}
 			}
 		});
@@ -1154,8 +1175,8 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_13.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				seguro=6;
-				ponerEnAgenda(seguro);
+				seguro = 6;
+				ponerEnAgenda(seguro, true);
 			}
 		});
 		mntmNewMenuItem_13.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/agenda.png")));
@@ -1168,10 +1189,10 @@ public class Agenda extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				try {
-					seguro=0;
+					seguro = 0;
 					verVencimientoLlamada(6);
 				} catch (Exception e1) {
-					// 
+					//
 				}
 			}
 		});
@@ -1193,9 +1214,16 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_14.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
+
+				iconoSeguro.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/name.png")));
+
 				lblNewLabel_2.setIcon(null);
-				seguro=0;
-				verNotas();
+
+				btnNewButton.setEnabled(false);
+
+				seguro = 0;
+
+				verTodasLasLlamadas();
 
 			}
 
@@ -1210,10 +1238,10 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_15.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
+				seguro = 0;
+				verNotas();
 
-					verNotas();
-			
-					new Llamada(0).setVisible(true);
+				new Llamada(0).setVisible(true);
 			}
 		});
 
@@ -1258,7 +1286,7 @@ public class Agenda extends JFrame {
 
 				try {
 
-					MetodosPdf.crearPdf(contactos, fechaDecesos, observaciones, telefonos, "template-verurl.html");
+					MetodosPdf.crearPdf(contactos, telefonos, observaciones, telefonos, "template-verurl.html");
 
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -1330,6 +1358,60 @@ public class Agenda extends JFrame {
 
 		});
 
+		JMenu mnNewMenu_10 = new JMenu("Abrir Exportaciones");
+		mnNewMenu_10.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mnNewMenu_10.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/folder.png")));
+		menuBar.add(mnNewMenu_10);
+
+		JMenuItem mntmNewMenuItem_22 = new JMenuItem("PDF");
+		mntmNewMenuItem_22.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+		});
+		mnNewMenu_10.add(mntmNewMenuItem_22);
+		mntmNewMenuItem_22.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mntmNewMenuItem_22.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/pdf.png")));
+
+		JSeparator separator_10 = new JSeparator();
+		mnNewMenu_10.add(separator_10);
+
+		JMenuItem mntmNewMenuItem_23 = new JMenuItem("Excel");
+		mntmNewMenuItem_23.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+		});
+		mntmNewMenuItem_23.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mntmNewMenuItem_23.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/excel.png")));
+		mnNewMenu_10.add(mntmNewMenuItem_23);
+
+		JSeparator separator_19 = new JSeparator();
+		mnNewMenu_10.add(separator_19);
+
+		JMenuItem mntmNewMenuItem_24 = new JMenuItem("TXT");
+		mntmNewMenuItem_24.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+		});
+		mntmNewMenuItem_24.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/txt.png")));
+		mntmNewMenuItem_24.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mnNewMenu_10.add(mntmNewMenuItem_24);
+
+		JSeparator separator_20 = new JSeparator();
+		mnNewMenu_10.add(separator_20);
+
+		JMenuItem mntmNewMenuItem_25 = new JMenuItem("VCard");
+		mntmNewMenuItem_25.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+		});
+		mntmNewMenuItem_25.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/vcard.png")));
+		mntmNewMenuItem_25.setFont(new Font("Dialog", Font.PLAIN, 16));
+		mnNewMenu_10.add(mntmNewMenuItem_25);
+
 		mntmNewMenuItem_21.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/about.png")));
 
 		menuBar.add(mntmNewMenuItem_21);
@@ -1349,80 +1431,8 @@ public class Agenda extends JFrame {
 
 			public void valueChanged(ListSelectionEvent e) {
 
-				nombre.setEditable(true);
+				verContactoAgenda(jList1.getSelectedIndex(), jList1.getSelectedValue());
 
-				try {
-
-					int indice = jList1.getSelectedIndex();
-
-					nombre.setText(jList1.getSelectedValue());
-
-					tlf.setText(telefonos.get(indice));
-
-					email.setText(emails.get(indice));
-
-					vtos.setText(vencimientos.get(indice));
-
-					direccion.setText(direcciones.get(indice));
-
-					if (observaciones.get(indice).isEmpty()) {
-						observacion.setEnabled(false);
-					}
-
-					else {
-						observacion.setEnabled(true);
-					}
-
-					if(seguro>0) {
-						
-						++paso;
-						
-						if(paso%2!=0) {
-				
-							if(yaLlamado(seguro,jList1.getSelectedValue())) {
-								
-								lblNewLabel_2.setIcon((new ImageIcon(Agenda.class.getResource("/imagenes/yallamado.png"))));
-							}
-							
-							else {
-
-								lblNewLabel_2.setIcon((new ImageIcon(Agenda.class.getResource("/imagenes/llamar.png"))));
-
-							}									
-
-						}
-					}
-					
-					
-				} catch (Exception e1) {
-//
-				}
-
-			}
-
-			private boolean yaLlamado(int tipoSeguro,String busqueda) throws IOException, FileNotFoundException, ClassNotFoundException {
-			
-				LinkedList<String> lectura=Metodos.leer(Metodos.saberArchivoLlamada(tipoSeguro));
-				
-				lectura=Metodos.formatearArray(lectura.get(0));
-				
-				try {
-										
-				if(lectura.contains(busqueda)) {
-						return true;
-					}
-					
-					else {
-						return false;
-					}
-					
-				}
-				
-				catch(Exception e) {
-					e.printStackTrace();
-					return false;
-				}
-				
 			}
 
 		});
@@ -1536,7 +1546,7 @@ public class Agenda extends JFrame {
 
 		observacion.setFont(new Font("Tahoma", Font.BOLD, 16));
 
-		JButton btnAadirObservacion = new JButton("+ Obs");
+		JButton btnAadirObservacion = new JButton("+- Obs");
 		btnAadirObservacion.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/obs.png")));
 
 		btnAadirObservacion.addActionListener(new ActionListener() {
@@ -1548,207 +1558,206 @@ public class Agenda extends JFrame {
 		});
 
 		btnAadirObservacion.setFont(new Font("Tahoma", Font.BOLD, 16));
-		
-		JButton btnNewButton = new JButton("");
-		
-		btnNewButton.addActionListener(new ActionListener() {
-			
-			public void actionPerformed(ActionEvent arg0) {
-				
-				try {
 
+		btnNewButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+
+				try {
+					String nombreContacto = jList1.getSelectedValue();
 					int indice = jList1.getSelectedIndex();
 
-					if (indice > -1 && seguro>0) {
-						
-						String icono="";
-						String archivo="";
-						
-					archivo=Metodos.saberArchivoLlamada(seguro);
-					
-						icono=lblNewLabel_2.getIcon().toString();
-						
-						icono=icono.substring(icono.lastIndexOf(separador)+1,icono.length());
+					if (indice > -1 && seguro > 0) {
 
-						if(icono.equals("llamar.png")) {
-						
+						String icono = "";
+						String archivo = "";
+
+						archivo = Metodos.saberArchivoLlamada(seguro);
+
+						icono = saberIcono();
+
+						if (icono.equals("llamar.png")) {
+
 							lblNewLabel_2.setIcon((new ImageIcon(Agenda.class.getResource("/imagenes/yallamado.png"))));
-				
-							guardarLlamadas(archivo,false);
-							
+
+							guardarLlamadas(archivo, false);
+
 						}
-						
+
 						else {
-							
+
 							lblNewLabel_2.setIcon((new ImageIcon(Agenda.class.getResource("/imagenes/llamar.png"))));
-							guardarLlamadas(archivo,true);
+							guardarLlamadas(archivo, true);
 						}
-				
+
+						ponerEnAgenda(seguro, true);
+
+						verContactoAgenda(indice, nombreContacto);
+
 					}
 
 					else {
 						Metodos.mensaje("Por favor, selecciona un contacto", 3, true);
 					}
-					
+
 				} catch (Exception e1) {
-					e1.printStackTrace();
+					//
 				}
 			}
 
-			private void guardarLlamadas(String archivo,boolean borrar)
+			private void guardarLlamadas(String archivo, boolean borrar)
 					throws IOException, FileNotFoundException, ClassNotFoundException {
 				try {
-				LinkedList<String> llamadasVto=  new LinkedList<String>();
-			
-				llamadasVto = Metodos.leer(archivo);	
-				
-				llamadasVto=Metodos.formatearArray(llamadasVto.get(0));
-				
-				String contacto=jList1.getSelectedValue();
+					LinkedList<String> llamadasVto = new LinkedList<String>();
 
-				if(borrar) {
-					llamadasVto.remove(contacto);	
+					llamadasVto = Metodos.leer(archivo);
+
+					llamadasVto = Metodos.formatearArray(llamadasVto.get(0));
+
+					String contacto = jList1.getSelectedValue();
+
+					if (borrar) {
+						llamadasVto.remove(contacto);
+					} else {
+						llamadasVto.add(contacto);
+
+					}
+
+					Metodos.eliminarFichero(archivo);
+
+					ObjectOutputStream escribiendoFichero = new ObjectOutputStream(new FileOutputStream(archivo));
+
+					escribiendoFichero.writeObject(llamadasVto);
+
+					escribiendoFichero.close();
+
 				}
-				else {
-					llamadasVto.add(contacto);	
-						
-				}
-	
-				Metodos.eliminarFichero(archivo);
-				
-				ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
-										new FileOutputStream(archivo));
-				
-				escribiendoFichero.writeObject(llamadasVto);
-				
-				escribiendoFichero.close();
-				
-				}
-				
-				catch(Exception e) {
+
+				catch (Exception e) {
 					e.printStackTrace();
 				}
-				
+
 			}
 
-		
 		});
-		
-		btnNewButton.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/llamada.png")));
-		
 
+		btnNewButton.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/llamada.png")));
 
 		GroupLayout panelCasaLayout = new GroupLayout(panelCasa);
-		panelCasaLayout.setHorizontalGroup(
-			panelCasaLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(panelCasaLayout.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(jLabel3)
+		panelCasaLayout.setHorizontalGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(panelCasaLayout.createSequentialGroup().addContainerGap().addGroup(panelCasaLayout
+						.createParallelGroup(Alignment.LEADING).addComponent(jLabel3)
 						.addComponent(btnAadirObservacion, GroupLayout.PREFERRED_SIZE, 146, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblNewLabel)
-						.addComponent(jLabel5)
+						.addComponent(lblNewLabel).addComponent(jLabel5)
 						.addComponent(lblNewLabel_1_1, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblNewLabel_1))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(email, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-						.addComponent(direccion, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-						.addComponent(tlf, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-						.addGroup(panelCasaLayout.createSequentialGroup()
-							.addComponent(observacion)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(lblNewLabel_2)
-							.addGap(5))
-						.addComponent(nombre, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-						.addComponent(vtos, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE))
-					.addGap(52))
-		);
-		panelCasaLayout.setVerticalGroup(
-			panelCasaLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(panelCasaLayout.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(panelCasaLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblNewLabel_1)).addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING)
+								.addComponent(email, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+								.addComponent(direccion, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+								.addComponent(tlf, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+								.addGroup(panelCasaLayout.createSequentialGroup().addComponent(observacion)
+										.addPreferredGap(ComponentPlacement.UNRELATED)
+										.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 53,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED).addComponent(lblNewLabel_2)
+										.addGap(5))
+								.addComponent(nombre, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+								.addComponent(vtos, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE))
+						.addGap(52)));
+		lblNewLabel_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (saberIcono().equals("llamar.png")) {
+					Metodos.mensaje("Debes llamar a este contacto", 2, true);
+				} else {
+					Metodos.mensaje("Ya has llamado a este contacto", 2, true);
+				}
+
+			}
+		});
+		panelCasaLayout.setVerticalGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(panelCasaLayout.createSequentialGroup().addContainerGap().addGroup(panelCasaLayout
+						.createParallelGroup(Alignment.LEADING)
 						.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(btnAadirObservacion, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
-							.addComponent(observacion, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE)
-							.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE))
-						.addComponent(lblNewLabel_2))
-					.addGap(22)
-					.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 59, GroupLayout.PREFERRED_SIZE)
-						.addComponent(nombre, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING)
-						.addGroup(panelCasaLayout.createSequentialGroup()
-							.addGap(6)
-							.addComponent(tlf, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addComponent(vtos, GroupLayout.PREFERRED_SIZE, 204, GroupLayout.PREFERRED_SIZE)
-							.addGap(7)
-							.addComponent(direccion, GroupLayout.PREFERRED_SIZE, 87, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addComponent(email, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addGap(20))
-						.addGroup(panelCasaLayout.createSequentialGroup()
-							.addComponent(lblNewLabel)
-							.addGap(70)
-							.addComponent(jLabel5)
-							.addPreferredGap(ComponentPlacement.RELATED, 123, Short.MAX_VALUE)
-							.addComponent(lblNewLabel_1_1, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addComponent(lblNewLabel_1, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE)
-							.addContainerGap())))
-		);
+								.addComponent(btnAadirObservacion, GroupLayout.PREFERRED_SIZE, 41,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(observacion, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE)
+								.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE))
+						.addComponent(lblNewLabel_2)).addGap(22)
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 59, GroupLayout.PREFERRED_SIZE)
+								.addComponent(nombre, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(
+								ComponentPlacement.RELATED)
+						.addGroup(panelCasaLayout.createParallelGroup(Alignment.TRAILING).addGroup(panelCasaLayout
+								.createSequentialGroup().addGap(6)
+								.addComponent(tlf, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+								.addGap(18)
+								.addComponent(vtos, GroupLayout.PREFERRED_SIZE, 204, GroupLayout.PREFERRED_SIZE)
+								.addGap(7)
+								.addComponent(direccion, GroupLayout.PREFERRED_SIZE, 87, GroupLayout.PREFERRED_SIZE)
+								.addGap(18)
+								.addComponent(email, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addGap(20))
+								.addGroup(panelCasaLayout.createSequentialGroup().addComponent(lblNewLabel).addGap(70)
+										.addComponent(jLabel5)
+										.addPreferredGap(ComponentPlacement.RELATED, 123, Short.MAX_VALUE)
+										.addComponent(lblNewLabel_1_1, GroupLayout.PREFERRED_SIZE, 48,
+												GroupLayout.PREFERRED_SIZE)
+										.addGap(18).addComponent(lblNewLabel_1, GroupLayout.PREFERRED_SIZE, 49,
+												GroupLayout.PREFERRED_SIZE)
+										.addContainerGap()))));
 		lblNewLabel_2.setIcon(null);
 
 		panelCasa.setLayout(panelCasaLayout);
 		nuevosVencimientos.setFont(new Font("Dialog", Font.BOLD, 14));
 
-		nuevosVencimientos.setHorizontalAlignment(SwingConstants.CENTER);
+		nuevosVencimientos.setHorizontalAlignment(SwingConstants.RIGHT);
+
+		iconoSeguro.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/name.png")));
 
 		GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
-		jPanel3Layout.setHorizontalGroup(
-			jPanel3Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel3Layout.createSequentialGroup()
-					.addContainerGap(37, Short.MAX_VALUE)
-					.addGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING, false)
-						.addComponent(nuevosVencimientos, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addGroup(jPanel3Layout.createSequentialGroup()
-							.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 233, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(panelCasa, GroupLayout.PREFERRED_SIZE, 424, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap(49, Short.MAX_VALUE))
-		);
-		jPanel3Layout.setVerticalGroup(
-			jPanel3Layout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(jPanel3Layout.createSequentialGroup()
-					.addComponent(nuevosVencimientos)
-					.addGap(3)
-					.addGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING, false)
-						.addComponent(jScrollPane1)
-						.addComponent(panelCasa, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-					.addContainerGap())
-		);
+		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap(37, Short.MAX_VALUE)
+						.addGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING, false)
+								.addComponent(nuevosVencimientos, Alignment.LEADING, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addGroup(jPanel3Layout.createSequentialGroup()
+										.addGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
+												.addGroup(jPanel3Layout.createSequentialGroup().addGap(65)
+														.addComponent(iconoSeguro).addGap(132))
+												.addGroup(Alignment.TRAILING,
+														jPanel3Layout.createSequentialGroup()
+																.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE,
+																		233, GroupLayout.PREFERRED_SIZE)
+																.addPreferredGap(ComponentPlacement.UNRELATED)))
+										.addComponent(panelCasa, GroupLayout.PREFERRED_SIZE, 424,
+												GroupLayout.PREFERRED_SIZE)))
+						.addContainerGap(49, Short.MAX_VALUE)));
+		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING).addGroup(jPanel3Layout
+				.createSequentialGroup()
+				.addGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
+						.addGroup(jPanel3Layout.createSequentialGroup().addComponent(nuevosVencimientos)
+								.addGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING, false)
+										.addGroup(jPanel3Layout.createSequentialGroup().addGap(3)
+												.addComponent(panelCasa, GroupLayout.PREFERRED_SIZE,
+														GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+										.addGroup(jPanel3Layout.createSequentialGroup().addGap(51)
+												.addComponent(jScrollPane1))))
+						.addComponent(iconoSeguro))
+				.addGap(23)));
 		jPanel3.setLayout(jPanel3Layout);
 
 		GroupLayout layout = new GroupLayout(getContentPane());
-		layout.setHorizontalGroup(
-			layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 755, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(340, Short.MAX_VALUE))
-		);
-		layout.setVerticalGroup(
-			layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 603, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(69, Short.MAX_VALUE))
-		);
+		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup().addContainerGap()
+						.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 755, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(340, Short.MAX_VALUE)));
+		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup().addContainerGap()
+						.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 603, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(69, Short.MAX_VALUE)));
 		getContentPane().setLayout(layout);
 
 		if (jList1.getModel().getSize() == 0) {
@@ -1759,7 +1768,7 @@ public class Agenda extends JFrame {
 
 				verNotas();
 
-				t.scheduleAtFixedRate(mTask, 0, 100);
+				Vencimiento.verTablaVencimientos();
 
 			} catch (Exception e) {
 				//
@@ -1867,26 +1876,28 @@ public class Agenda extends JFrame {
 
 					observaciones.add(obs);
 
-					fechaDecesos.add(convertirFecha(fechaDeceso, false));
+					fechaDecesos.add(Metodos.convertirFecha(fechaDeceso, false));
 
 					emails.add(correo);
 
-					fechaVida.add(convertirFecha(datoVida, false));
+					fechaVida.add(Metodos.convertirFecha(datoVida, false));
 
-					fechaHogar.add(convertirFecha(datoHogar, false));
+					fechaHogar.add(Metodos.convertirFecha(datoHogar, false));
 
-					fechaCoche.add(convertirFecha(datoCoche, false));
+					fechaCoche.add(Metodos.convertirFecha(datoCoche, false));
 
-					fechaComercio.add(convertirFecha(datoComercio, false));
+					fechaComercio.add(Metodos.convertirFecha(datoComercio, false));
 
-					fechaComunidad.add(convertirFecha(datoComunidad, false));
+					fechaComunidad.add(Metodos.convertirFecha(datoComunidad, false));
 
 					vencimientos.add("Deceso --> " + fechaDecesos.getLast() + "\n\n" + "Vida --> " + fechaVida.getLast()
 							+ "\n\n" + "Hogar --> " + fechaHogar.getLast() + "\n\n" + "Coche --> "
 							+ fechaCoche.getLast() + "\n\n" + "Comercio --> " + fechaComercio.getLast() + "\n\n"
 							+ "Comunidad --> " + fechaComunidad.getLast());
 
-					if (direccion.isEmpty() || localidad.isEmpty() || codPostal.isEmpty() || provincia.isEmpty()) {
+					if (direccion.isEmpty() || direccion.isEmpty() && localidad.isEmpty()
+							|| direccion.isEmpty() && codPostal.isEmpty()
+							|| direccion.isEmpty() && provincia.isEmpty()) {
 						direcciones.add("");
 						contactodirecciones.add("");
 						contactocodigopostal.add("");
@@ -1895,7 +1906,12 @@ public class Agenda extends JFrame {
 					}
 
 					else {
-						direcciones.add(direccion + "\n\n" + localidad + " (" + codPostal + ")" + "\n\n" + provincia);
+
+						if (!codPostal.isEmpty()) {
+							codPostal = " (" + codPostal + ")";
+						}
+
+						direcciones.add(direccion + "\n\n" + localidad + codPostal + "\n\n" + provincia);
 						contactodirecciones.add(direccion);
 						contactocodigopostal.add(codPostal);
 						contactolocalidades.add(localidad);
