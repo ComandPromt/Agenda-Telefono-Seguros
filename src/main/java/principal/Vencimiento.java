@@ -192,6 +192,12 @@ public class Vencimiento {
 				Agenda.nuevosVencimientos.setText(textoVencimientos.substring(0, textoVencimientos.lastIndexOf("||")));
 			}
 
+			if (Agenda.nuevosVencimientos.getText().length() > 6) {
+				Agenda.btnNewButton.setEnabled(true);
+			} else {
+				Agenda.btnNewButton.setEnabled(false);
+			}
+
 		} catch (Exception e) {
 			//
 		}
@@ -225,21 +231,25 @@ public class Vencimiento {
 			Agenda.vencimientosComunidad.clear();
 
 			Date fecha = new Date();
+			
+			String hoy=Metodos.convertirFecha(fecha.toString(), false);
+			
+			//hoy="26/06/2021";
+			
+			indiceVida = buscarColoresVencimientos(hoy, Agenda.fechaVida);
 
-			indiceVida = buscarColoresVencimientos(fecha.toString(), Agenda.fechaVida);
+			indiceDeceso = buscarColoresVencimientos(hoy, Agenda.fechaDecesos);
 
-			indiceDeceso = buscarColoresVencimientos(fecha.toString(), Agenda.fechaDecesos);
+			indiceHogar = buscarColoresVencimientos(hoy, Agenda.fechaHogar);
 
-			indiceHogar = buscarColoresVencimientos(fecha.toString(), Agenda.fechaHogar);
+			indiceCoche = buscarColoresVencimientos(hoy, Agenda.fechaCoche);
 
-			indiceCoche = buscarColoresVencimientos(fecha.toString(), Agenda.fechaCoche);
+			indiceComercio = buscarColoresVencimientos(hoy, Agenda.fechaComercio);
 
-			indiceComercio = buscarColoresVencimientos(fecha.toString(), Agenda.fechaComercio);
-
-			indiceComunidad = buscarColoresVencimientos(fecha.toString(), Agenda.fechaComunidad);
+			indiceComunidad = buscarColoresVencimientos(hoy, Agenda.fechaComunidad);
 
 			if (indiceDeceso.size() > 0) {
-
+System.out.println("Entro");
 				actualizarVencimientos("fechasDecesos.dat", 1);
 			}
 
@@ -272,6 +282,7 @@ public class Vencimiento {
 				actualizarVencimientos("fechasComunidad.dat", 6);
 
 			}
+			
 			actualizarTituloVencimientos();
 		}
 
@@ -286,7 +297,7 @@ public class Vencimiento {
 
 	static void actualizarVencimientos(String archivo, int tipo)
 			throws IOException, FileNotFoundException, ClassNotFoundException {
-
+System.out.println("archivo: "+archivo);
 		arrayList2 = Metodos.leer(archivo);
 
 		if (Agenda.vencimientos.size() > 0) {
@@ -295,6 +306,12 @@ public class Vencimiento {
 
 		}
 
+		if(arrayList1.isEmpty()) {
+			System.out.println("VACÍO");
+		}
+		else {
+			System.out.println("NO VACÍO");
+		}
 		ObjectOutputStream escribiendoFichero = new ObjectOutputStream(new FileOutputStream(archivo));
 
 		escribiendoFichero.writeObject(arrayList1);
@@ -323,7 +340,7 @@ public class Vencimiento {
 		}
 
 		todosLosVencimientos = Metodos.buscarVencimientosAmarillo(tipoVencimiento,
-				Metodos.convertirFecha(fecha, false));
+				fecha);
 
 		for (int i = 0; i < todosLosVencimientos.size(); i++) {
 

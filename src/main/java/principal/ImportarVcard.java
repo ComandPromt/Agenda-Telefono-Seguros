@@ -3,6 +3,7 @@ package principal;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -249,6 +250,7 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 	}
 
 	public ImportarVcard() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(ImportarVcard.class.getResource("/imagenes/abrir.png")));
 
 		setAlwaysOnTop(true);
 

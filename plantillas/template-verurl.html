@@ -6,15 +6,27 @@
 		
 		<bookmarks>
 		
-			<bookmark name="1 Introduction" href="#_introduction">
+			<bookmark name="Vto Decesos" href="#decesos">
 			
 			</bookmark>
 		
-			<bookmark name="2 User" href="#_user"> 
+			<bookmark name="Vto Vida" href="#vida"> 
+			</bookmark>
+			
+			<bookmark name="Vto Hogar" href="#hogar"> 
+			</bookmark>
+			
+			<bookmark name="Vto Coche" href="#coche"> 
+			</bookmark>
+			
+			<bookmark name="Vto Comercio" href="#comercio"> 
+			</bookmark>
+			
+			<bookmark name="Vto Comunidad" href="#comunidad"> 
 			</bookmark>
 			
 		</bookmarks>
-		
+
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		
 		<title>Listado de Vencimientos</title>
@@ -30,6 +42,10 @@
 			.div{
 				padding-top:40px;
 				text-align:center;
+			}
+			
+			table{
+				page-break-after: always;
 			}
 			
 			.head1 {
@@ -60,7 +76,8 @@
 				
 		
 			.idc-box { 
-	 
+	
+				text-align:center;
 				margin-top:40px;
 	
 				background: #f9f9f9 none repeat scroll 0 0;
@@ -88,19 +105,14 @@
 				margin-left:40%;
 
 			}
-		 
-			.separador{
-				
-			width:80%;
-			}
-		 
-hr {border: 0; height: 0; border-top: 4px double black; text-align:center;
+	 	 
+			hr {border: 0; height: 0; border-top: 4px double black; text-align:center;
 	
-	}
+			}
 
-hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 34px;line-height: 34px; color: black;}
+			hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 34px;line-height: 34px; color: black;}
 
-		 
+
 	</style>
 	
 	</head>
@@ -179,15 +191,15 @@ hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 
 			<thead>
 			
 				<tr style="background-color:#CCC0DA">
-					<th align="center">Nombre</th>
-					<th align="center">Teléfono</th>
-					<th align="center">Vencimiento</th>
-					<th align="center">Observación</th>
+					<th >Nombre</th>
+					<th >Teléfono</th>
+					<th >Vencimiento</th>
+					<th >Direcciones</th>
 				</tr>
 				
 			</thead>
 			
-			<#list 1..users?size as i>
+			<#list 1..usuarioDeceso?size as i>
 			
 				<#if i%2==0> 
 				
@@ -199,32 +211,28 @@ hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 
 					
 				</#if>
 				
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${users[i-1].username}</p></td>
+					<p >${usuarioDeceso[i-1].username}</p></td>
 					
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${telefonos[i-1].username}</p></td>
+					<p >${telefonoDeceso[i-1].username}</p></td>
 					
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${vencimientos[i-1].username}</p></td>
+					<p >${vencimientoDeceso[i-1].username}</p></td>
 					
-					<td class="tabla" align="center">
+			<td class="tabla" >
 					
-					<p align="center">${observaciones[i-1].username}</p></td>
-					
+					<p >${direccionDeceso[i-1].username}</p></td>
 					</tr>
 							
 			</#list>
 			
 		</table>
-	
-	
+
 				<div id="vida" class="div">
-					
-	<hr class="separador"/>
 	
 			<p class="head2">2.Vida </p>
 			
@@ -235,15 +243,15 @@ hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 
 			<thead>
 			
 				<tr style="background-color:#CCC0DA">
-					<th align="center">Nombre</th>
-					<th align="center">Teléfono</th>
-					<th align="center">Vencimiento</th>
-					<th align="center">Observación</th>
+					<th >Nombre</th>
+					<th >Teléfono</th>
+					<th >Vencimiento</th>
+					<th >Direcciones</th>
 				</tr>
 				
 			</thead>
 			
-			<#list 1..users?size as i>
+			<#list 1..usuarioVida?size as i>
 			
 				<#if i%2==0> 
 				
@@ -255,21 +263,21 @@ hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 
 					
 				</#if>
 				
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${users[i-1].username}</p></td>
+					<p >${usuarioVida[i-1].username}</p></td>
 					
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${telefonos[i-1].username}</p></td>
+					<p >${telefonoVida[i-1].username}</p></td>
 					
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${vencimientos[i-1].username}</p></td>
+					<p >${vencimientoVida[i-1].username}</p></td>
 					
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${observaciones[i-1].username}</p></td>
+					<p >${direccionVida[i-1].username}</p></td>
 					
 					</tr>
 							
@@ -278,7 +286,7 @@ hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 
 		</table>
 		
 				<div id="hogar" class="div">
-<hr class="separador"/>
+
 			<p class="head2">3.Hogar</p>
 			
 		</div> 
@@ -288,15 +296,15 @@ hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 
 			<thead>
 			
 				<tr style="background-color:#CCC0DA">
-					<th align="center">Nombre</th>
-					<th align="center">Teléfono</th>
-					<th align="center">Vencimiento</th>
-					<th align="center">Observación</th>
+					<th >Nombre</th>
+					<th >Teléfono</th>
+					<th >Vencimiento</th>
+					<th >Direcciones</th>
 				</tr>
 				
 			</thead>
 			
-			<#list 1..users?size as i>
+			<#list 1..usuarioHogar?size as i>
 			
 				<#if i%2==0> 
 				
@@ -308,21 +316,21 @@ hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 
 					
 				</#if>
 				
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${users[i-1].username}</p></td>
+					<p >${usuarioHogar[i-1].username}</p></td>
 					
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${telefonos[i-1].username}</p></td>
+					<p >${telefonoHogar[i-1].username}</p></td>
 					
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${vencimientos[i-1].username}</p></td>
+					<p >${vencimientoHogar[i-1].username}</p></td>
 					
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${observaciones[i-1].username}</p></td>
+					<p >${direccionHogar[i-1].username}</p></td>
 					
 					</tr>
 							
@@ -331,7 +339,7 @@ hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 
 		</table>
 		
 				<div id="coche" class="div">
-<hr class="separador"/>
+
 			<p class="head2">4.Coche</p>
 			
 		</div> 
@@ -341,15 +349,15 @@ hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 
 			<thead>
 			
 				<tr style="background-color:#CCC0DA">
-					<th align="center">Nombre</th>
-					<th align="center">Teléfono</th>
-					<th align="center">Vencimiento</th>
-					<th align="center">Observación</th>
+					<th >Nombre</th>
+					<th >Teléfono</th>
+					<th >Vencimiento</th>
+					<th >Direcciones</th>
 				</tr>
 				
 			</thead>
 			
-			<#list 1..users?size as i>
+			<#list 1..usuarioCoche?size as i>
 			
 				<#if i%2==0> 
 				
@@ -361,21 +369,21 @@ hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 
 					
 				</#if>
 				
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${users[i-1].username}</p></td>
+					<p >${usuarioCoche[i-1].username}</p></td>
 					
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${telefonos[i-1].username}</p></td>
+					<p >${telefonoCoche[i-1].username}</p></td>
 					
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${vencimientos[i-1].username}</p></td>
+					<p >${vencimientoCoche[i-1].username}</p></td>
 					
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${observaciones[i-1].username}</p></td>
+					<p >${direccionCoche[i-1].username}</p></td>
 					
 					</tr>
 							
@@ -384,7 +392,7 @@ hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 
 		</table>
 		
 				<div id="comercio" class="div">
-<hr class="separador"/>
+
 			<p class="head2">5.Comercio</p>
 			
 		</div> 
@@ -394,15 +402,15 @@ hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 
 			<thead>
 			
 				<tr style="background-color:#CCC0DA">
-					<th align="center">Nombre</th>
-					<th align="center">Teléfono</th>
-					<th align="center">Vencimiento</th>
-					<th align="center">Observación</th>
+					<th >Nombre</th>
+					<th >Teléfono</th>
+					<th >Vencimiento</th>
+					<th >Direcciones</th>
 				</tr>
 				
 			</thead>
 			
-			<#list 1..users?size as i>
+			<#list 1..usuarioComercio?size as i>
 			
 				<#if i%2==0> 
 				
@@ -414,21 +422,21 @@ hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 
 					
 				</#if>
 				
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${users[i-1].username}</p></td>
+					<p >${usuarioComercio[i-1].username}</p></td>
 					
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${telefonos[i-1].username}</p></td>
+					<p >${telefonoComercio[i-1].username}</p></td>
 					
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${vencimientos[i-1].username}</p></td>
+					<p >${vencimientoComercio[i-1].username}</p></td>
 					
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${observaciones[i-1].username}</p></td>
+					<p >${direccionComercio[i-1].username}</p></td>
 					
 					</tr>
 							
@@ -437,8 +445,6 @@ hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 
 		</table>
 		
 				<div id="comunidad" class="div">
-					
-					<hr class="separador"/>
 					
 			<p class="head2">6.Comunidad</p>
 			
@@ -449,15 +455,15 @@ hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 
 			<thead>
 			
 				<tr style="background-color:#CCC0DA">
-					<th align="center">Nombre</th>
-					<th align="center">Teléfono</th>
-					<th align="center">Vencimiento</th>
-					<th align="center">Observación</th>
+					<th >Nombre</th>
+					<th >Teléfono</th>
+					<th >Vencimiento</th>
+					<th >Direcciones</th>
 				</tr>
 				
 			</thead>
 			
-			<#list 1..users?size as i>
+			<#list 1..usuarioComunidad?size as i>
 			
 				<#if i%2==0> 
 				
@@ -469,28 +475,28 @@ hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 
 					
 				</#if>
 				
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${users[i-1].username}</p></td>
+					<p >${usuarioComunidad[i-1].username}</p></td>
 					
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${telefonos[i-1].username}</p></td>
+					<p >${telefonoComunidad[i-1].username}</p></td>
 					
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${vencimientos[i-1].username}</p></td>
+					<p >${vencimientoComunidad[i-1].username}</p></td>
 					
-					<td class="tabla" align="center">
+					<td class="tabla" >
 					
-					<p align="center">${observaciones[i-1].username}</p></td>
+					<p >${direccionComunidad[i-1].username}</p></td>
 					
 					</tr>
 							
 			</#list>
 			
 		</table>
-		
+
 	</body>
 	
 </html>
