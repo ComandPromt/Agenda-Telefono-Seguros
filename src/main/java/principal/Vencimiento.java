@@ -1,9 +1,5 @@
 package principal;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.LinkedList;
 
@@ -78,98 +74,46 @@ public class Vencimiento {
 
 				Agenda.nuevosVencimientos.setText(nuevoVencimiento);
 
-				LinkedList<String> leerLlamadaSeguro = new LinkedList<String>();
+				if (!Agenda.vencimientosDecesos.isEmpty() && numDeceso > 0) {
 
-				int sizeLlamada = 0;
-
-				if (numDeceso > 0) {
-
-					leerLlamadaSeguro = Metodos.leer(Metodos.saberArchivoLlamada(1));
-					leerLlamadaSeguro = Metodos.formatearArray(leerLlamadaSeguro.get(0));
-					sizeLlamada = leerLlamadaSeguro.size();
-
-					numDeceso -= sizeLlamada;
-
-					if (numDeceso > 0) {
-						Agenda.nuevosVencimientos
-								.setText(Agenda.nuevosVencimientos.getText() + "Decesos: " + numDeceso + " || ");
-
-					}
+					Agenda.nuevosVencimientos
+							.setText(Agenda.nuevosVencimientos.getText() + "Decesos: " + numDeceso + " || ");
 
 				}
 
-				if (!Agenda.vencimientosVida.isEmpty()) {
+				if (!Agenda.vencimientosVida.isEmpty() && numVida > 0) {
 
-					leerLlamadaSeguro = Metodos.leer(Metodos.saberArchivoLlamada(2));
-					leerLlamadaSeguro = Metodos.formatearArray(leerLlamadaSeguro.get(0));
-					sizeLlamada = leerLlamadaSeguro.size();
+					Agenda.nuevosVencimientos
+							.setText(Agenda.nuevosVencimientos.getText() + "Vida: " + numVida + " || ");
 
-					numVida -= sizeLlamada;
-
-					if (numVida > 0) {
-						Agenda.nuevosVencimientos
-								.setText(Agenda.nuevosVencimientos.getText() + "Vida: " + numVida + " || ");
-
-					}
 				}
 
-				if (!Agenda.vencimientosHogar.isEmpty()) {
+				if (!Agenda.vencimientosHogar.isEmpty() && numHogar > 0) {
 
-					leerLlamadaSeguro = Metodos.leer(Metodos.saberArchivoLlamada(3));
-					leerLlamadaSeguro = Metodos.formatearArray(leerLlamadaSeguro.get(0));
-					sizeLlamada = leerLlamadaSeguro.size();
+					Agenda.nuevosVencimientos
+							.setText(Agenda.nuevosVencimientos.getText() + "Hogar: " + numHogar + " || ");
 
-					numHogar -= sizeLlamada;
-
-					if (numHogar > 0) {
-						Agenda.nuevosVencimientos
-								.setText(Agenda.nuevosVencimientos.getText() + "Hogar: " + numHogar + " || ");
-
-					}
 				}
 
-				if (!Agenda.vencimientosCoche.isEmpty()) {
+				if (!Agenda.vencimientosCoche.isEmpty() && numCoche > 0) {
 
-					leerLlamadaSeguro = Metodos.leer(Metodos.saberArchivoLlamada(4));
-					leerLlamadaSeguro = Metodos.formatearArray(leerLlamadaSeguro.get(0));
-					sizeLlamada = leerLlamadaSeguro.size();
+					Agenda.nuevosVencimientos
+							.setText(Agenda.nuevosVencimientos.getText() + "Coche: " + numCoche + " || ");
 
-					numCoche -= sizeLlamada;
-					if (numCoche > 0) {
-						Agenda.nuevosVencimientos
-								.setText(Agenda.nuevosVencimientos.getText() + "Coche: " + numCoche + " || ");
-
-					}
 				}
 
-				if (!Agenda.vencimientosComercio.isEmpty()) {
+				if (!Agenda.vencimientosComercio.isEmpty() && numComercio > 0) {
 
-					leerLlamadaSeguro = Metodos.leer(Metodos.saberArchivoLlamada(5));
-					leerLlamadaSeguro = Metodos.formatearArray(leerLlamadaSeguro.get(0));
-					sizeLlamada = leerLlamadaSeguro.size();
+					Agenda.nuevosVencimientos
+							.setText(Agenda.nuevosVencimientos.getText() + "Comercio: " + numComercio + " || ");
 
-					numComercio -= sizeLlamada;
-
-					if (numComercio > 0) {
-						Agenda.nuevosVencimientos
-								.setText(Agenda.nuevosVencimientos.getText() + "Comercio: " + numComercio + " || ");
-
-					}
 				}
 
-				if (!Agenda.vencimientosComunidad.isEmpty()) {
+				if (!Agenda.vencimientosComunidad.isEmpty() && numComunidad > 0) {
 
-					leerLlamadaSeguro = Metodos.leer(Metodos.saberArchivoLlamada(6));
-					leerLlamadaSeguro = Metodos.formatearArray(leerLlamadaSeguro.get(0));
-					sizeLlamada = leerLlamadaSeguro.size();
+					Agenda.nuevosVencimientos
+							.setText(Agenda.nuevosVencimientos.getText() + "Comunidad: " + numComunidad);
 
-					numComunidad -= sizeLlamada;
-
-					if (numComunidad > 0) {
-						Agenda.nuevosVencimientos
-								.setText(Agenda.nuevosVencimientos.getText() + "Comunidad: " + numComunidad);
-
-					}
 				}
 
 				if (Agenda.nuevosVencimientos.getText().indexOf(" || ") == Agenda.nuevosVencimientos.getText().length()
@@ -190,12 +134,6 @@ public class Vencimiento {
 
 			if (textoVencimientos.substring(textoVencimientos.length() - 2, textoVencimientos.length()).equals("||")) {
 				Agenda.nuevosVencimientos.setText(textoVencimientos.substring(0, textoVencimientos.lastIndexOf("||")));
-			}
-
-			if (Agenda.nuevosVencimientos.getText().length() > 6) {
-				Agenda.btnNewButton.setEnabled(true);
-			} else {
-				Agenda.btnNewButton.setEnabled(false);
 			}
 
 		} catch (Exception e) {
@@ -231,11 +169,9 @@ public class Vencimiento {
 			Agenda.vencimientosComunidad.clear();
 
 			Date fecha = new Date();
-			
-			String hoy=Metodos.convertirFecha(fecha.toString(), false);
-			
-			//hoy="26/06/2021";
-			
+
+			String hoy = Metodos.convertirFecha(fecha.toString(), false);
+
 			indiceVida = buscarColoresVencimientos(hoy, Agenda.fechaVida);
 
 			indiceDeceso = buscarColoresVencimientos(hoy, Agenda.fechaDecesos);
@@ -249,74 +185,36 @@ public class Vencimiento {
 			indiceComunidad = buscarColoresVencimientos(hoy, Agenda.fechaComunidad);
 
 			if (indiceDeceso.size() > 0) {
-System.out.println("Entro");
-				actualizarVencimientos("fechasDecesos.dat", 1);
+				ponerVencimientos(1);
 			}
 
 			if (indiceVida.size() > 0) {
-
-				actualizarVencimientos("fechasVida.dat", 2);
-
+				ponerVencimientos(2);
 			}
 
 			if (indiceHogar.size() > 0) {
-
-				actualizarVencimientos("fechasHogar.dat", 3);
-
+				ponerVencimientos(3);
 			}
 
 			if (indiceCoche.size() > 0) {
-
-				actualizarVencimientos("fechasCoche.dat", 4);
-
+				ponerVencimientos(4);
 			}
 
 			if (indiceComercio.size() > 0) {
-
-				actualizarVencimientos("fechasComercio.dat", 5);
-
+				ponerVencimientos(5);
 			}
 
 			if (indiceComunidad.size() > 0) {
-
-				actualizarVencimientos("fechasComunidad.dat", 6);
-
+				ponerVencimientos(6);
 			}
-			
-			actualizarTituloVencimientos();
-		}
 
-		catch (java.io.IOException e) {
-			Metodos.mensaje("No hay espacio en el equipo", 1, true);
+			actualizarTituloVencimientos();
+
 		}
 
 		catch (Exception e) {
 			//
 		}
-	}
-
-	static void actualizarVencimientos(String archivo, int tipo)
-			throws IOException, FileNotFoundException, ClassNotFoundException {
-System.out.println("archivo: "+archivo);
-		arrayList2 = Metodos.leer(archivo);
-
-		if (Agenda.vencimientos.size() > 0) {
-
-			ponerVencimientos(tipo);
-
-		}
-
-		if(arrayList1.isEmpty()) {
-			System.out.println("VACÍO");
-		}
-		else {
-			System.out.println("NO VACÍO");
-		}
-		ObjectOutputStream escribiendoFichero = new ObjectOutputStream(new FileOutputStream(archivo));
-
-		escribiendoFichero.writeObject(arrayList1);
-
-		escribiendoFichero.close();
 	}
 
 	public static LinkedList<Integer> buscarColoresVencimientos(String fecha, LinkedList<String> tipoVencimiento) {
@@ -339,8 +237,7 @@ System.out.println("archivo: "+archivo);
 			indiceVtos.add(todosLosVencimientos.get(i));
 		}
 
-		todosLosVencimientos = Metodos.buscarVencimientosAmarillo(tipoVencimiento,
-				fecha);
+		todosLosVencimientos = Metodos.buscarVencimientosAmarillo(tipoVencimiento, fecha);
 
 		for (int i = 0; i < todosLosVencimientos.size(); i++) {
 

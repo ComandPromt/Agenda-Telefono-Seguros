@@ -31,7 +31,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 import utils.FormatoTabla;
-import utils.Metodos;
 
 public class Llamada extends javax.swing.JFrame {
 
@@ -204,23 +203,11 @@ public class Llamada extends javax.swing.JFrame {
 
 		model = (DefaultTableModel) jTable1.getModel();
 
-		String tlf = "";
-
 		try {
-
+			String tlf = "";
 			String contactoVto = "";
 
 			ft = new FormatoTabla();
-
-			LinkedList<String> lectura = new LinkedList<String>();
-
-			lectura = Metodos.leer(Metodos.saberArchivoLlamada(tipoSeguro));
-
-			if (lectura.size() > 0) {
-
-				lectura = Metodos.formatearArray(lectura.get(0));
-
-			}
 
 			for (int i = 0; i < lista.size(); i++) {
 
@@ -259,10 +246,7 @@ public class Llamada extends javax.swing.JFrame {
 
 				}
 
-				if (!lectura.contains(contactoVto)) {
-
-					model.addRow(new Object[] { contactoVto, tlf, lista.get(i), "" });
-				}
+				model.addRow(new Object[] { contactoVto, tlf, lista.get(i), "" });
 
 			}
 		}
@@ -403,23 +387,12 @@ public class Llamada extends javax.swing.JFrame {
 
 			private void verLlamadas(int seguro) {
 
-				LinkedList<String> lectura;
-
 				try {
 
-					lectura = Metodos.leer(Metodos.saberArchivoLlamada(seguro));
+					if (seguro > 0) {
 
-					if (seguro > 0 && !lectura.isEmpty()) {
+						new Llamada(seguro).setVisible(true);
 
-						lectura = Metodos.formatearArray(lectura.get(0));
-
-						int comparaSeguro = Agenda.saberArraySeguro(seguro);
-
-						if (lectura.size() != comparaSeguro) {
-
-							new Llamada(seguro).setVisible(true);
-
-						}
 					}
 
 					else {

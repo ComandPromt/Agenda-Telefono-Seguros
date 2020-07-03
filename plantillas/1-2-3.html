@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		
+		<bookmarks>
+		
+			<bookmark name="Vto Decesos" href="#decesos">
+			</bookmark>
+		
+			<bookmark name="Vto Vida" href="#vida"> 
+			</bookmark>
+			
+			<bookmark name="Vto Hogar" href="#hogar"> 
+			</bookmark>
+			
+		</bookmarks>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		
+		<title>Listado de Vencimientos</title>
+	
+		<link rel="stylesheet" type="text/css" href="estilo.css" />
+	
+	</head>
+
+	<body>
+
+		<div style="color:#124C85;float:right; padding-right:40px;padding-bottom:40px;">
+			<h3>Vencimientos desde el ${principio} hasta el ${fin}</h3>
+		</div>
+
+		<div class="idc-box">
+	
+			<h2 class="idc-titulo head1">Vencimientos</h2>
+	
+			<ul class="idc-lista">
+		
+				<li>
+			
+					<a href="#decesos">1.Decesos</a>
+					
+				</li>
+		
+				<li>
+			
+					<a href="#vida">2.Vida</a>
+				
+				</li>
+		
+				<li>
+			
+					<a href="#hogar">3.Hogar</a>
+				
+				</li>
+						
+			</ul>
+		
+		</div>
+		
+		<div style="clear:both;text-align:center;padding-top:20px;">
+			<p>Los vencimientos se muestran ordenados por fecha,</p>
+			<p>es decir, <span style="color:#14404F;">primero saldrán los vencimientos que están por cumplirse.</span></p>
+			<p style="padding-top:10px;" >Mientras más abajo esté en la tabla, más cerca está el vencimiento</p>
+			<p>de cumplirse en dos meses.</p>
+		</div>
+
+		
+		<div style="clear:both;padding-top:650px;">
+		</div>
+			
+		<div id="decesos" style="text-align:center;">
+
+			<p class="head2">1.Decesos </p>
+			
+		</div> 
+		
+		<table style="border: 1px solid black;text-align:center;">
+		
+			<thead>
+			
+				<tr style="background-color:#CCC0DA">
+					<th >Nombre</th>
+					<th >Teléfono</th>
+					<th >Vencimiento</th>
+					<th >Direcciones</th>
+				</tr>
+				
+			</thead>
+			
+			<#list 1..usuarioDeceso?size as i>
+			
+				<#if i%2==0> 
+				
+					<tr style="background-color:#FABF8F;">
+					
+				<#else>
+				
+					<tr style="background-color:#C4D79B;">
+					
+				</#if>
+				
+					<td class="tabla" >
+					
+					<p >${usuarioDeceso[i-1].username}</p></td>
+					
+					<td class="tabla" >
+					
+					<p >${telefonoDeceso[i-1].username}</p></td>
+					
+					<td class="tabla" >
+					
+					<p >${vencimientoDeceso[i-1].username}</p></td>
+					
+			<td class="tabla" >
+					
+					<p >${direccionDeceso[i-1].username}</p></td>
+					</tr>
+							
+			</#list>
+			
+		</table>
+
+				<div id="vida" class="div">
+	
+			<p class="head2">2.Vida </p>
+			
+		</div> 
+		
+		<table style="border: 1px solid black;text-align:center;">
+		
+			<thead>
+			
+				<tr style="background-color:#CCC0DA">
+					<th >Nombre</th>
+					<th >Teléfono</th>
+					<th >Vencimiento</th>
+					<th >Direcciones</th>
+				</tr>
+				
+			</thead>
+			
+			<#list 1..usuarioVida?size as i>
+			
+				<#if i%2==0> 
+				
+					<tr style="background-color:#FABF8F;">
+					
+				<#else>
+				
+					<tr style="background-color:#C4D79B;">
+					
+				</#if>
+				
+					<td class="tabla" >
+					
+					<p >${usuarioVida[i-1].username}</p></td>
+					
+					<td class="tabla" >
+					
+					<p >${telefonoVida[i-1].username}</p></td>
+					
+					<td class="tabla" >
+					
+					<p >${vencimientoVida[i-1].username}</p></td>
+					
+					<td class="tabla" >
+					
+					<p >${direccionVida[i-1].username}</p></td>
+					
+					</tr>
+							
+			</#list>
+			
+		</table>
+		
+				<div id="hogar" class="div">
+
+			<p class="head2">3.Hogar</p>
+			
+		</div> 
+		
+		<table style="border: 1px solid black;text-align:center;">
+		
+			<thead>
+			
+				<tr style="background-color:#CCC0DA">
+					<th >Nombre</th>
+					<th >Teléfono</th>
+					<th >Vencimiento</th>
+					<th >Direcciones</th>
+				</tr>
+				
+			</thead>
+			
+			<#list 1..usuarioHogar?size as i>
+			
+				<#if i%2==0> 
+				
+					<tr style="background-color:#FABF8F;">
+					
+				<#else>
+				
+					<tr style="background-color:#C4D79B;">
+					
+				</#if>
+				
+					<td class="tabla" >
+					
+					<p >${usuarioHogar[i-1].username}</p></td>
+					
+					<td class="tabla" >
+					
+					<p >${telefonoHogar[i-1].username}</p></td>
+					
+					<td class="tabla" >
+					
+					<p >${vencimientoHogar[i-1].username}</p></td>
+					
+					<td class="tabla" >
+					
+					<p >${direccionHogar[i-1].username}</p></td>
+					
+					</tr>
+							
+			</#list>
+			
+		</table>
+		
+	</body>
+	
+</html>

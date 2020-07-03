@@ -9,12 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -69,21 +65,6 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 	private MaterialTextField codpostal;
 
 	RSDateChooser comercio = new RSDateChooser();
-
-	private void guardarLlamada(int seguro, String contacto)
-			throws FileNotFoundException, ClassNotFoundException, IOException {
-
-		ArrayList<Objeto> arrayList1 = new ArrayList<Objeto>();
-
-		String archivo = Metodos.saberArchivoLlamada(seguro);
-
-		ObjectOutputStream escribiendoFichero = new ObjectOutputStream(new FileOutputStream(archivo));
-
-		escribiendoFichero.writeObject(arrayList1);
-
-		escribiendoFichero.close();
-
-	}
 
 	protected void guardar() {
 
@@ -181,9 +162,6 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 							Object datoFechaComercio = null;
 							Object datoFechaComunidad = null;
 
-							
-							
-							
 							if (checkDeceso.isSelected()) {
 								datoFechaDeceso = new Date(fechaDecesos);
 							}
@@ -221,27 +199,6 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 							escribiendoFichero.close();
 
 							arrayList1.clear();
-
-							if (checkDeceso.isSelected()) {
-
-								guardarLlamada(1, nombre);
-
-							}
-							if (checkVida.isSelected()) {
-								guardarLlamada(2, nombre);
-							}
-							if (checkHogar.isSelected()) {
-								guardarLlamada(3, nombre);
-							}
-							if (checkCoche.isSelected()) {
-								guardarLlamada(4, nombre);
-							}
-							if (checkComercio.isSelected()) {
-								guardarLlamada(5, nombre);
-							}
-							if (checkComunidad.isSelected()) {
-								guardarLlamada(6, nombre);
-							}
 
 							Agenda.limpiarContactos();
 
@@ -356,9 +313,9 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		Date myDate = new Date();
 		vida.setFormatoFecha("dd/MM/Y");
 		vida.setDatoFecha(myDate);
-		
-		System.out.println("fecha vida: "+vida.getDatoFecha());
-		
+
+		System.out.println("fecha vida: " + vida.getDatoFecha());
+
 		coche.setFormatoFecha("dd/MM/Y");
 		coche.setDatoFecha(myDate);
 		deceso.setFormatoFecha("dd/MM/Y");

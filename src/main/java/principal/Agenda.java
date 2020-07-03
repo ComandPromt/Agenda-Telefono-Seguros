@@ -214,32 +214,7 @@ public class Agenda extends JFrame {
 
 		else {
 
-			LinkedList<String> lectura = new LinkedList<String>();
-
-			lectura = Metodos.leer(Metodos.saberArchivoLlamada(tipoSeguro));
-
-			if (lectura.size() > 0) {
-
-				lectura = Metodos.formatearArray(lectura.get(0));
-
-				int comparaSeguro = saberArraySeguro(tipoSeguro);
-
-				if (lectura.size() == comparaSeguro) {
-
-					mensajeNoHayVencimiento();
-				}
-
-				else {
-
-					mostrarLlamadaConSeguro(tipoSeguro);
-				}
-
-			}
-
-			else {
-
-				mostrarLlamadaConSeguro(tipoSeguro);
-			}
+			mostrarLlamadaConSeguro(tipoSeguro);
 
 		}
 
@@ -253,11 +228,15 @@ public class Agenda extends JFrame {
 
 	private String saberIcono() {
 
-		String icono;
+		String icono = "";
 
-		icono = lblNewLabel_2.getIcon().toString();
-		System.out.println(icono);
-		icono = icono.substring(icono.lastIndexOf("/") + 1, icono.length());
+		try {
+			icono = lblNewLabel_2.getIcon().toString();
+
+			icono = icono.substring(icono.lastIndexOf("/") + 1, icono.length());
+		} catch (Exception e) {
+
+		}
 
 		return icono;
 	}
@@ -558,18 +537,14 @@ public class Agenda extends JFrame {
 
 				direccion.setText(direcciones.get(indice));
 
-				++paso;
+				if (Vencimiento.contactosVencimientos.contains(contacto)) {
+					lblNewLabel_2.setIcon((new ImageIcon(Agenda.class.getResource("/imagenes/llamar.png"))));
+					btnNewButton.setEnabled(true);
+				}
 
-				if (paso % 2 != 0) {
-
-					if (Vencimiento.contactosVencimientos.contains(contacto)) {
-						lblNewLabel_2.setIcon((new ImageIcon(Agenda.class.getResource("/imagenes/llamar.png"))));
-					}
-
-					else {
-						lblNewLabel_2.setIcon((new ImageIcon(Agenda.class.getResource("/imagenes/yallamado.png"))));
-					}
-
+				else {
+					lblNewLabel_2.setIcon((new ImageIcon(Agenda.class.getResource("/imagenes/yallamado.png"))));
+					btnNewButton.setEnabled(false);
 				}
 
 			} catch (Exception e1) {
@@ -915,20 +890,10 @@ public class Agenda extends JFrame {
 									escribiendoFichero.writeObject(arrayList1);
 
 									escribiendoFichero.close();
+
 									vaciarCampos();
+
 									verNotas();
-
-									Vencimiento.actualizarVencimientos("fechasDecesos.dat", 1);
-
-									Vencimiento.actualizarVencimientos("fechasVida.dat", 2);
-
-									Vencimiento.actualizarVencimientos("fechasHogar.dat", 3);
-
-									Vencimiento.actualizarVencimientos("fechasCoche.dat", 4);
-
-									Vencimiento.actualizarVencimientos("fechasComercio.dat", 5);
-
-									Vencimiento.actualizarVencimientos("fechasComunidad.dat", 6);
 
 									for (int x = 1; x <= 6; x++) {
 										ponerEnAgenda(x, false);
@@ -1320,15 +1285,17 @@ public class Agenda extends JFrame {
 
 					verTodasLasLlamadas();
 
+					String plantilla = saberPlantilla();
+
 					MetodosPdf.crearPdf(saberlista(1, 1), saberlista(2, 1), saberlista(3, 1), saberlista(4, 1),
 							saberlista(1, 2), saberlista(2, 2), saberlista(3, 2), saberlista(4, 2), saberlista(1, 3),
 							saberlista(2, 3), saberlista(3, 3), saberlista(4, 3), saberlista(1, 4), saberlista(2, 4),
 							saberlista(3, 4), saberlista(4, 4), saberlista(1, 5), saberlista(2, 5), saberlista(3, 5),
 							saberlista(4, 5), saberlista(1, 6), saberlista(2, 6), saberlista(3, 6), saberlista(4, 6),
-							"template-verurl.html");
+							plantilla);
 
 				} catch (Exception e1) {
-
+					e1.printStackTrace();
 				}
 
 			}
@@ -1643,6 +1610,265 @@ public class Agenda extends JFrame {
 
 	}
 
+	protected String saberPlantilla() {
+
+		String plantilla = "";
+
+		if (nuevosVencimientos.getText().isEmpty()) {
+			Metodos.mensaje("No hay vencimientos", 2, true);
+		}
+
+		else {
+
+			if (!vencimientosComunidad.isEmpty() && !vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+					&& !vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+					&& !vencimientosDecesos.isEmpty()) {
+				plantilla = "all.html";
+			}
+
+			else {
+
+				if (!vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "1.html";
+				}
+
+				if (!vencimientosVida.isEmpty() && vencimientosCoche.isEmpty() && vencimientosDecesos.isEmpty()
+						&& vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "2.html";
+				}
+
+				if (!vencimientosHogar.isEmpty() && vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& vencimientosDecesos.isEmpty() && vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "3.html";
+				}
+
+				if (!vencimientosCoche.isEmpty() && vencimientosDecesos.isEmpty() && vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "4.html";
+				}
+
+				if (!vencimientosComercio.isEmpty() && vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && vencimientosDecesos.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "5.html";
+				}
+
+				if (!vencimientosComunidad.isEmpty() && vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& vencimientosDecesos.isEmpty()) {
+					plantilla = "6.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "1-2.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "1-3.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "1-4.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "1-5.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "1-6.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "2-3.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "2-4.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "2-5.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "2-6.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "3-4.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "3-5.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "3-6.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "4-5.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "4-6.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "1-2-3.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "1-2-4.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "1-2-5.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "1-2-6.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "1-3-4.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "1-3-5.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "1-3-6.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "1-4-5.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "1-4-6.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "1-5-6.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "2-3-4.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "2-3-5.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "2-3-6.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "2-4-5.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "2-4-6.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "3-4-5.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "3-4-6.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "3-5-6.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "4-5-6.html";
+				}
+
+			}
+
+		}
+
+		return plantilla;
+	}
+
 	private void initComponents() throws SQLException, IOException {
 
 		JLabel jLabel1;
@@ -1800,23 +2026,22 @@ public class Agenda extends JFrame {
 
 						String icono = "";
 
-						String archivo = "";
-
-						archivo = Metodos.saberArchivoLlamada(seguro);
-
 						icono = saberIcono();
 
 						if (icono.equals("llamar.png")) {
 
-							btnNewButton.setEnabled(false);
-
-							lblNewLabel_2.setIcon((new ImageIcon(Agenda.class.getResource("/imagenes/yallamado.png"))));
-
-							guardarLlamadas(archivo, true);
-
 							LinkedList<String> contactosLlamados = new LinkedList<String>();
 
+							LinkedList<String> fechasVtos = new LinkedList<String>();
+
 							contactosLlamados = Metodos.leer("contactos.dat");
+
+							contactosLlamados = Metodos.formatearArray(contactosLlamados.get(0));
+
+							System.out.println("--------------------------------------------");
+							System.out.println(contactosLlamados.get(indice));
+							System.out.println("--------------------------------------------");
+							fechasVtos = Metodos.sacarFechas(contactosLlamados.get(indice));
 
 							String fechaDeceso = "";
 							String fechaVida = "";
@@ -1860,7 +2085,29 @@ public class Agenda extends JFrame {
 
 							}
 
-							int vueltas = contactos.size();
+							if (vencimientosDecesos.size() > 0) {
+								fechaDeceso = vencimientosDecesos.get(indice);
+							}
+
+							if (vencimientosVida.size() > 0) {
+								fechaVida = vencimientosVida.get(indice);
+							}
+
+							if (vencimientosHogar.size() > 0) {
+								fechaHogar = vencimientosHogar.get(indice);
+							}
+
+							if (vencimientosCoche.size() > 0) {
+								fechaCoche = vencimientosCoche.get(indice);
+							}
+
+							if (vencimientosComercio.size() > 0) {
+								fechaComercio = vencimientosComercio.get(indice);
+							}
+
+							if (vencimientosComunidad.size() > 0) {
+								fechaComunidad = vencimientosComunidad.get(indice);
+							}
 
 							vencimientos.clear();
 
@@ -1873,7 +2120,31 @@ public class Agenda extends JFrame {
 							arrayList1 = Agenda.leer("contactos.dat");
 
 							int indiceContacto = contactos.indexOf(nombre.getText());
-							System.out.println("observaciones: " + observaciones.size());
+
+							if (fechaDeceso.isEmpty()) {
+								fechaDeceso = fechasVtos.get(0);
+							}
+
+							if (fechaVida.isEmpty()) {
+								fechaVida = fechasVtos.get(1);
+							}
+
+							if (fechaHogar.isEmpty()) {
+								fechaHogar = fechasVtos.get(2);
+							}
+
+							if (fechaCoche.isEmpty()) {
+								fechaCoche = fechasVtos.get(3);
+							}
+
+							if (fechaComercio.isEmpty()) {
+								fechaComercio = fechasVtos.get(4);
+							}
+
+							if (fechaComunidad.isEmpty()) {
+								fechaComunidad = fechasVtos.get(5);
+							}
+
 							arrayList1.set(indiceContacto,
 									new Objeto(nombreContacto + "«" + email.getText() + "»"
 											+ observaciones.get(indiceContacto) + "¬" + tlf.getText() + "═"
@@ -1892,21 +2163,17 @@ public class Agenda extends JFrame {
 
 						}
 
-						else {
+						Vencimiento.contactosVencimientos.clear();
 
-							btnNewButton.setEnabled(false);
-
-							lblNewLabel_2.setIcon((new ImageIcon(Agenda.class.getResource("/imagenes/llamar.png"))));
-
-							guardarLlamadas(archivo, false);
-						}
+						Vencimiento.verTablaVencimientos();
 
 						verTodasLasLlamadas();
-//
-//						verContactoAgenda(indice, nombreContacto, true);
 
 					}
-				} catch (Exception e) {
+
+				}
+
+				catch (Exception e) {
 					e.printStackTrace();
 				}
 

@@ -1146,41 +1146,6 @@ public abstract class Metodos {
 		directorio.mkdir();
 	}
 
-	public static String saberArchivoLlamada(int tipoSeguro) {
-
-		String archivo = "";
-
-		switch (tipoSeguro) {
-
-		case 1:
-			archivo = "llamadaDeceso.dat";
-			break;
-		case 2:
-
-			archivo = "llamadaVida.dat";
-			break;
-
-		case 3:
-			archivo = "llamadaHogar.dat";
-			break;
-
-		case 4:
-			archivo = "llamadaCoche.dat";
-			break;
-
-		case 5:
-			archivo = "llamadaComercio.dat";
-			break;
-
-		case 6:
-			archivo = "llamadaComunidad.dat";
-			break;
-
-		}
-
-		return archivo;
-	}
-
 	public static LinkedList<String> formatearArray(String cadena) {
 
 		LinkedList<String> salida = new LinkedList<String>();
@@ -1209,6 +1174,63 @@ public abstract class Metodos {
 		}
 
 		return salida;
+	}
+
+	public static LinkedList<String> sacarFechas(String cadena) {
+
+		System.out.println("CADENA A SACAR FECHA: " + cadena);
+
+		LinkedList<String> lista = new LinkedList<String>();
+
+		String fechaDecesos = cadena.substring(cadena.indexOf("▒") + 1, cadena.indexOf("╣"));
+
+		String fechaVida = cadena.substring(cadena.indexOf("╣") + 1, cadena.indexOf("║"));
+
+		String fechaHogar = cadena.substring(cadena.indexOf("║") + 1, cadena.indexOf("╝"));
+
+		String fechaCoche = cadena.substring(cadena.indexOf("╝") + 1, cadena.indexOf("¥"));
+
+		String fechaComercio = cadena.substring(cadena.indexOf("¥") + 1, cadena.indexOf("¶"));
+
+		String fechaComunidad = cadena.substring(cadena.indexOf("¶") + 1, cadena.length());
+
+		if (!fechaDecesos.isEmpty()) {
+			lista.add(convertirFecha(fechaDecesos, false));
+		} else {
+			lista.add("");
+		}
+
+		if (!fechaVida.isEmpty()) {
+			lista.add(convertirFecha(fechaVida, false));
+		} else {
+			lista.add("");
+		}
+
+		if (!fechaHogar.isEmpty()) {
+			lista.add(convertirFecha(fechaHogar, false));
+		} else {
+			lista.add("");
+		}
+
+		if (!fechaCoche.isEmpty()) {
+			lista.add(convertirFecha(fechaCoche, false));
+		} else {
+			lista.add("");
+		}
+
+		if (!fechaComercio.isEmpty()) {
+			lista.add(convertirFecha(fechaComercio, false));
+		} else {
+			lista.add("");
+		}
+
+		if (!fechaComunidad.isEmpty()) {
+			lista.add(convertirFecha(fechaComunidad, false));
+		} else {
+			lista.add("");
+		}
+
+		return lista;
 	}
 
 }
