@@ -89,7 +89,9 @@ public class Llamada extends javax.swing.JFrame {
 		setResizable(false);
 
 		initComponents();
-		this.setSize(new Dimension(720, 650));
+
+		this.setSize(new Dimension(780, 650));
+
 		setLocationRelativeTo(null);
 
 		switch (tipo) {
@@ -426,35 +428,30 @@ public class Llamada extends javax.swing.JFrame {
 
 		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(Alignment.TRAILING).addGroup(jPanel1Layout
-				.createSequentialGroup()
+				.createSequentialGroup().addContainerGap()
 				.addGroup(jPanel1Layout.createParallelGroup(Alignment.TRAILING)
-						.addGroup(Alignment.LEADING,
-								jPanel1Layout.createSequentialGroup().addGap(74).addComponent(jScrollPane1,
-										GroupLayout.DEFAULT_SIZE, 699, Short.MAX_VALUE))
-						.addGroup(jPanel1Layout.createSequentialGroup().addContainerGap()
-								.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING).addComponent(lblNewLabel)
+						.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 752, GroupLayout.PREFERRED_SIZE)
+						.addGroup(jPanel1Layout.createSequentialGroup()
+								.addGroup(jPanel1Layout.createParallelGroup(Alignment.TRAILING)
 										.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 64,
-												GroupLayout.PREFERRED_SIZE))
+												GroupLayout.PREFERRED_SIZE)
+										.addComponent(lblNewLabel))
 								.addPreferredGap(ComponentPlacement.RELATED)
 								.addGroup(jPanel1Layout.createParallelGroup(Alignment.TRAILING)
-										.addComponent(iconoVtoSeguro, GroupLayout.DEFAULT_SIZE, 685, Short.MAX_VALUE)
 										.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 685, Short.MAX_VALUE)
+										.addComponent(iconoVtoSeguro, GroupLayout.DEFAULT_SIZE, 685, Short.MAX_VALUE)
 										.addGroup(jPanel1Layout.createSequentialGroup()
 												.addComponent(comboBox, 0, 563, Short.MAX_VALUE)
 												.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnNewButton,
 														GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE))
-										.addComponent(jTextField1, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 601,
-												GroupLayout.PREFERRED_SIZE))))
+										.addComponent(jTextField1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 685,
+												Short.MAX_VALUE))))
 				.addGap(253)));
 		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel1Layout
-				.createSequentialGroup().addGap(18)
+				.createSequentialGroup()
 				.addGroup(jPanel1Layout.createParallelGroup(Alignment.TRAILING, false)
-						.addGroup(jPanel1Layout.createSequentialGroup()
-								.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(lblNewLabel))
-						.addGroup(jPanel1Layout.createSequentialGroup()
-								.addComponent(lblNewLabel_1, GroupLayout.PREFERRED_SIZE, 12, GroupLayout.PREFERRED_SIZE)
+						.addGroup(Alignment.LEADING, jPanel1Layout.createSequentialGroup().addGap(18)
+								.addComponent(lblNewLabel_1, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
 								.addPreferredGap(ComponentPlacement.RELATED)
 								.addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE)
 								.addPreferredGap(ComponentPlacement.UNRELATED)
@@ -465,7 +462,11 @@ public class Llamada extends javax.swing.JFrame {
 										.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 35,
 												GroupLayout.PREFERRED_SIZE)
 										.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 54,
-												GroupLayout.PREFERRED_SIZE))))
+												GroupLayout.PREFERRED_SIZE)))
+						.addGroup(jPanel1Layout.createSequentialGroup().addGap(29)
+								.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(lblNewLabel)))
 				.addGap(34).addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 342, GroupLayout.PREFERRED_SIZE)
 				.addContainerGap(446, Short.MAX_VALUE)));
 		iconoVtoSeguro.setHorizontalAlignment(SwingConstants.CENTER);

@@ -47,6 +47,7 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 	JTextArea drag = new JTextArea();
 
 	LinkedList<String> contactos = new <String>LinkedList();
+	LinkedList<String> lista = new <String>LinkedList();
 
 	LinkedList<String> telefonos = new <String>LinkedList();
 
@@ -63,6 +64,12 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 		else {
 
 			try {
+
+				contactos.clear();
+				lista.clear();
+				for (int i = 0; i < Agenda.jList1.getModel().getSize(); i++) {
+					lista.add(Agenda.jList1.getModel().getElementAt(i));
+				}
 
 				File archivo = null;
 
@@ -127,14 +134,21 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 
 						if (inVCard) {
 
-							if (!property.getName().equals("N")) {
+							try {
 
-								if (property.getName().equals("FN")) {
-									contactos.add(property.getValue());
+								if (property.getName().equals("N") || property.getName().equals("FN")) {
+
+									if (!lista.contains(property.getValue())
+											&& !contactos.contains(property.getValue())) {
+										contactos.add(property.getValue());
+
+									}
 								}
 
 								if (property.getName().equals("TELHOME") || property.getName().equals("TELCELL")
-										|| property.getName().equals("TEL")) {
+										|| property.getName().equals("TEL") || property.getName().equals("CELL")
+
+								) {
 
 									valor = property.getValue().toString().replace("+34", "");
 
@@ -142,9 +156,7 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 
 									valor = valor.trim();
 
-									if (telefonos.indexOf(valor) == -1) {
-										telefonos.add(valor);
-									}
+									telefonos.add(valor);
 
 								}
 
@@ -168,12 +180,17 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 
 									valor = valor.trim();
 
+									valor = valor.replace("||", "\n\n");
+
 									direcciones.add(valor);
 
 								}
 
 							}
 
+							catch (Exception e) {
+//
+							}
 						}
 
 					}
@@ -197,41 +214,43 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 
 				Date hoy = new Date();
 
-				for (int i = 0; i < contactos.size(); i++) {
+				if (!contactos.isEmpty()) {
 
-					if (arrayList2 == null || !arrayList2.contains(contactos.get(i))) {
+					for (int i = 0; i < contactos.size(); i++) {
 
-						if (emails.size() == 0 || emails.get(i) == null) {
-							emails.add("");
+						if (arrayList2 == null || !arrayList2.contains(contactos.get(i))) {
+
+							if (emails.size() == 0 || emails.get(i) == null) {
+								emails.add("");
+							}
+
+							if (direcciones.size() == 0 || direcciones.get(i) == null) {
+								direcciones.add("");
+							}
+
+							arrayList1.add(new Objeto(contactos.get(i) + "«" + emails.get(i) + "»" + "" + "¬"
+									+ telefonos.get(i) + "═" + direcciones.get(i) + "▓" + "" + "░" + "" + "┤" + "" + "▒"
+									+ hoy + "╣" + hoy + "║" + hoy + "╝" + hoy + "¥" + hoy + "¶" + hoy));
+
 						}
-
-						if (direcciones.size() == 0 || direcciones.get(i) == null) {
-							direcciones.add("");
-						}
-
-						System.out.println("direccion: " + direcciones.get(i));
-
-						arrayList1.add(new Objeto(contactos.get(i) + "«" + emails.get(i) + "»" + "" + "¬"
-								+ telefonos.get(i) + "═" + direcciones.get(i) + "▓" + "" + "░" + "" + "┤" + "" + "▒"
-								+ hoy + "╣" + hoy + "║" + hoy + "╝" + hoy + "¥" + hoy + "¶" + hoy));
 
 					}
 
+					ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
+							new FileOutputStream("contactos.dat"));
+
+					escribiendoFichero.writeObject(arrayList1);
+
+					escribiendoFichero.close();
+
+					Agenda.limpiarContactos();
+
+					Agenda.vaciarCampos();
+
+					Agenda.verNotas();
+
+					vobjectReader.close();
 				}
-
-				ObjectOutputStream escribiendoFichero = new ObjectOutputStream(new FileOutputStream("contactos.dat"));
-
-				escribiendoFichero.writeObject(arrayList1);
-
-				escribiendoFichero.close();
-
-				Agenda.limpiarContactos();
-
-				Agenda.vaciarCampos();
-
-				Agenda.verNotas();
-
-				vobjectReader.close();
 
 			}
 
@@ -283,11 +302,10 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 					try {
 						guardarContactos(files[0].getCanonicalPath());
 
-					}
-
-					catch (IOException e1) {
+					} catch (Exception e2) {
 						//
 					}
+
 				}
 
 			}

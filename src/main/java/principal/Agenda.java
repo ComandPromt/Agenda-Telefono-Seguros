@@ -116,7 +116,7 @@ public class Agenda extends JFrame {
 
 	public static LinkedList<String> fechaCoche = new <String>LinkedList();
 
-	private static LinkedList<String> observaciones = new <String>LinkedList();
+	public static LinkedList<String> observaciones = new <String>LinkedList();
 
 	public static LinkedList<String> contactos = new <String>LinkedList();
 
@@ -287,6 +287,189 @@ public class Agenda extends JFrame {
 
 		verTodasLasLlamadas();
 
+	}
+
+	private LinkedList<String> saberLista(int tipo, int seguro) {
+
+		LinkedList<String> lista = new LinkedList<String>();
+
+		int vueltas = 0;
+
+		switch (seguro) {
+
+		case 1:
+			vueltas = Vencimiento.getIndiceDeceso().size();
+			break;
+
+		case 2:
+			vueltas = Vencimiento.getIndiceVida().size();
+			break;
+		case 3:
+			vueltas = Vencimiento.getIndiceHogar().size();
+			break;
+
+		case 4:
+			vueltas = Vencimiento.getIndiceCoche().size();
+			break;
+
+		case 5:
+			vueltas = Vencimiento.getIndiceComercio().size();
+			break;
+
+		case 6:
+			vueltas = Vencimiento.getIndiceComunidad().size();
+			break;
+
+		}
+
+		int indiceVencimiento = -1;
+
+		for (int i = 0; i < vueltas; i++) {
+
+			switch (tipo) {
+
+			case 1:
+
+				switch (seguro) {
+
+				case 1:
+					indiceVencimiento = Vencimiento.getIndiceDeceso().get(i);
+					break;
+
+				case 2:
+					indiceVencimiento = Vencimiento.getIndiceVida().get(i);
+					break;
+				case 3:
+					indiceVencimiento = Vencimiento.getIndiceHogar().get(i);
+					break;
+
+				case 4:
+					indiceVencimiento = Vencimiento.getIndiceCoche().get(i);
+					break;
+
+				case 5:
+					indiceVencimiento = Vencimiento.getIndiceComercio().get(i);
+					break;
+
+				case 6:
+					indiceVencimiento = Vencimiento.getIndiceComunidad().get(i);
+					break;
+
+				}
+
+				if (indiceVencimiento < contactos.size()) {
+
+					lista.add(contactos.get(indiceVencimiento));
+				}
+
+				break;
+
+			case 2:
+
+				switch (seguro) {
+
+				case 1:
+					indiceVencimiento = Vencimiento.getIndiceDeceso().get(i);
+					break;
+
+				case 2:
+					indiceVencimiento = Vencimiento.getIndiceVida().get(i);
+					break;
+				case 3:
+					indiceVencimiento = Vencimiento.getIndiceHogar().get(i);
+					break;
+
+				case 4:
+					indiceVencimiento = Vencimiento.getIndiceCoche().get(i);
+					break;
+
+				case 5:
+					indiceVencimiento = Vencimiento.getIndiceComercio().get(i);
+					break;
+
+				case 6:
+					indiceVencimiento = Vencimiento.getIndiceComunidad().get(i);
+					break;
+
+				}
+
+				if (indiceVencimiento < telefonos.size()) {
+
+					lista.add(telefonos.get(indiceVencimiento));
+				}
+
+				break;
+
+			case 3:
+
+				switch (seguro) {
+
+				case 1:
+					lista.add(vencimientosDecesos.get(i));
+					break;
+
+				case 2:
+					lista.add(vencimientosVida.get(i));
+					break;
+				case 3:
+					lista.add(vencimientosHogar.get(i));
+					break;
+
+				case 4:
+					lista.add(vencimientosCoche.get(i));
+					break;
+
+				case 5:
+					lista.add(vencimientosComercio.get(i));
+					break;
+
+				case 6:
+					lista.add(vencimientosComunidad.get(i));
+					break;
+
+				}
+
+				break;
+
+			case 4:
+				switch (seguro) {
+
+				case 1:
+					indiceVencimiento = Vencimiento.getIndiceDeceso().get(i);
+					break;
+
+				case 2:
+					indiceVencimiento = Vencimiento.getIndiceVida().get(i);
+					break;
+				case 3:
+					indiceVencimiento = Vencimiento.getIndiceHogar().get(i);
+					break;
+
+				case 4:
+					indiceVencimiento = Vencimiento.getIndiceCoche().get(i);
+					break;
+
+				case 5:
+					indiceVencimiento = Vencimiento.getIndiceComercio().get(i);
+					break;
+
+				case 6:
+					indiceVencimiento = Vencimiento.getIndiceComunidad().get(i);
+					break;
+
+				}
+
+				if (indiceVencimiento < direcciones.size()) {
+
+					lista.add(direcciones.get(indiceVencimiento));
+				}
+
+				break;
+			}
+
+		}
+
+		return lista;
 	}
 
 	private void ponerEnAgenda(int tipo, boolean filtro) {
@@ -568,7 +751,9 @@ public class Agenda extends JFrame {
 
 		try {
 
-			PrintStream fileOut = new PrintStream("contactos.vcf");
+			String nombreArchivo = Metodos.extraerNombreArchivo("vcf", 4);
+
+			PrintStream fileOut = new PrintStream(nombreArchivo);
 
 			Writer writer = new OutputStreamWriter(fileOut);
 
@@ -584,7 +769,8 @@ public class Agenda extends JFrame {
 				vobjectWriter.writeProperty("FN", contactos.get(i));
 
 				vobjectWriter.writeProperty("CELL", telefonos.get(i));
-
+				vobjectWriter.writeProperty("EMAIL", emails.get(i));
+				vobjectWriter.writeProperty("ADR", direccionesPlano.get(i));
 				vobjectWriter.writeEndComponent("VCARD");
 			}
 
@@ -596,7 +782,7 @@ public class Agenda extends JFrame {
 
 			BufferedReader br = null;
 
-			archivo = new File("contactos.vcf");
+			archivo = new File(nombreArchivo);
 
 			fr = new FileReader(archivo);
 
@@ -611,9 +797,11 @@ public class Agenda extends JFrame {
 
 			cadena = cadena.replace("CELL:", "TEL;CELL:");
 
-			String ruta = "contactos.vcf";
+			cadena = cadena.replace("ADR:", "ADR;HOME:");
 
-			File file = new File(ruta);
+			cadena = cadena.replace("EMAIL:", "EMAIL;HOME:");
+
+			File file = new File(nombreArchivo);
 
 			FileWriter fw = new FileWriter(file);
 
@@ -651,10 +839,10 @@ public class Agenda extends JFrame {
 		return contactos;
 	}
 
-	static LinkedList<String> telefonos = new <String>LinkedList();
+	public static LinkedList<String> telefonos = new <String>LinkedList();
 
-	static LinkedList<String> direcciones = new <String>LinkedList();
-
+	public static LinkedList<String> direcciones = new <String>LinkedList();
+	private static LinkedList<String> direccionesPlano = new <String>LinkedList();
 	static LinkedList<String> contactodirecciones = new <String>LinkedList();
 	static LinkedList<String> contactolocalidades = new <String>LinkedList();
 	static LinkedList<String> contactoprovincias = new <String>LinkedList();
@@ -1237,7 +1425,7 @@ public class Agenda extends JFrame {
 			public void mousePressed(MouseEvent e) {
 				seguro = 0;
 				verNotas();
-
+				Llamada.lblNewLabel_1.setText(nuevosVencimientos.getText());
 				new Llamada(0).setVisible(true);
 			}
 		});
@@ -1258,6 +1446,7 @@ public class Agenda extends JFrame {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
+
 				new ImportarVcard().setVisible(true);
 			}
 
@@ -1287,197 +1476,21 @@ public class Agenda extends JFrame {
 
 					String plantilla = saberPlantilla();
 
-					MetodosPdf.crearPdf(saberlista(1, 1), saberlista(2, 1), saberlista(3, 1), saberlista(4, 1),
-							saberlista(1, 2), saberlista(2, 2), saberlista(3, 2), saberlista(4, 2), saberlista(1, 3),
-							saberlista(2, 3), saberlista(3, 3), saberlista(4, 3), saberlista(1, 4), saberlista(2, 4),
-							saberlista(3, 4), saberlista(4, 4), saberlista(1, 5), saberlista(2, 5), saberlista(3, 5),
-							saberlista(4, 5), saberlista(1, 6), saberlista(2, 6), saberlista(3, 6), saberlista(4, 6),
-							plantilla);
+					if (!plantilla.isEmpty()) {
+
+						MetodosPdf.crearPdf(saberLista(1, 1), saberLista(2, 1), saberLista(3, 1), saberLista(4, 1),
+								saberLista(1, 2), saberLista(2, 2), saberLista(3, 2), saberLista(4, 2),
+								saberLista(1, 3), saberLista(2, 3), saberLista(3, 3), saberLista(4, 3),
+								saberLista(1, 4), saberLista(2, 4), saberLista(3, 4), saberLista(4, 4),
+								saberLista(1, 5), saberLista(2, 5), saberLista(3, 5), saberLista(4, 5),
+								saberLista(1, 6), saberLista(2, 6), saberLista(3, 6), saberLista(4, 6), plantilla);
+
+					}
 
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
 
-			}
-
-			private LinkedList<String> saberlista(int tipo, int seguro) {
-
-				LinkedList<String> lista = new LinkedList<String>();
-
-				int vueltas = 0;
-
-				switch (seguro) {
-
-				case 1:
-					vueltas = Vencimiento.getIndiceDeceso().size();
-					break;
-
-				case 2:
-					vueltas = Vencimiento.getIndiceVida().size();
-					break;
-				case 3:
-					vueltas = Vencimiento.getIndiceHogar().size();
-					break;
-
-				case 4:
-					vueltas = Vencimiento.getIndiceCoche().size();
-					break;
-
-				case 5:
-					vueltas = Vencimiento.getIndiceComercio().size();
-					break;
-
-				case 6:
-					vueltas = Vencimiento.getIndiceComunidad().size();
-					break;
-
-				}
-
-				int indiceVencimiento = -1;
-
-				for (int i = 0; i < vueltas; i++) {
-
-					switch (tipo) {
-					case 1:
-						switch (seguro) {
-
-						case 1:
-							indiceVencimiento = Vencimiento.getIndiceDeceso().get(i);
-							break;
-
-						case 2:
-							indiceVencimiento = Vencimiento.getIndiceVida().get(i);
-							break;
-						case 3:
-							indiceVencimiento = Vencimiento.getIndiceHogar().get(i);
-							break;
-
-						case 4:
-							indiceVencimiento = Vencimiento.getIndiceCoche().get(i);
-							break;
-
-						case 5:
-							indiceVencimiento = Vencimiento.getIndiceComercio().get(i);
-							break;
-
-						case 6:
-							indiceVencimiento = Vencimiento.getIndiceComunidad().get(i);
-							break;
-
-						}
-
-						if (indiceVencimiento < contactos.size()) {
-
-							lista.add(contactos.get(indiceVencimiento));
-						}
-
-						break;
-
-					case 2:
-
-						switch (seguro) {
-
-						case 1:
-							indiceVencimiento = Vencimiento.getIndiceDeceso().get(i);
-							break;
-
-						case 2:
-							indiceVencimiento = Vencimiento.getIndiceVida().get(i);
-							break;
-						case 3:
-							indiceVencimiento = Vencimiento.getIndiceHogar().get(i);
-							break;
-
-						case 4:
-							indiceVencimiento = Vencimiento.getIndiceCoche().get(i);
-							break;
-
-						case 5:
-							indiceVencimiento = Vencimiento.getIndiceComercio().get(i);
-							break;
-
-						case 6:
-							indiceVencimiento = Vencimiento.getIndiceComunidad().get(i);
-							break;
-
-						}
-
-						if (indiceVencimiento < telefonos.size()) {
-
-							lista.add(telefonos.get(indiceVencimiento));
-						}
-
-						break;
-
-					case 3:
-
-						switch (seguro) {
-
-						case 1:
-							lista.add(vencimientosDecesos.get(i));
-							break;
-
-						case 2:
-							lista.add(vencimientosVida.get(i));
-							break;
-						case 3:
-							lista.add(vencimientosHogar.get(i));
-							break;
-
-						case 4:
-							lista.add(vencimientosCoche.get(i));
-							break;
-
-						case 5:
-							lista.add(vencimientosComercio.get(i));
-							break;
-
-						case 6:
-							lista.add(vencimientosComunidad.get(i));
-							break;
-
-						}
-
-						break;
-
-					case 4:
-						switch (seguro) {
-
-						case 1:
-							indiceVencimiento = Vencimiento.getIndiceDeceso().get(i);
-							break;
-
-						case 2:
-							indiceVencimiento = Vencimiento.getIndiceVida().get(i);
-							break;
-						case 3:
-							indiceVencimiento = Vencimiento.getIndiceHogar().get(i);
-							break;
-
-						case 4:
-							indiceVencimiento = Vencimiento.getIndiceCoche().get(i);
-							break;
-
-						case 5:
-							indiceVencimiento = Vencimiento.getIndiceComercio().get(i);
-							break;
-
-						case 6:
-							indiceVencimiento = Vencimiento.getIndiceComunidad().get(i);
-							break;
-
-						}
-
-						if (indiceVencimiento < direcciones.size()) {
-
-							lista.add(direcciones.get(indiceVencimiento));
-						}
-						break;
-					}
-
-				}
-
-				return lista;
 			}
 
 		});
@@ -1490,20 +1503,26 @@ public class Agenda extends JFrame {
 		mnNewMenu_1.add(separator);
 
 		JMenuItem mntmNewMenuItem_3 = new JMenuItem("Excel");
+
+		mntmNewMenuItem_3.addMouseListener(new MouseAdapter() {
+
+			@Override
+
+			public void mousePressed(MouseEvent e) {
+				try {
+					verTodasLasLlamadas();
+					Metodos.exportarExcel();
+				} catch (IOException e1) {
+					//
+				}
+
+			}
+
+		});
+
 		mntmNewMenuItem_3.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		mntmNewMenuItem_3.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/excel.png")));
 		mnNewMenu_1.add(mntmNewMenuItem_3);
-
-		JSeparator separator_3 = new JSeparator();
-		mnNewMenu_1.add(separator_3);
-
-		JMenuItem mntmNewMenuItem_4 = new JMenuItem("Txt");
-
-		mntmNewMenuItem_4.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/txt.png")));
-
-		mntmNewMenuItem_4.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-
-		mnNewMenu_1.add(mntmNewMenuItem_4);
 
 		JSeparator separator_1 = new JSeparator();
 
@@ -1588,24 +1607,6 @@ public class Agenda extends JFrame {
 
 		JSeparator separator_19 = new JSeparator();
 		mnNewMenu_10.add(separator_19);
-
-		JMenuItem mntmNewMenuItem_24 = new JMenuItem("TXT");
-		mntmNewMenuItem_24.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				try {
-					Metodos.abrirCarpeta(directorioActual + "contactos_exportados" + separador + "TXT");
-				} catch (Exception e1) {
-					//
-				}
-			}
-		});
-		mntmNewMenuItem_24.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/txt.png")));
-		mntmNewMenuItem_24.setFont(new Font("Dialog", Font.PLAIN, 16));
-		mnNewMenu_10.add(mntmNewMenuItem_24);
-
-		JSeparator separator_20 = new JSeparator();
-		mnNewMenu_10.add(separator_20);
 
 		JMenuItem mntmNewMenuItem_25 = new JMenuItem("VCard");
 
@@ -2154,10 +2155,12 @@ public class Agenda extends JFrame {
 
 			public void actionPerformed(ActionEvent e) {
 
-				indice = jList1.getSelectedIndex();
+				indice = contactos.indexOf(nombre.getText());
+
 				if (indice > -1) {
 					Metodos.mensaje(observaciones.get(indice), 2, true);
 				}
+
 			}
 
 		});
@@ -2165,11 +2168,59 @@ public class Agenda extends JFrame {
 		observacion.setFont(new Font("Tahoma", Font.BOLD, 16));
 
 		JButton btnAadirObservacion = new JButton("+- Obs");
+
 		btnAadirObservacion.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/obs.png")));
 
 		btnAadirObservacion.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
+				try {
+					verTodasLasLlamadas();
+
+					int indiceObs = contactos.indexOf(nombre.getText());
+
+					String dato = (String) JOptionPane.showInputDialog(null, "Cambiar Observacion", "",
+							JOptionPane.QUESTION_MESSAGE, null, null, observaciones.get(indiceObs));
+
+					if (dato != null) {
+
+						observaciones.set(indiceObs, dato);
+
+						arrayList1.clear();
+
+						arrayList1 = leer("contactos.dat");
+
+						arrayList1.set(indiceObs,
+								new Objeto(contactos.get(indiceObs) + "«" + email.getText() + "»"
+										+ observaciones.get(indiceObs) + "¬" + tlf.getText() + "═" + direccion.getText()
+										+ "▓" + "" + "░" + "" + "┤" + "" + "▒" + fechaDecesos + "╣" + fechaVida + "║"
+										+ fechaHogar + "╝" + fechaCoche + "¥" + fechaComercio + "¶" + fechaComunidad));
+
+						ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
+								new FileOutputStream("contactos.dat"));
+
+						escribiendoFichero.writeObject(arrayList1);
+
+					}
+
+					if (dato.isEmpty()) {
+						observacion.setEnabled(false);
+					}
+
+					else {
+						observacion.setEnabled(true);
+					}
+
+					Vencimiento.contactosVencimientos.clear();
+
+					Vencimiento.verTablaVencimientos();
+
+					verTodasLasLlamadas();
+
+				} catch (Exception e1) {
+					//
+
+				}
 
 			}
 
@@ -2193,7 +2244,12 @@ public class Agenda extends JFrame {
 
 						icono = saberIcono();
 
-						if (icono.equals("llamar.png")) {
+						if (icono.equals("llamar.png") && JOptionPane.showConfirmDialog(null,
+								"<html><h2>¿Está seguro de que desea marcar a " + nombreContacto
+										+ " como contacto ya llamado?</h2></html>",
+								"Ya llamado", JOptionPane.YES_NO_OPTION) == 0
+
+						) {
 
 							LinkedList<String> contactosLlamados = new LinkedList<String>();
 
@@ -2203,9 +2259,6 @@ public class Agenda extends JFrame {
 
 							contactosLlamados = Metodos.formatearArray(contactosLlamados.get(0));
 
-							System.out.println("--------------------------------------------");
-							System.out.println(contactosLlamados.get(indice));
-							System.out.println("--------------------------------------------");
 							fechasVtos = Metodos.sacarFechas(contactosLlamados.get(indice));
 
 							String fechaDeceso = "";
@@ -2565,7 +2618,7 @@ public class Agenda extends JFrame {
 			telefonos.clear();
 
 			direcciones.clear();
-
+			direccionesPlano.clear();
 			vencimientos.clear();
 
 			contactodirecciones.clear();
@@ -2630,7 +2683,7 @@ public class Agenda extends JFrame {
 					fechaDecesos.add(Metodos.convertirFecha(fechaDeceso, false));
 
 					emails.add(correo);
-
+					System.out.println("FECHA: " + datoVida);
 					fechaVida.add(Metodos.convertirFecha(datoVida, false));
 
 					fechaHogar.add(Metodos.convertirFecha(datoHogar, false));
@@ -2650,6 +2703,7 @@ public class Agenda extends JFrame {
 							|| direccion.isEmpty() && codPostal.isEmpty()
 							|| direccion.isEmpty() && provincia.isEmpty()) {
 						direcciones.add("");
+						direccionesPlano.add("");
 						contactodirecciones.add("");
 						contactocodigopostal.add("");
 						contactolocalidades.add("");
@@ -2659,7 +2713,7 @@ public class Agenda extends JFrame {
 					else {
 
 						if (!codPostal.isEmpty()) {
-							codigoPostal = " (" + codPostal + ")";
+							codigoPostal = " (" + codPostal + ") ";
 						}
 
 						else {
@@ -2667,6 +2721,8 @@ public class Agenda extends JFrame {
 						}
 
 						direcciones.add(direccion + "\n\n" + localidad + codigoPostal + "\n\n" + provincia);
+						direccionesPlano.add(direccion + "||" + localidad + codigoPostal + "||" + provincia);
+
 						contactodirecciones.add(direccion);
 						contactocodigopostal.add(codPostal);
 						contactolocalidades.add(localidad);

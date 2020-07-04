@@ -314,8 +314,6 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		vida.setFormatoFecha("dd/MM/Y");
 		vida.setDatoFecha(myDate);
 
-		System.out.println("fecha vida: " + vida.getDatoFecha());
-
 		coche.setFormatoFecha("dd/MM/Y");
 		coche.setDatoFecha(myDate);
 		deceso.setFormatoFecha("dd/MM/Y");

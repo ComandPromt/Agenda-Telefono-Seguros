@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,6 +23,14 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -54,7 +63,7 @@ public abstract class Metodos {
 
 		String busquedaDia = "";
 
-		if (!cadena.isEmpty() && !cadena.contains("null")) {
+		if (!cadena.isEmpty() && !cadena.contains("null") && cadena.length() > 2) {
 
 			if (cadena.indexOf(" ") == -1) {
 
@@ -68,6 +77,7 @@ public abstract class Metodos {
 				}
 
 				else {
+
 					dia = Integer.parseInt(busquedaDia);
 				}
 
@@ -89,7 +99,7 @@ public abstract class Metodos {
 				year = cadena.substring(cadena.lastIndexOf(" ") + 1, cadena.length());
 
 				mes = cadena.substring(cadena.indexOf(" ") + 1, limiteMes);
-
+				System.out.println("calculo el dia: " + cadena);
 				cadena = cadena.substring(limiteMes + 1, cadena.length());
 
 				dia = Integer.parseInt(cadena.substring(0, cadena.indexOf(" ")));
@@ -992,13 +1002,34 @@ public abstract class Metodos {
 		return json;
 	}
 
-	public static String extraerNombreArchivo(String extension) throws IOException {
+	public static String extraerNombreArchivo(String extension, int tipo) throws IOException {
 
 		JSONObject json = apiImagenes("archivo." + extension);
 
 		JSONArray imagenesBD = json.getJSONArray("imagenes_bd");
 
-		String outputFilePath = Agenda.getDirectorioActual() + "contactos_exportados" + Agenda.getSeparador() + "PDF"
+		String carpeta = "";
+
+		switch (tipo) {
+
+		case 1:
+			carpeta = "PDF";
+			break;
+
+		case 2:
+			carpeta = "Excel";
+			break;
+
+		case 3:
+			carpeta = "TXT";
+			break;
+
+		case 4:
+			carpeta = "VCard";
+			break;
+		}
+
+		String outputFilePath = Agenda.getDirectorioActual() + "contactos_exportados" + Agenda.getSeparador() + carpeta
 				+ Agenda.getSeparador() + imagenesBD.get(0).toString();
 
 		return outputFilePath;
@@ -1139,9 +1170,6 @@ public abstract class Metodos {
 		directorio = new File("contactos_exportados/PDF");
 		directorio.mkdir();
 
-		directorio = new File("contactos_exportados/TXT");
-		directorio.mkdir();
-
 		directorio = new File("contactos_exportados/VCard");
 		directorio.mkdir();
 	}
@@ -1198,8 +1226,6 @@ public abstract class Metodos {
 
 	public static LinkedList<String> sacarFechas(String cadena) {
 
-		System.out.println("CADENA A SACAR FECHA: " + cadena);
-
 		LinkedList<String> lista = new LinkedList<String>();
 
 		String fechaDecesos = cadena.substring(cadena.indexOf("▒") + 1, cadena.indexOf("╣"));
@@ -1251,6 +1277,170 @@ public abstract class Metodos {
 		}
 
 		return lista;
+	}
+
+	public static void exportarExcel() throws IOException {
+
+		if (Agenda.nuevosVencimientos.getText().isEmpty()) {
+			Metodos.mensaje("No hay vencimientos", 2, true);
+		} else {
+			HSSFWorkbook workbook = new HSSFWorkbook();
+
+			HSSFSheet sheet = workbook.createSheet();
+
+			workbook.setSheetName(0, "Decesos");
+			escribirCelda(workbook, sheet, 1);
+
+			sheet = workbook.createSheet();
+			workbook.setSheetName(1, "Vida");
+			escribirCelda(workbook, sheet, 2);
+			sheet = workbook.createSheet();
+			workbook.setSheetName(2, "Hogar");
+			escribirCelda(workbook, sheet, 3);
+			sheet = workbook.createSheet();
+			workbook.setSheetName(3, "Coche");
+			escribirCelda(workbook, sheet, 4);
+			sheet = workbook.createSheet();
+			workbook.setSheetName(4, "Comercio");
+			escribirCelda(workbook, sheet, 5);
+			sheet = workbook.createSheet();
+			workbook.setSheetName(5, "Comunidad");
+
+			escribirCelda(workbook, sheet, 6);
+
+			FileOutputStream file = new FileOutputStream(Metodos.extraerNombreArchivo("xls", 2));
+			workbook.write(file);
+			file.close();
+			workbook.close();
+		}
+	}
+
+	private static void createList(Row row, String[] headers, LinkedList<String> vencimientos, int seguro) // creating
+																											// cells for
+	// each row
+
+	{
+
+		Cell cell;
+		int indice = 0;
+		for (int i = 0; i < 4; i++) {
+			int columna = row.getRowNum();
+			cell = row.createCell(i);
+
+			if (columna == 0) {
+
+				cell.setCellValue(headers[i]);
+			}
+
+			else {
+
+				--columna;
+
+				switch (seguro) {
+
+				case 1:
+					indice = Vencimiento.getIndiceDeceso().get(columna);
+					break;
+
+				case 2:
+					indice = Vencimiento.getIndiceVida().get(columna);
+					break;
+
+				case 3:
+					indice = Vencimiento.getIndiceHogar().get(columna);
+					break;
+
+				case 4:
+					indice = Vencimiento.getIndiceCoche().get(columna);
+					break;
+
+				case 5:
+					indice = Vencimiento.getIndiceComercio().get(columna);
+					break;
+
+				case 6:
+					indice = Vencimiento.getIndiceComunidad().get(columna);
+					break;
+
+				}
+
+				switch (i) {
+				case 0:
+					if (columna < vencimientos.size() && !vencimientos.get(columna).isEmpty()) {
+
+						cell.setCellValue(Agenda.contactos.get(indice));
+					}
+					break;
+				case 1:
+					if (columna < vencimientos.size() && !vencimientos.get(columna).isEmpty()) {
+
+						cell.setCellValue(Agenda.telefonos.get(indice));
+					}
+					break;
+				case 2:
+
+					if (columna < vencimientos.size() && !vencimientos.get(columna).isEmpty()) {
+						cell.setCellValue(vencimientos.get(columna));
+					}
+
+					break;
+				case 3:
+					if (columna < vencimientos.size() && !vencimientos.get(columna).isEmpty()) {
+
+						cell.setCellValue(Agenda.direcciones.get(indice));
+					}
+					break;
+
+				}
+
+			}
+
+		}
+
+	}
+
+	private static void escribirCelda(HSSFWorkbook workbook, HSSFSheet sheet, int seguro) {
+
+		String[] headers = new String[] { "Nombre", "Teléfono", "Vencimiento", "Dirección", "Observación" };
+
+		LinkedList<String> vencimientos = new LinkedList<String>();
+
+		switch (seguro) {
+		case 1:
+			vencimientos = Agenda.vencimientosDecesos;
+			break;
+		case 2:
+			vencimientos = Agenda.vencimientosVida;
+			break;
+		case 3:
+			vencimientos = Agenda.vencimientosHogar;
+			break;
+		case 4:
+			vencimientos = Agenda.vencimientosCoche;
+			break;
+		case 5:
+			vencimientos = Agenda.vencimientosComercio;
+			break;
+		case 6:
+			vencimientos = Agenda.vencimientosComunidad;
+			break;
+		}
+
+		CellStyle headerStyle = workbook.createCellStyle();
+		HSSFFont font = workbook.createFont();
+		headerStyle.setFont(font);
+
+		CellStyle style = workbook.createCellStyle();
+		style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+
+		HSSFRow headerRow = sheet.createRow(0);
+
+		for (int i = 0; i <= vencimientos.size() + 1; ++i) {
+
+			createList(headerRow, headers, vencimientos, seguro);
+			headerRow = sheet.createRow(i);
+		}
+
 	}
 
 }

@@ -98,7 +98,7 @@ public abstract class MetodosPdf {
 
 		String htmlStr = HtmlGenerator.generate(tampleFile, variables);
 
-		PdfGenerator.generate(htmlStr, new FileOutputStream(Metodos.extraerNombreArchivo("pdf")));
+		PdfGenerator.generate(htmlStr, new FileOutputStream(Metodos.extraerNombreArchivo("pdf", 1)));
 
 	}
 
