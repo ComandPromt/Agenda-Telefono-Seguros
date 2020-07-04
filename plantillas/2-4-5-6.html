@@ -1,19 +1,12 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="es">
 
 	<head>
 		
 		<bookmarks>
 		
-			<bookmark name="Vto Decesos" href="#decesos">
-			
-			</bookmark>
-		
 			<bookmark name="Vto Vida" href="#vida"> 
-			</bookmark>
-			
-			<bookmark name="Vto Hogar" href="#hogar"> 
 			</bookmark>
 			
 			<bookmark name="Vto Coche" href="#coche"> 
@@ -32,88 +25,97 @@
 		<title>Listado de Vencimientos</title>
 	
 		<style>
-		
-			*{margin:auto;}
-			
-			.tabla{
-				width:200px;
-			}
-			
-			.div{
-				padding-top:40px;
-				text-align:center;
-			}
-			
-			table{
-				page-break-after: always;
-			}
-			
-			.head1 {
-				text-align:right;
-				padding-right:40px;
-				color: #496192;
-				font-size: x-large;
-			}
-			.head2 {
-				padding-top:20px;
-				padding-right:40px;
-				color: #0561BE;
-				font-size: large;
-				text-align:right;
-			}
-			
-			.paragraph {
-				text-align: justify;
-			}
-			
-			.toc { 
-					list-style-type:none;
-			}
-			
-			.toc a::after {
-				 content: leader('.') target-counter(attr(href), page); 
-			}
-				
-		
-			.idc-box { 
-	
-				text-align:center;
-				margin-top:40px;
-	
-				background: #f9f9f9 none repeat scroll 0 0;
-				border: 1px solid #aaa; display: table; font-size: 95%;
-				margin-bottom: 1em; 
-				padding: 20px;
-				width: 90%;
-			} 
-	   
-			.idc-box .idc-titulo {
-				font-weight: 700;
-				text-align: center; 
-			} 
-	
-			.idc-box li, .idc-box ul, .idc-box ul li{
-		 
-				padding-top: 5px; 
-		
-				list-style: outside none none !important;
-			}
-		 
-		 	.idc-lista {
-				
-				padding-top:20px;
-				margin-left:40%;
 
-			}
-	 	 
-			hr {border: 0; height: 0; border-top: 4px double black; text-align:center;
+*{
+	margin:auto;
+}
+
+.tabla{
+	width:200px;
+}
+
+.div{
+	padding-top:40px;
+	text-align:center;
+}
+
+table{
+	page-break-after: always;
+	margin-bottom:20px;
+}
+
+.head1 {
+	text-align:right;
+	padding-right:40px;
+	color: #496192;
+	font-size: x-large;
+}
+
+.head2 {
+	padding-top:20px;
+	padding-right:40px;
+	color: #0561BE;
+	font-size: large;
+	text-align:right;
+}
+
+.paragraph {
+	text-align: justify;
+}
+
+.toc { 
+		list-style-type:none;
+}
+
+.idc-box { 
+
+	text-align:center;
+	margin-top:60px;
+
+	background: #f9f9f9 none repeat scroll 0 0;
+	border: 1px solid #aaa; display: table; font-size: 95%;
+	margin-bottom: 1em; 
+	padding: 20px;
+	width: 90%;
+} 
+   
+.idc-box .idc-titulo {
+	font-weight: 700;
+	text-align: center; 
+} 
+
+.idc-box li, .idc-box ul, .idc-box ul li{
+ 
+	padding-top:40px; 
+
+	list-style: outside none none !important;
+}
+ 
+ .idc-lista {
 	
-			}
+	padding-top:20px;
+	margin-left:40%;
 
-			hr:after {position: relative; top: -22px; content:"\25cf\25cf\25cf"; font-size: 34px;line-height: 34px; color: black;}
+}
+  
+hr {
+	border: 0; 
+	height: 0; 
+	border-top: 4px double black; 
+	text-align:center;
+}
+
+hr:after {
+	position: relative; 
+	top: -22px; 
+	content:"\25cf\25cf\25cf"; 
+	font-size: 34px;
+	line-height: 34px; 
+	color: black;
+}
 
 
-	</style>
+</style>
 	
 	</head>
 
@@ -128,40 +130,28 @@
 			<h2 class="idc-titulo head1">Vencimientos</h2>
 	
 			<ul class="idc-lista">
+			
+				<li>
+			
+					<a href="#vida">1.Vida</a>
+				
+				</li>
 		
 				<li>
 			
-					<a href="#decesos">1.Decesos</a>
+					<a href="#coche">2.Coche</a>
 					
 				</li>
 		
 				<li>
 			
-					<a href="#vida">2.Vida</a>
+					<a href="#comercio">3.Comercio</a>
 				
 				</li>
 		
 				<li>
 			
-					<a href="#hogar">3.Hogar</a>
-				
-				</li>
-		
-				<li>
-			
-					<a href="#coche">4.Coche</a>
-					
-				</li>
-		
-				<li>
-			
-					<a href="#comercio">5.Comercio</a>
-				
-				</li>
-		
-				<li>
-			
-					<a href="#comunidad">6.Comunidad</a>
+					<a href="#comunidad">4.Comunidad</a>
 				
 				</li>
 				
@@ -175,78 +165,25 @@
 			<p style="padding-top:10px;" >Mientras más abajo esté en la tabla, más cerca está el vencimiento</p>
 			<p>de cumplirse en dos meses.</p>
 		</div>
-
 		
 		<div style="clear:both;padding-top:650px;">
 		</div>
-			
-		<div id="decesos" style="text-align:center;">
-
-			<p class="head2">1.Decesos </p>
-			
-		</div> 
-		
-		<table style="border: 1px solid black;text-align:center;">
-		
-			<thead>
-			
-				<tr style="background-color:#CCC0DA">
-					<th >Nombre</th>
-					<th >Teléfono</th>
-					<th >Vencimiento</th>
-					<th >Direcciones</th>
-				</tr>
-				
-			</thead>
-			
-			<#list 1..usuarioDeceso?size as i>
-			
-				<#if i%2==0> 
-				
-					<tr style="background-color:#FABF8F;">
-					
-				<#else>
-				
-					<tr style="background-color:#C4D79B;">
-					
-				</#if>
-				
-					<td class="tabla" >
-					
-					<p >${usuarioDeceso[i-1].username}</p></td>
-					
-					<td class="tabla" >
-					
-					<p >${telefonoDeceso[i-1].username}</p></td>
-					
-					<td class="tabla" >
-					
-					<p >${vencimientoDeceso[i-1].username}</p></td>
-					
-			<td class="tabla" >
-					
-					<p >${direccionDeceso[i-1].username}</p></td>
-					</tr>
-							
-			</#list>
-			
-		</table>
-
+	
 				<div id="vida" class="div">
 	
-			<p class="head2">2.Vida </p>
+			<p class="head2">1.Vida </p>
 			
 		</div> 
 		
-		<table style="border: 1px solid black;text-align:center;">
+		<table style="border: 1px solid black;margin-top:20px;text-align:center;">
 		
 			<thead>
 			
 				<tr style="background-color:#CCC0DA">
-					<th >Nombre</th>
-					<th >Teléfono</th>
-					<th >Vencimiento</th>
-					<th >Direcciones</th>
+					<th>Nombre</th>
+					<th>Teléfono</th>
+					<th>Vencimiento</th>
+					<th>Dirección</th>
 				</tr>
 				
 			</thead>
@@ -284,75 +221,22 @@
 			</#list>
 			
 		</table>
-		
-				<div id="hogar" class="div">
-
-			<p class="head2">3.Hogar</p>
-			
-		</div> 
-		
-		<table style="border: 1px solid black;text-align:center;">
-		
-			<thead>
-			
-				<tr style="background-color:#CCC0DA">
-					<th >Nombre</th>
-					<th >Teléfono</th>
-					<th >Vencimiento</th>
-					<th >Direcciones</th>
-				</tr>
 				
-			</thead>
-			
-			<#list 1..usuarioHogar?size as i>
-			
-				<#if i%2==0> 
-				
-					<tr style="background-color:#FABF8F;">
-					
-				<#else>
-				
-					<tr style="background-color:#C4D79B;">
-					
-				</#if>
-				
-					<td class="tabla" >
-					
-					<p >${usuarioHogar[i-1].username}</p></td>
-					
-					<td class="tabla" >
-					
-					<p >${telefonoHogar[i-1].username}</p></td>
-					
-					<td class="tabla" >
-					
-					<p >${vencimientoHogar[i-1].username}</p></td>
-					
-					<td class="tabla" >
-					
-					<p >${direccionHogar[i-1].username}</p></td>
-					
-					</tr>
-							
-			</#list>
-			
-		</table>
-		
 				<div id="coche" class="div">
 
-			<p class="head2">4.Coche</p>
+			<p class="head2">2.Coche</p>
 			
 		</div> 
 		
-		<table style="border: 1px solid black;text-align:center;">
+		<table style="border: 1px solid black;margin-top:20px;text-align:center;">
 		
 			<thead>
 			
 				<tr style="background-color:#CCC0DA">
-					<th >Nombre</th>
-					<th >Teléfono</th>
-					<th >Vencimiento</th>
-					<th >Direcciones</th>
+					<th>Nombre</th>
+					<th>Teléfono</th>
+					<th>Vencimiento</th>
+					<th>Dirección</th>
 				</tr>
 				
 			</thead>
@@ -393,19 +277,19 @@
 		
 				<div id="comercio" class="div">
 
-			<p class="head2">5.Comercio</p>
+			<p class="head2">3.Comercio</p>
 			
 		</div> 
 		
-		<table style="border: 1px solid black;text-align:center;">
+		<table style="border: 1px solid black;margin-top:20px;text-align:center;">
 		
 			<thead>
 			
 				<tr style="background-color:#CCC0DA">
-					<th >Nombre</th>
-					<th >Teléfono</th>
-					<th >Vencimiento</th>
-					<th >Direcciones</th>
+					<th>Nombre</th>
+					<th>Teléfono</th>
+					<th>Vencimiento</th>
+					<th>Dirección</th>
 				</tr>
 				
 			</thead>
@@ -446,7 +330,7 @@
 		
 				<div id="comunidad" class="div">
 					
-			<p class="head2">6.Comunidad</p>
+			<p class="head2">4.Comunidad</p>
 			
 		</div> 
 		
@@ -455,10 +339,10 @@
 			<thead>
 			
 				<tr style="background-color:#CCC0DA">
-					<th >Nombre</th>
-					<th >Teléfono</th>
-					<th >Vencimiento</th>
-					<th >Direcciones</th>
+					<th>Nombre</th>
+					<th>Teléfono</th>
+					<th>Vencimiento</th>
+					<th>Dirección</th>
 				</tr>
 				
 			</thead>

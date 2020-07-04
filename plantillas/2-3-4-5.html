@@ -5,11 +5,14 @@
 	<head>
 		
 		<bookmarks>
-				
+		
 			<bookmark name="Vto Vida" href="#vida"> 
 			</bookmark>
 			
 			<bookmark name="Vto Hogar" href="#hogar"> 
+			</bookmark>
+			
+			<bookmark name="Vto Coche" href="#coche"> 
 			</bookmark>
 			
 			<bookmark name="Vto Comercio" href="#comercio"> 
@@ -139,10 +142,16 @@ hr:after {
 					<a href="#hogar">2.Hogar</a>
 				
 				</li>
-			
+		
 				<li>
 			
-					<a href="#comercio">3.Comercio</a>
+					<a href="#coche">3.Coche</a>
+					
+				</li>
+		
+				<li>
+			
+					<a href="#comercio">4.Comercio</a>
 				
 				</li>
 						
@@ -156,7 +165,6 @@ hr:after {
 			<p style="padding-top:10px;" >Mientras más abajo esté en la tabla, más cerca está el vencimiento</p>
 			<p>de cumplirse en dos meses.</p>
 		</div>
-
 		
 		<div style="clear:both;padding-top:650px;">
 		</div>
@@ -266,10 +274,63 @@ hr:after {
 			</#list>
 			
 		</table>
+		
+				<div id="coche" class="div">
+
+			<p class="head2">3.Coche</p>
+			
+		</div> 
+		
+		<table style="border: 1px solid black;margin-top:20px;text-align:center;">
+		
+			<thead>
+			
+				<tr style="background-color:#CCC0DA">
+					<th>Nombre</th>
+					<th>Teléfono</th>
+					<th>Vencimiento</th>
+					<th>Dirección</th>
+				</tr>
 				
+			</thead>
+			
+			<#list 1..usuarioCoche?size as i>
+			
+				<#if i%2==0> 
+				
+					<tr style="background-color:#FABF8F;">
+					
+				<#else>
+				
+					<tr style="background-color:#C4D79B;">
+					
+				</#if>
+				
+					<td class="tabla" >
+					
+					<p >${usuarioCoche[i-1].username}</p></td>
+					
+					<td class="tabla" >
+					
+					<p >${telefonoCoche[i-1].username}</p></td>
+					
+					<td class="tabla" >
+					
+					<p >${vencimientoCoche[i-1].username}</p></td>
+					
+					<td class="tabla" >
+					
+					<p >${direccionCoche[i-1].username}</p></td>
+					
+					</tr>
+							
+			</#list>
+			
+		</table>
+		
 				<div id="comercio" class="div">
 
-			<p class="head2">3.Comercio</p>
+			<p class="head2">4.Comercio</p>
 			
 		</div> 
 		

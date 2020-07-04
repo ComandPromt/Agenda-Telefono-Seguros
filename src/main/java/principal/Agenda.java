@@ -1550,9 +1550,18 @@ public class Agenda extends JFrame {
 		menuBar.add(mnNewMenu_10);
 
 		JMenuItem mntmNewMenuItem_22 = new JMenuItem("PDF");
+
 		mntmNewMenuItem_22.addMouseListener(new MouseAdapter() {
+
 			@Override
+
 			public void mousePressed(MouseEvent e) {
+
+				try {
+					Metodos.abrirCarpeta(directorioActual + "contactos_exportados" + separador + "PDF");
+				} catch (Exception e1) {
+					//
+				}
 			}
 		});
 		mnNewMenu_10.add(mntmNewMenuItem_22);
@@ -1566,6 +1575,11 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_23.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
+				try {
+					Metodos.abrirCarpeta(directorioActual + "contactos_exportados" + separador + "Excel");
+				} catch (Exception e1) {
+					//
+				}
 			}
 		});
 		mntmNewMenuItem_23.setFont(new Font("Dialog", Font.PLAIN, 16));
@@ -1579,6 +1593,11 @@ public class Agenda extends JFrame {
 		mntmNewMenuItem_24.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
+				try {
+					Metodos.abrirCarpeta(directorioActual + "contactos_exportados" + separador + "TXT");
+				} catch (Exception e1) {
+					//
+				}
 			}
 		});
 		mntmNewMenuItem_24.setIcon(new ImageIcon(Agenda.class.getResource("/imagenes/txt.png")));
@@ -1595,7 +1614,11 @@ public class Agenda extends JFrame {
 			@Override
 
 			public void mousePressed(MouseEvent e) {
-
+				try {
+					Metodos.abrirCarpeta(directorioActual + "contactos_exportados" + separador + "VCard");
+				} catch (Exception e1) {
+					//
+				}
 			}
 
 		});
@@ -1608,6 +1631,10 @@ public class Agenda extends JFrame {
 
 		menuBar.add(mntmNewMenuItem_21);
 
+	}
+
+	public static String getOs() {
+		return os;
 	}
 
 	protected String saberPlantilla() {
@@ -1748,6 +1775,12 @@ public class Agenda extends JFrame {
 					plantilla = "4-6.html";
 				}
 
+				if (vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "5-6.html";
+				}
+
 				if (!vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
 						&& !vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
 						&& vencimientosComunidad.isEmpty()) {
@@ -1838,6 +1871,12 @@ public class Agenda extends JFrame {
 					plantilla = "2-4-6.html";
 				}
 
+				if (vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "2-5-6.html";
+				}
+
 				if (vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
 						&& !vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
 						&& vencimientosComunidad.isEmpty()) {
@@ -1860,6 +1899,132 @@ public class Agenda extends JFrame {
 						&& vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
 						&& !vencimientosComunidad.isEmpty()) {
 					plantilla = "4-5-6.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "1-2-3-4.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "1-2-3-5.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "1-2-3-6.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "1-2-4-5.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "1-2-4-6.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "1-2-5-6.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "1-3-4-5.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "1-3-4-6.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "1-3-5-6.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "1-4-5-6.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "2-3-4-5.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "2-3-4-6.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "2-3-5-6.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "2-4-5-6.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "3-4-5-6.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& vencimientosComunidad.isEmpty()) {
+					plantilla = "1-2-3-4-5.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "1-2-3-4-6.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "1-2-3-5-6.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "1-2-4-5-6.html";
+				}
+
+				if (!vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "1-3-4-5-6.html";
+				}
+
+				if (vencimientosDecesos.isEmpty() && !vencimientosCoche.isEmpty() && !vencimientosVida.isEmpty()
+						&& !vencimientosHogar.isEmpty() && !vencimientosComercio.isEmpty()
+						&& !vencimientosComunidad.isEmpty()) {
+					plantilla = "2-3-4-5-6.html";
 				}
 
 			}

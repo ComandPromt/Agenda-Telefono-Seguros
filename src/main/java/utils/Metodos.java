@@ -1176,6 +1176,26 @@ public abstract class Metodos {
 		return salida;
 	}
 
+	public static void abrirCarpeta(String ruta) throws IOException {
+
+		if (ruta != null && !ruta.equals("") && !ruta.isEmpty()) {
+
+			try {
+
+				if (Agenda.getOs().contentEquals("Linux")) {
+					Runtime.getRuntime().exec("xdg-open " + ruta);
+				}
+
+				else {
+					Runtime.getRuntime().exec("cmd /c explorer " + "\"" + ruta + "\"");
+				}
+			} catch (IOException e) {
+				mensaje("Ruta inválida", 1, true);
+			}
+		}
+
+	}
+
 	public static LinkedList<String> sacarFechas(String cadena) {
 
 		System.out.println("CADENA A SACAR FECHA: " + cadena);
