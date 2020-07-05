@@ -2323,6 +2323,7 @@ public class Agenda extends JFrame {
 							int indiceContacto = contactos.indexOf(nombre.getText());
 
 							if (fechaDeceso.isEmpty()) {
+
 								fechaDeceso = fechasVtos.get(0);
 							}
 
@@ -2346,12 +2347,50 @@ public class Agenda extends JFrame {
 								fechaComunidad = fechasVtos.get(5);
 							}
 
-							arrayList1.set(indiceContacto,
-									new Objeto(nombreContacto + "«" + email.getText() + "»"
-											+ observaciones.get(indiceContacto) + "¬" + tlf.getText() + "═"
-											+ direccion.getText() + "▓" + localidad + "░" + codigopostal + "┤"
-											+ provincia + "▒" + fechaDeceso + "╣" + fechaVida + "║" + fechaHogar + "╝"
-											+ fechaCoche + "¥" + fechaComercio + "¶" + fechaComunidad));
+							fechaDeceso = Metodos.convertirFecha(fechaDeceso, true);
+							fechaVida = Metodos.convertirFecha(fechaVida, true);
+							fechaHogar = Metodos.convertirFecha(fechaHogar, true);
+							fechaCoche = Metodos.convertirFecha(fechaCoche, true);
+							fechaComercio = Metodos.convertirFecha(fechaComercio, true);
+							fechaComunidad = Metodos.convertirFecha(fechaComunidad, true);
+
+							Object datoFechaDeceso = null;
+							Object datoFechaCoche = null;
+							Object datoFechaVida = null;
+							Object datoFechaHogar = null;
+							Object datoFechaComercio = null;
+							Object datoFechaComunidad = null;
+
+							if (!fechaDeceso.isEmpty()) {
+								datoFechaDeceso = new Date(fechaDeceso);
+							}
+
+							if (!fechaVida.isEmpty()) {
+								datoFechaVida = new Date(fechaVida);
+							}
+
+							if (!fechaHogar.isEmpty()) {
+								datoFechaHogar = new Date(fechaHogar);
+							}
+
+							if (!fechaCoche.isEmpty()) {
+								datoFechaCoche = new Date(fechaCoche);
+							}
+
+							if (!fechaComercio.isEmpty()) {
+								datoFechaComercio = new Date(fechaComercio);
+
+							}
+
+							if (!fechaComunidad.isEmpty()) {
+								datoFechaComunidad = new Date(fechaComunidad);
+							}
+
+							arrayList1.set(indiceContacto, new Objeto(nombreContacto + "«" + email.getText() + "»"
+									+ observaciones.get(indiceContacto) + "¬" + tlf.getText() + "═"
+									+ direccion.getText() + "▓" + localidad + "░" + codigopostal + "┤" + provincia + "▒"
+									+ datoFechaDeceso + "╣" + datoFechaVida + "║" + datoFechaHogar + "╝"
+									+ datoFechaCoche + "¥" + datoFechaComercio + "¶" + datoFechaComunidad));
 
 							ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
 									new FileOutputStream("contactos.dat"));
@@ -2375,7 +2414,7 @@ public class Agenda extends JFrame {
 				}
 
 				catch (Exception e) {
-
+					//
 				}
 
 			}

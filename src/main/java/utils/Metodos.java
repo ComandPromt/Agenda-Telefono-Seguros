@@ -47,7 +47,9 @@ public abstract class Metodos {
 	public static String convertirFecha(String cadena, boolean tipo) {
 
 		String fecha = "";
+
 		try {
+
 			String mes = "";
 
 			String year = "";
@@ -174,7 +176,7 @@ public abstract class Metodos {
 
 			}
 		} catch (Exception e) {
-
+			fecha = "";
 		}
 
 		return fecha;

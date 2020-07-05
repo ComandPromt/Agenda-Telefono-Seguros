@@ -6,9 +6,12 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -88,7 +91,155 @@ public class Actualizador extends javax.swing.JFrame implements ActionListener, 
 	private final JLabel infoNombre = new JLabel("*");
 	private final JLabel infoTelefono = new JLabel("*");
 
+	private void actualizarDatos() {
+
+		String contacto = nombre.getText();
+
+		String tlfContacto = telefono.getText();
+
+		String emailContacto = email.getText();
+
+		String codigoPostalContacto = codPostal.getText();
+
+		boolean comprobarEmail = Metodos.comprobarPatron(emailContacto,
+				"^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}");
+
+		boolean comprobarCodPostal = Metodos.comprobarPatron(codigoPostalContacto, "^[0-9]{5}");
+
+		if (contacto.isEmpty() || tlfContacto.isEmpty()) {
+
+			guardar = false;
+
+			Metodos.mensaje("Por favor, introduzca el nombre y el teléfono", 1, false);
+
+		}
+
+		if (!codPostal.getText().isEmpty() && !comprobarCodPostal) {
+			Metodos.mensaje("Código postal incorrecto", 1, false);
+			guardar = false;
+		}
+		if (!emailContacto.isEmpty() && !comprobarEmail) {
+			Metodos.mensaje("Email incorrecto", 1, false);
+			guardar = false;
+		}
+
+		if (!chckDeceso.isSelected() && !chckVida.isSelected() && !chckHogar.isSelected() && !chckCoche.isSelected()
+				&& !chckComercio.isSelected() && !chckComunidad.isSelected()
+
+		) {
+			guardar = false;
+
+			Metodos.mensaje("Por favor, selecciona algún seguro", 1, false);
+
+		}
+
+		if (guardar) {
+
+			try {
+
+				fechaDecesos = "";
+				fechaHogar = "";
+				fechaVida = "";
+				fechaCoche = "";
+				fechaComercio = "";
+				fechaComunidad = "";
+
+				Object datoFechaDeceso = null;
+				Object datoFechaCoche = null;
+				Object datoFechaVida = null;
+				Object datoFechaHogar = null;
+				Object datoFechaComercio = null;
+				Object datoFechaComunidad = null;
+
+				if (chckDeceso.isSelected()) {
+					fechaDecesos = Metodos.convertirFecha(decesos.getDatoFecha().toString(), true);
+					datoFechaDeceso = new Date(fechaDecesos);
+				}
+
+				if (chckVida.isSelected()) {
+					fechaVida = Metodos.convertirFecha(vida.getDatoFecha().toString(), true);
+					datoFechaVida = new Date(fechaVida);
+				}
+
+				if (chckHogar.isSelected()) {
+					fechaHogar = Metodos.convertirFecha(hogar.getDatoFecha().toString(), true);
+					datoFechaHogar = new Date(fechaHogar);
+				}
+
+				if (chckCoche.isSelected()) {
+					fechaCoche = Metodos.convertirFecha(coche.getDatoFecha().toString(), true);
+					datoFechaCoche = new Date(fechaCoche);
+				}
+
+				if (chckComercio.isSelected()) {
+					fechaComercio = Metodos.convertirFecha(comercio.getDatoFecha().toString(), true);
+					datoFechaComercio = new Date(fechaComercio);
+				}
+
+				if (chckComunidad.isSelected()) {
+					fechaComunidad = Metodos.convertirFecha(comunidad.getDatoFecha().toString(), true);
+					datoFechaComunidad = new Date(fechaComunidad);
+				}
+
+				ArrayList<Objeto> arrayList1;
+
+				arrayList1 = Agenda.leer("contactos.dat");
+
+				arrayList1.set(indiceVto,
+						new Objeto(contacto + "«" + email.getText() + "»" + Agenda.observaciones.get(indiceVto) + "¬"
+								+ tlfContacto + "═" + direccion.getText() + "▓" + localidad.getText() + "░"
+								+ codPostal.getText() + "┤" + provincia.getText() + "▒" + datoFechaDeceso + "╣"
+								+ datoFechaVida + "║" + datoFechaHogar + "╝" + datoFechaCoche + "¥" + datoFechaComercio
+								+ "¶" + datoFechaComunidad));
+
+				ObjectOutputStream escribiendoFichero = new ObjectOutputStream(new FileOutputStream("contactos.dat"));
+
+				escribiendoFichero.writeObject(arrayList1);
+
+				escribiendoFichero.close();
+
+				arrayList1.clear();
+
+				Agenda.limpiarContactos();
+
+				Agenda.vaciarCampos();
+
+				Agenda.verNotas();
+
+				Vencimiento.verTablaVencimientos();
+
+				dispose();
+
+			}
+
+			catch (Exception e) {
+				//
+			}
+
+		}
+
+		else {
+			guardar = true;
+		}
+	}
+
 	public Actualizador(int indice) {
+
+		getContentPane().addKeyListener(new KeyAdapter() {
+
+			@Override
+
+			public void keyPressed(KeyEvent e) {
+
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+
+					actualizarDatos();
+				}
+
+			}
+
+		});
+
 		infoTelefono.setForeground(Color.BLUE);
 		infoTelefono.setFont(new Font("Arial", Font.PLAIN, 20));
 		infoNombre.setForeground(Color.BLUE);
@@ -258,122 +409,7 @@ public class Actualizador extends javax.swing.JFrame implements ActionListener, 
 
 			public void actionPerformed(ActionEvent arg0) {
 
-				String contacto = nombre.getText();
-
-				String tlfContacto = telefono.getText();
-
-				String emailContacto = email.getText();
-
-				String codigoPostalContacto = codPostal.getText();
-
-				boolean comprobarEmail = Metodos.comprobarPatron(emailContacto,
-						"^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}");
-
-				boolean comprobarCodPostal = Metodos.comprobarPatron(codigoPostalContacto, "^[0-9]{5}");
-
-				if (contacto.isEmpty() || tlfContacto.isEmpty()) {
-
-					guardar = false;
-
-					Metodos.mensaje("Por favor, introduzca el nombre y el teléfono", 1, false);
-
-				}
-
-				if (!codPostal.getText().isEmpty() && !comprobarCodPostal) {
-					Metodos.mensaje("Código postal incorrecto", 1, false);
-					guardar = false;
-				}
-				if (!emailContacto.isEmpty() && !comprobarEmail) {
-					Metodos.mensaje("Email incorrecto", 1, false);
-					guardar = false;
-				}
-
-				if (!chckDeceso.isSelected() && !chckVida.isSelected() && !chckHogar.isSelected()
-						&& !chckCoche.isSelected() && !chckComercio.isSelected() && !chckComunidad.isSelected()
-
-				) {
-					guardar = false;
-
-					Metodos.mensaje("Por favor, selecciona algún seguro", 1, false);
-
-				}
-
-				if (guardar) {
-
-					try {
-
-						fechaDecesos = "";
-						fechaHogar = "";
-						fechaVida = "";
-						fechaCoche = "";
-						fechaComercio = "";
-						fechaComunidad = "";
-
-						if (chckDeceso.isSelected()) {
-							fechaDecesos = Metodos.convertirFecha(decesos.getDatoFecha().toString(), false);
-						}
-
-						if (chckVida.isSelected()) {
-							fechaVida = Metodos.convertirFecha(vida.getDatoFecha().toString(), false);
-						}
-
-						if (chckHogar.isSelected()) {
-							fechaHogar = Metodos.convertirFecha(hogar.getDatoFecha().toString(), false);
-						}
-
-						if (chckCoche.isSelected()) {
-							fechaCoche = Metodos.convertirFecha(coche.getDatoFecha().toString(), false);
-						}
-
-						if (chckComercio.isSelected()) {
-							fechaComercio = Metodos.convertirFecha(comercio.getDatoFecha().toString(), false);
-						}
-
-						if (chckComunidad.isSelected()) {
-							fechaComunidad = Metodos.convertirFecha(comunidad.getDatoFecha().toString(), false);
-						}
-
-						ArrayList<Objeto> arrayList1;
-
-						arrayList1 = Agenda.leer("contactos.dat");
-
-						arrayList1.set(indiceVto,
-								new Objeto(contacto + "«" + email.getText() + "»" + Agenda.observaciones.get(indiceVto)
-										+ "¬" + tlfContacto + "═" + direccion.getText() + "▓" + localidad.getText()
-										+ "░" + codPostal.getText() + "┤" + provincia.getText() + "▒" + fechaDecesos
-										+ "╣" + fechaVida + "║" + fechaHogar + "╝" + fechaCoche + "¥" + fechaComercio
-										+ "¶" + fechaComunidad));
-
-						ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
-								new FileOutputStream("contactos.dat"));
-
-						escribiendoFichero.writeObject(arrayList1);
-
-						escribiendoFichero.close();
-
-						arrayList1.clear();
-
-						Agenda.limpiarContactos();
-
-						Agenda.vaciarCampos();
-
-						Agenda.verNotas();
-
-						Vencimiento.verTablaVencimientos();
-
-						dispose();
-
-					}
-
-					catch (Exception e) {
-						//
-					}
-
-				}
-
-				else {
-					guardar = true;
-				}
+				actualizarDatos();
 
 			}
 
