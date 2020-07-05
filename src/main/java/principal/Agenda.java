@@ -83,6 +83,10 @@ public class Agenda extends JFrame {
 	private static JButton contacto;
 	private JButton editar;
 
+	public static JTextField getNombre() {
+		return nombre;
+	}
+
 	public static JList<String> jList1;
 	private static String directorioActual, separador, os;
 	private static JTextField nombre;
@@ -93,7 +97,7 @@ public class Agenda extends JFrame {
 	private String cnombre;
 	private String ctipo;
 	private String cnota;
-	private static JTextPane tlf = new JTextPane();
+	public static JTextPane tlf = new JTextPane();
 	private static JTextPane direccion = new JTextPane();
 	public static LinkedList<String> vencimientosDecesos = new <String>LinkedList();
 	public static LinkedList<String> vencimientosVida = new <String>LinkedList();
@@ -101,6 +105,14 @@ public class Agenda extends JFrame {
 	public static LinkedList<String> vencimientosCoche = new <String>LinkedList();
 	public static LinkedList<String> vencimientosComercio = new <String>LinkedList();
 	public static LinkedList<String> vencimientosComunidad = new <String>LinkedList();
+
+	public static JTextPane getDireccion() {
+		return direccion;
+	}
+
+	public static JTextField getEmail() {
+		return email;
+	}
 
 	public static LinkedList<String> fechaDecesos = new <String>LinkedList();
 
@@ -708,8 +720,6 @@ public class Agenda extends JFrame {
 					observacion.setEnabled(true);
 				}
 
-				nombre.setEditable(true);
-
 				nombre.setText(contacto);
 
 				tlf.setText(telefonos.get(indice));
@@ -937,53 +947,26 @@ public class Agenda extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent e) {
 
-				try {
+				if (!nombre.getText().isEmpty()) {
 
-					int indice = jList1.getSelectedIndex();
+					try {
 
-					String datoContacto = Metodos.eliminarEspacios(nombre.getText());
+						int indice = contactos.indexOf(nombre.getText());
 
-					if (indice >= 0) {
+						String datoContacto = Metodos.eliminarEspacios(nombre.getText());
 
-						arrayList1.clear();
+						if (indice >= 0) {
 
-						Metodos.eliminarFichero("contactos.dat");
+							Actualizador editarContacto = new Actualizador(indice);
 
-						contactos.set(indice, datoContacto);
-
-						emails.set(indice, Metodos.eliminarEspacios(email.getText()));
-
-						telefonos.set(indice, Metodos.eliminarEspacios(tlf.getText()));
-
-						direcciones.set(indice, Metodos.eliminarEspacios(direccion.getText()));
-
-						String direccion = direcciones.get(indice);
-
-						new Actualizador().setVisible(true);
-
-						for (int i = 0; i < contactos.size(); i++) {
-//							arrayList1.add(new Objeto(contactos.get(i) + "«" + emails.get(i) + "»"
-//									+ observaciones.get(i) + "¬" + telefonos.get(i) + "═" + direcciones.get(i) + "▓"
-//									+ datoLocalidad + "░" + datoCodPostal + "┤" + datoProvincia + "▒" + datoFechaDeceso
-//									+ "╣" + datoFechaVida + "║" + datoFechaHogar + "╝" + datoFechaCoche + "¥"
-//									+ datoFechaComercio + "¶" + datoFechaComunidad));
+							editarContacto.setVisible(true);
 
 						}
+					}
 
-//						ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
-//								new FileOutputStream("contactos.dat"));
-//
-//						escribiendoFichero.writeObject(arrayList1);
-//
-//						escribiendoFichero.close();
-
-						arrayList1.clear();
+					catch (Exception e1) {
 
 					}
-				}
-
-				catch (Exception e1) {
-
 				}
 
 			}
@@ -1488,7 +1471,7 @@ public class Agenda extends JFrame {
 					}
 
 				} catch (Exception e1) {
-					e1.printStackTrace();
+
 				}
 
 			}
@@ -2132,6 +2115,7 @@ public class Agenda extends JFrame {
 		vtos.setEditable(false);
 
 		vtos.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		tlf.setEditable(false);
 
 		tlf.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		direccion.setEditable(false);
@@ -2139,6 +2123,7 @@ public class Agenda extends JFrame {
 		direccion.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
 		email = new JTextField();
+		email.setEditable(false);
 		email.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		email.setColumns(10);
 
@@ -2174,7 +2159,9 @@ public class Agenda extends JFrame {
 		btnAadirObservacion.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
+
 				try {
+
 					verTodasLasLlamadas();
 
 					int indiceObs = contactos.indexOf(nombre.getText());
@@ -2193,8 +2180,10 @@ public class Agenda extends JFrame {
 						arrayList1.set(indiceObs,
 								new Objeto(contactos.get(indiceObs) + "«" + email.getText() + "»"
 										+ observaciones.get(indiceObs) + "¬" + tlf.getText() + "═" + direccion.getText()
-										+ "▓" + "" + "░" + "" + "┤" + "" + "▒" + fechaDecesos + "╣" + fechaVida + "║"
-										+ fechaHogar + "╝" + fechaCoche + "¥" + fechaComercio + "¶" + fechaComunidad));
+										+ "▓" + "" + "░" + "" + "┤" + "" + "▒" + fechaDecesos.get(indiceObs) + "╣"
+										+ fechaVida.get(indiceObs) + "║" + fechaHogar.get(indiceObs) + "╝"
+										+ fechaCoche.get(indiceObs) + "¥" + fechaComercio.get(indiceObs) + "¶"
+										+ fechaComunidad.get(indiceObs)));
 
 						ObjectOutputStream escribiendoFichero = new ObjectOutputStream(
 								new FileOutputStream("contactos.dat"));
@@ -2210,12 +2199,6 @@ public class Agenda extends JFrame {
 					else {
 						observacion.setEnabled(true);
 					}
-
-					Vencimiento.contactosVencimientos.clear();
-
-					Vencimiento.verTablaVencimientos();
-
-					verTodasLasLlamadas();
 
 				} catch (Exception e1) {
 					//
@@ -2392,7 +2375,7 @@ public class Agenda extends JFrame {
 				}
 
 				catch (Exception e) {
-					e.printStackTrace();
+
 				}
 
 			}
@@ -2441,7 +2424,7 @@ public class Agenda extends JFrame {
 				}
 
 				catch (Exception e) {
-					e.printStackTrace();
+
 				}
 
 			}
@@ -2680,10 +2663,10 @@ public class Agenda extends JFrame {
 
 					observaciones.add(obs);
 
+					emails.add(correo);
+
 					fechaDecesos.add(Metodos.convertirFecha(fechaDeceso, false));
 
-					emails.add(correo);
-					System.out.println("FECHA: " + datoVida);
 					fechaVida.add(Metodos.convertirFecha(datoVida, false));
 
 					fechaHogar.add(Metodos.convertirFecha(datoHogar, false));
@@ -2736,7 +2719,7 @@ public class Agenda extends JFrame {
 			jList1.setModel(modelo);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+
 		}
 	}
 
@@ -2793,7 +2776,7 @@ public class Agenda extends JFrame {
 
 	}
 
-	public JTextPane getTlf() {
+	public static JTextPane getTlf() {
 		return tlf;
 	}
 

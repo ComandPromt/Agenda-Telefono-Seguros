@@ -260,7 +260,7 @@ public class ImportarVcard extends javax.swing.JFrame implements ActionListener,
 			}
 
 			catch (Exception e) {
-				e.printStackTrace();
+
 			}
 
 			dispose();

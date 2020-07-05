@@ -38,6 +38,7 @@ import alertas.AlertError;
 import alertas.AlertInformation;
 import alertas.AlertSuccess;
 import alertas.AlertWarningSalir;
+import principal.Actualizador;
 import principal.Agenda;
 import principal.Vencimiento;
 
@@ -46,133 +47,133 @@ public abstract class Metodos {
 	public static String convertirFecha(String cadena, boolean tipo) {
 
 		String fecha = "";
+		try {
+			String mes = "";
 
-		String mes = "";
+			String year = "";
 
-		String year = "";
+			int dia;
 
-		int dia;
+			String mesCorto = "";
 
-		String mesCorto = "";
+			String diaCorto = "";
 
-		String diaCorto = "";
+			int mesFecha = 0;
 
-		int mesFecha = 0;
+			String busquedaMes = "";
 
-		String busquedaMes = "";
+			String busquedaDia = "";
 
-		String busquedaDia = "";
+			if (!cadena.isEmpty() && !cadena.contains("null") && cadena.length() > 2) {
 
-		if (!cadena.isEmpty() && !cadena.contains("null") && cadena.length() > 2) {
+				if (cadena.indexOf(" ") == -1) {
 
-			if (cadena.indexOf(" ") == -1) {
+					busquedaDia = cadena.substring(0, cadena.indexOf("/"));
 
-				busquedaDia = cadena.substring(0, cadena.indexOf("/"));
+					busquedaMes = cadena.substring(cadena.indexOf("/") + 1, cadena.lastIndexOf("/"));
 
-				busquedaMes = cadena.substring(cadena.indexOf("/") + 1, cadena.lastIndexOf("/"));
+					if (busquedaDia.indexOf("0") == 0) {
+						dia = Integer.parseInt(busquedaDia.substring(1, busquedaDia.length()));
+						diaCorto = "0";
+					}
 
-				if (busquedaDia.indexOf("0") == 0) {
-					dia = Integer.parseInt(busquedaDia.substring(1, busquedaDia.length()));
-					diaCorto = "0";
+					else {
+						dia = Integer.parseInt(busquedaDia);
+					}
+
+					if (busquedaMes.contains("0")) {
+						mesFecha = Integer.parseInt(busquedaMes.substring(1, busquedaMes.length()));
+						mesCorto = "0";
+					}
+
+					else {
+						mesFecha = Integer.parseInt(busquedaMes);
+					}
+
+					year = cadena.substring(cadena.lastIndexOf("/") + 1, cadena.length());
+
+				} else {
+
+					int limiteMes = cadena.indexOf(" ") + 4;
+
+					year = cadena.substring(cadena.lastIndexOf(" ") + 1, cadena.length());
+
+					mes = cadena.substring(cadena.indexOf(" ") + 1, limiteMes);
+					cadena = cadena.substring(limiteMes + 1, cadena.length());
+					dia = Integer.parseInt(cadena.substring(0, cadena.indexOf(" ")));
+
+					switch (mes) {
+
+					case "Jan":
+						mesFecha = 1;
+						break;
+
+					case "Feb":
+						mesFecha = 2;
+						break;
+
+					case "Mar":
+						mesFecha = 3;
+						break;
+
+					case "Apr":
+						mesFecha = 4;
+						break;
+
+					case "May":
+						mesFecha = 5;
+						break;
+
+					case "Jun":
+						mesFecha = 6;
+						break;
+
+					case "Jul":
+						mesFecha = 7;
+						break;
+
+					case "Aug":
+						mesFecha = 8;
+						break;
+
+					case "Sep":
+						mesFecha = 9;
+						break;
+
+					case "Oct":
+						mesFecha = 10;
+						break;
+
+					case "Nov":
+						mesFecha = 11;
+						break;
+
+					case "Dec":
+						mesFecha = 12;
+						break;
+
+					default:
+						break;
+
+					}
 				}
 
-				else {
-
-					dia = Integer.parseInt(busquedaDia);
-				}
-
-				if (busquedaMes.contains("0")) {
-					mesFecha = Integer.parseInt(busquedaMes.substring(1, busquedaMes.length()));
+				if (mesFecha <= 9) {
 					mesCorto = "0";
 				}
 
-				else {
-					mesFecha = Integer.parseInt(busquedaMes);
+				if (dia <= 9) {
+					diaCorto = "0";
 				}
 
-				year = cadena.substring(cadena.lastIndexOf("/") + 1, cadena.length());
-
-			} else {
-
-				int limiteMes = cadena.indexOf(" ") + 4;
-
-				year = cadena.substring(cadena.lastIndexOf(" ") + 1, cadena.length());
-
-				mes = cadena.substring(cadena.indexOf(" ") + 1, limiteMes);
-				System.out.println("calculo el dia: " + cadena);
-				cadena = cadena.substring(limiteMes + 1, cadena.length());
-
-				dia = Integer.parseInt(cadena.substring(0, cadena.indexOf(" ")));
-
-				switch (mes) {
-
-				case "Jan":
-					mesFecha = 1;
-					break;
-
-				case "Feb":
-					mesFecha = 2;
-					break;
-
-				case "Mar":
-					mesFecha = 3;
-					break;
-
-				case "Apr":
-					mesFecha = 4;
-					break;
-
-				case "May":
-					mesFecha = 5;
-					break;
-
-				case "Jun":
-					mesFecha = 6;
-					break;
-
-				case "Jul":
-					mesFecha = 7;
-					break;
-
-				case "Aug":
-					mesFecha = 8;
-					break;
-
-				case "Sep":
-					mesFecha = 9;
-					break;
-
-				case "Oct":
-					mesFecha = 10;
-					break;
-
-				case "Nov":
-					mesFecha = 11;
-					break;
-
-				case "Dec":
-					mesFecha = 12;
-					break;
-
-				default:
-					break;
-
+				if (tipo) {
+					fecha = mesCorto + mesFecha + "/" + diaCorto + dia + "/" + year;
+				} else {
+					fecha = diaCorto + dia + "/" + mesCorto + mesFecha + "/" + year;
 				}
-			}
 
-			if (mesFecha <= 9) {
-				mesCorto = "0";
 			}
-
-			if (dia <= 9) {
-				diaCorto = "0";
-			}
-
-			if (tipo) {
-				fecha = mesCorto + mesFecha + "/" + diaCorto + dia + "/" + year;
-			} else {
-				fecha = diaCorto + dia + "/" + mesCorto + mesFecha + "/" + year;
-			}
+		} catch (Exception e) {
 
 		}
 
@@ -1441,6 +1442,75 @@ public abstract class Metodos {
 			headerRow = sheet.createRow(i);
 		}
 
+	}
+
+	public static Date calcularFecha(String fechaVto, int seguro) {
+
+		Date fecha = new Date();
+
+		if (!fechaVto.isEmpty()) {
+
+			switch (seguro) {
+			case 1:
+				Actualizador.chckDeceso.setSelected(true);
+				break;
+			case 2:
+				Actualizador.chckVida.setSelected(true);
+				break;
+			case 3:
+				Actualizador.chckHogar.setSelected(true);
+				break;
+			case 4:
+				Actualizador.chckCoche.setSelected(true);
+				break;
+			case 5:
+				Actualizador.chckComercio.setSelected(true);
+				break;
+			case 6:
+				Actualizador.chckComunidad.setSelected(true);
+				break;
+			}
+
+			int dia = 0;
+
+			int mes = 0;
+
+			int year = 0;
+
+			dia = Integer.parseInt(fechaVto.substring(0, fechaVto.indexOf("/")));
+
+			mes = Integer.parseInt(fechaVto.substring(fechaVto.indexOf("/") + 1, fechaVto.lastIndexOf("/")));
+
+			year = Integer.parseInt(fechaVto.substring(fechaVto.lastIndexOf("/") + 1, fechaVto.length()));
+
+			year -= 1900;
+
+			fecha.setDate(dia);
+			fecha.setMonth(--mes);
+			fecha.setYear(year);
+		} else {
+			switch (seguro) {
+			case 1:
+				Actualizador.chckDeceso.setSelected(false);
+				break;
+			case 2:
+				Actualizador.chckVida.setSelected(false);
+				break;
+			case 3:
+				Actualizador.chckHogar.setSelected(false);
+				break;
+			case 4:
+				Actualizador.chckCoche.setSelected(false);
+				break;
+			case 5:
+				Actualizador.chckComercio.setSelected(false);
+				break;
+			case 6:
+				Actualizador.chckComunidad.setSelected(false);
+				break;
+			}
+		}
+		return fecha;
 	}
 
 }

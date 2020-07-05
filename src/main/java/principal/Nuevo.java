@@ -284,14 +284,19 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		nombrec.setBackground(Color.ORANGE);
 
 		nombrec.addKeyListener(new KeyAdapter() {
+
 			@Override
+
 			public void keyPressed(KeyEvent e) {
+
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 
 					guardar();
 				}
 			}
+
 		});
+
 		nombrec.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		nombrec.setHorizontalAlignment(SwingConstants.CENTER);
 		nombrec.setColumns(10);
@@ -311,13 +316,16 @@ public class Nuevo extends javax.swing.JFrame implements ActionListener, ChangeL
 		vida = new RSDateChooser();
 
 		Date myDate = new Date();
+
 		vida.setFormatoFecha("dd/MM/Y");
 		vida.setDatoFecha(myDate);
 
 		coche.setFormatoFecha("dd/MM/Y");
 		coche.setDatoFecha(myDate);
+
 		deceso.setFormatoFecha("dd/MM/Y");
 		deceso.setDatoFecha(myDate);
+
 		hogar.setFormatoFecha("dd/MM/Y");
 		hogar.setDatoFecha(myDate);
 
