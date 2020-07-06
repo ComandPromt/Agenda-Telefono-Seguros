@@ -748,13 +748,28 @@ public class Agenda extends JFrame {
 
 	private String sumar1Year(String fechaVto) {
 
+		String dia = "";
+
+		String mes = "";
+
+		dia = fechaVto.substring(0, fechaVto.indexOf("/"));
+
+		mes = fechaVto.substring(fechaVto.indexOf("/") + 1, fechaVto.lastIndexOf("/"));
+
 		int year = 0;
 
 		year = Integer.parseInt(fechaVto.substring(fechaVto.lastIndexOf("/") + 1, fechaVto.length()));
 
+		if (year < 3344 && dia.equals("29") && mes.equals("02") && Metodos.esBisiesto(year)) {
+			dia = "01";
+			mes = "03";
+		}
+
 		++year;
 
-		return fechaVto.substring(0, fechaVto.lastIndexOf("/") + 1) + year;
+		fechaVto = dia + "/" + mes + "/" + year;
+
+		return fechaVto;
 	}
 
 	protected void guardarContactos() {
@@ -998,7 +1013,7 @@ public class Agenda extends JFrame {
 
 				if (contacto != null) {
 
-					if (JOptionPane.showConfirmDialog(null, "Quieres borrar a " + contacto, "Borrar contactos",
+					if (JOptionPane.showConfirmDialog(null, "¿Quieres borrar a " + contacto + " ?", "Borrar contacto",
 							JOptionPane.YES_NO_OPTION) == 0) {
 
 						vaciarCampos();
